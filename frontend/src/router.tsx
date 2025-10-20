@@ -4,6 +4,8 @@ import App from "@/App";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
+const Employee = lazy(() => import("@/layouts/Employee"));
+const EmployeeDashboard = lazy(() => import("@/pages/EmployeeDashboard"));
 
 const router = createBrowserRouter([
   {
@@ -17,6 +19,16 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/login", element: <Login /> },
+  {
+    path: "/employee",
+    element: <Employee />,
+    children: [
+      {
+        index: true,
+        element: <EmployeeDashboard />,
+      },
+    ],
+  },
 ]);
 
 export default router;
