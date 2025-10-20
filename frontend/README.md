@@ -1,73 +1,29 @@
-# React + TypeScript + Vite
+# Frontend for Team 11's SE Project for 25T3
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend for our project is made using Vite, using ReactJS as the framework, and Typescript. We have also use Shadcn's component library for our pages.
 
-Currently, two official plugins are available:
+## Folder Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+All the source code is written under the `src` folder.
 
-## React Compiler
+Inside the `src` folder, there are multiple folders and files.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- The `assets` folder contains any images used in the project.
+- The `components` folder contains both the `Shadcn's comonent library` and the custom components used in the project.
+- The `pages` folder has all the pages to be used in the `routing part` of the frontend.
+- The `main.tsx` is the start of the app.
+- The `router.tsx` contains all the routing configuration.
 
-## Expanding the ESLint configuration
+## How to add a new page?
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+To add a new page, there are 2 things.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Create a `tsx` file in the pages directory, that serves as the main file to be referenced for routing.
+- Inside the `router.tsx` add the proper configuration for the app, to know which file to reference for which part.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Queries
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Any other queries can be asked to the frontend team.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- [Harsh Shah](mailto:23f2003845@ds.study.iitm.ac.in)
+- [Dhristi Jain](mailto:22f3001248@ds.study.iitm.ac.in)
