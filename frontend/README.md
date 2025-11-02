@@ -26,4 +26,4 @@ To add a new page, there are 2 things.
 Any other queries can be asked to the frontend team.
 
 - [Harsh Shah](mailto:23f2003845@ds.study.iitm.ac.in)
-- [Dhristi Jain](mailto:22f3001248@ds.study.iitm.ac.in)
+- [Drishti Jain](mailto:22f3001248@ds.study.iitm.ac.in)
