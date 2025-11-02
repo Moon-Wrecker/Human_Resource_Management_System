@@ -1,93 +1,50 @@
 "use client";
 
 import * as React from "react";
-import {
-  List,
-  PieChart,
-  Users,
-  BookOpen,
-} from "lucide-react";
+import { Book } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
+import { NavItems } from "@/components/nav-projects";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
   SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { TeamSwitcher } from "./team-switcher";
-
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: PieChart,
-      isActive: true,
-    },
-    {
-      title: "Job Listings",
-      url:"#",
-      icon: List,
-      isActive: false,
-    },
-    {
-      title: "Employee List",
-      url: "#",
-      icon: Users,
-      isActive: true,
-    },
-    {
-      title: "Policies",
-      url:"#",
-      icon: BookOpen,
-      isActive: false,
-    },
-    {
-      title: "Resume Screener",
-      url: "#",
-      icon: PieChart,
-      isActive: true,
-    },
-    {
-      title: "Announcements",
-      url:"#",
-      icon: List,
-      isActive: false,
-    },
-    {
-      title: "Payslips",
-      url: "employee-payslips",
-      icon: PieChart,
-      isActive: true,
-    },
-    {
-      title: "Attendance",
-      url:"#",
-      icon: List,
-      isActive: false,
-    }
-  ],
-};
+import EmployeeSidebarItems from "@/constants/EmployeeSidebarItems";
 
 export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <Book className="size-4" />
+              </div>
+              PulseTrack HRMS
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
+      <hr />
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavItems items={EmployeeSidebarItems} />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenuButton size="lg">
-          <div className=" flex aspect-square size-8 items-center justify-center rounded-lg">
-            <SidebarTrigger />
-          </div>
-          Collapse Sidebar
+        <SidebarMenuButton size="lg" className="px-0 pl-0">
+          <SidebarTrigger
+            className="flex items-center justify-between px-0 pl-0 mx-0"
+            withText
+          />
         </SidebarMenuButton>
       </SidebarFooter>
       <SidebarRail />
