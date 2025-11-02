@@ -1,12 +1,11 @@
-import { EmployeeSidebar } from "@/components/Employee-sidebar";
+import { HRSidebar } from "@/components/HR-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 
-
-const Employee = () => {
+const HR = () => {
   return (
     <SidebarProvider>
-      <EmployeeSidebar />
+      <HRSidebar />
       <SidebarInset>
         <Outlet /> Footer
       </SidebarInset>
@@ -14,4 +13,4 @@ const Employee = () => {
   );
 };
 
-export default Employee;
+export default HR;
