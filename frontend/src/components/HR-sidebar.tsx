@@ -9,80 +9,97 @@ import {
   DollarSign,
   Speaker,
   Scan,
+  Book,
 } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
   SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { TeamSwitcher } from "./team-switcher";
+import { NavItems } from "./nav-projects";
 
 const data = {
   navMain: [
     {
-      title: "Dashboard",
+      name: "Dashboard",
       url: "/hr-dashboard",
       icon: PieChart,
     },
     {
-      title: "Job Listings",
-      url:"/joblistings",
+      name: "Job Listings",
+      url: "/joblistings",
       icon: List,
     },
     {
-      title: "Employee List",
+      name: "Employee List",
       url: "/employees-list",
       icon: Users,
     },
     {
-      title: "Policies",
-      url:"/hr-policies",
+      name: "Policies",
+      url: "/hr-policies",
       icon: List,
     },
     {
-      title: "Resume Screener",
+      name: "Resume Screener",
       url: "/resume-screener",
       icon: Scan,
     },
     {
-      title: "Announcements",
-      url:"/hr-announcements",
+      name: "Announcements",
+      url: "/hr-announcements",
       icon: Speaker,
     },
     {
-      title: "Payslips",
+      name: "Payslips",
       url: "/hr-payslips",
       icon: DollarSign,
     },
     {
-      title: "Attendance",
-      url:"/hr-attendance",
+      name: "Attendance",
+      url: "/hr-attendance",
       icon: Calendar,
     }
   ],
 };
 
+
+
 export function HRSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <Book className="size-4" />
+              </div>
+              PulseTrack HRMS
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
+      <hr />
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavItems items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenuButton size="lg">
-          <div className=" flex aspect-square size-8 items-center justify-center rounded-lg">
-            <SidebarTrigger />
-          </div>
-          Collapse Sidebar
+        <SidebarMenuButton size="lg" className="px-0 pl-0">
+          <SidebarTrigger
+            className="flex items-center justify-between px-0 pl-0 mx-0"
+            withText
+          />
         </SidebarMenuButton>
       </SidebarFooter>
       <SidebarRail />

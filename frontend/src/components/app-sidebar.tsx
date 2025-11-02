@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import EmployeeSidebarItems from "@/constants/EmployeeSidebarItems";
 
-export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
