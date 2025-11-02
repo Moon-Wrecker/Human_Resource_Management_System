@@ -35,6 +35,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+      <hr />
       <SidebarContent>
         <NavItems items={EmployeeSidebarItems} />
       </SidebarContent>
