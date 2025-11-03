@@ -99,7 +99,7 @@ const Announcements = () => {
 
       <div className="grid grid-cols-3 my-8 px-4 gap-4">
         {announcements.map((announcement) => (
-          <Card className="w-full max-w-md shadow-md rounded-2xl border border-gray-200">
+          <Card className="w-full shadow-md rounded-2xl border border-gray-200">
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-gray-900">
                 {announcement.title}
