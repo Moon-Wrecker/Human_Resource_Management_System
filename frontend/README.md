@@ -27,3 +27,21 @@ Any other queries can be asked to the frontend team.
 
 - [Harsh Shah](mailto:23f2003845@ds.study.iitm.ac.in)
 - [Drishti Jain](mailto:22f3001248@ds.study.iitm.ac.in)
+
+## Images for references
+
+### Employee Pages
+
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/5e978e2b-107b-45d2-bfe8-fd95f0d1ce5b" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/52f1b9c6-4586-4f21-b93b-a4a9088476e0" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/2adef218-e0e0-48c7-8a40-14882f6678fe" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/50b9df48-c08e-45e5-a706-9d15183a4d97" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/55fc9968-3fad-471f-8e46-790f3ce913ac" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/5e71bd50-e640-46e5-b88a-618206206e37" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/9d114ecf-c6d6-4804-b683-080a29bfa70e" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/1b6402a6-9ebd-41d7-bb15-6222c5ac1cce" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/43a361fc-e30d-45c5-88e2-939581c41410" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/f3826d94-65c3-481e-a551-991cacd6b2f1" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/f9b10e65-9fff-4580-9e52-2a029eb5bfb2" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/27a96426-1b20-45db-87ac-a65cddfe3178" />
+<img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/47e3d938-91b6-4f4f-bad3-ed7e9395b888" />
