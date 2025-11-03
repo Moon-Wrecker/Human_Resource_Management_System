@@ -1,7 +1,7 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
-import { Pie, PieChart } from "recharts";
+import { Legend, Pie, PieChart } from "recharts";
 
 import {
   Card,
@@ -72,6 +72,17 @@ export function DoughnutChart({ title, desc, data }: ChartProps) {
               fill="#8884d8"
               paddingAngle={5}
               stroke="none"
+            />
+            <Legend
+              verticalAlign="bottom"
+              width={280}
+              className="flex items-center justify-center gap-4 my-8 w-full"
+              payload={data.map((item) => ({
+                id: item.label,
+                type: "square",
+                value: `${item.label} (${item.value}%)`,
+                color: item.fill,
+              }))}
             />
           </PieChart>
         </ChartContainer>
