@@ -5,21 +5,33 @@ import App from "@/App";
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
 const Employee = lazy(() => import("@/layouts/Employee"));
-const EmployeeDashboard = lazy(() => import("@/pages/Employee/EmployeeDashboard"));
+const EmployeeDashboard = lazy(
+  () => import("@/pages/Employee/EmployeeDashboard"),
+);
 const HR = lazy(() => import("@/layouts/HR"));
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
 const JobListings = lazy(() => import("@/pages/HR/JobListings"));
-const AddJobForm = lazy(() => import ("@/pages/HR/AddJobForm"));
-const EmployeesList = lazy(() => import ("@/pages/HR/EmployeesList"));
-const AddEmployeeForm = lazy(() => import ("@/pages/HR/AddEmployeeForm"));
-const Policies = lazy(() => import ("@/pages/HR/Policies"));
-const ResumeScreener = lazy(() => import ("@/pages/HR/ResumeScreener"));
-const ResumeScreenerResults = lazy(() => import ("@/pages/HR/ResumeScreenerResults"));
-const Announcements = lazy(() => import ("@/pages/HR/Announcements"));
-const Payslips = lazy(() => import ("@/pages/Common/Payslips"));
-const Applications = lazy(() => import ("@/pages/HR/Applications"));
-const Attendance = lazy(() => import ("@/pages/Common/Attendance"));
-const PerformanceReport = lazy(() => import ("@/pages/Common/PerformanceReport"));
+const JobListingsEmployee = lazy(() => import("@/pages/Employee/JobListings"));
+const AddJobForm = lazy(() => import("@/pages/HR/AddJobForm"));
+const EmployeesList = lazy(() => import("@/pages/HR/EmployeesList"));
+const AddEmployeeForm = lazy(() => import("@/pages/HR/AddEmployeeForm"));
+const Policies = lazy(() => import("@/pages/HR/Policies"));
+const ResumeScreener = lazy(() => import("@/pages/HR/ResumeScreener"));
+const ResumeScreenerResults = lazy(
+  () => import("@/pages/HR/ResumeScreenerResults"),
+);
+const Announcements = lazy(() => import("@/pages/HR/Announcements"));
+const AnnouncementsEmployee = lazy(
+  () => import("@/pages/Employee/Announcements"),
+);
+const Payslips = lazy(() => import("@/pages/Common/Payslips"));
+const Applications = lazy(() => import("@/pages/HR/Applications"));
+const Attendance = lazy(() => import("@/pages/Common/Attendance"));
+const PerformanceReport = lazy(
+  () => import("@/pages/Common/PerformanceReport"),
+);
+const PoliciesEmployee = lazy(() => import("@/pages/Employee/Policies"));
+const GoalTrackerEmployee = lazy(() => import("@/pages/Employee/GoalTracker"));
 
 const router = createBrowserRouter([
   {
@@ -41,11 +53,39 @@ const router = createBrowserRouter([
         index: true,
         element: <EmployeeDashboard />,
       },
+      {
+        path: "performance-report",
+        element: <PerformanceReport />,
+      },
+      {
+        path: "payslips",
+        element: <Payslips />,
+      },
+      {
+        path: "attendance",
+        element: <Attendance />,
+      },
+      {
+        path: "announcements",
+        element: <AnnouncementsEmployee />,
+      },
+      {
+        path: "job-listings",
+        element: <JobListingsEmployee />,
+      },
+      {
+        path: "policies",
+        element: <PoliciesEmployee />,
+      },
+      {
+        path: "goal-tracker",
+        element: <GoalTrackerEmployee />,
+      },
     ],
   },
   {
     path: "/hr-dashboard",
-    element: <HR/>,
+    element: <HR />,
     children: [
       {
         index: true,
@@ -69,7 +109,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: < AddJobForm/>,
+        element: <AddJobForm />,
       },
     ],
   },
@@ -79,7 +119,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: < EmployeesList/>,
+        element: <EmployeesList />,
       },
     ],
   },
@@ -89,7 +129,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: < AddEmployeeForm/>,
+        element: <AddEmployeeForm />,
       },
     ],
   },
@@ -99,7 +139,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: < Policies/>,
+        element: <Policies />,
       },
     ],
   },
@@ -109,7 +149,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: < ResumeScreener/>,
+        element: <ResumeScreener />,
       },
     ],
   },
@@ -119,7 +159,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: < ResumeScreenerResults/>,
+        element: <ResumeScreenerResults />,
       },
     ],
   },
@@ -129,7 +169,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Announcements/>,
+        element: <Announcements />,
       },
     ],
   },
@@ -139,7 +179,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Payslips/>,
+        element: <Payslips />,
       },
     ],
   },
@@ -149,7 +189,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Payslips/>,
+        element: <Payslips />,
       },
     ],
   },
@@ -159,7 +199,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Payslips/>,
+        element: <Payslips />,
       },
     ],
   },
@@ -169,7 +209,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Applications/>,
+        element: <Applications />,
       },
     ],
   },
@@ -179,7 +219,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Attendance/>,
+        element: <Attendance />,
       },
     ],
   },
@@ -189,7 +229,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <PerformanceReport/>,
+        element: <PerformanceReport />,
       },
     ],
   },

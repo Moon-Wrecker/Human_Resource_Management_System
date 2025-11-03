@@ -3,7 +3,6 @@ import { EmployeeSidebar } from "@/components/Employee-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 
-
 const Employee = () => {
   return (
     <SidebarProvider>
@@ -14,7 +13,6 @@ const Employee = () => {
         </header>
         <hr />
         <Outlet />
-        Footer
       </SidebarInset>
     </SidebarProvider>
   );
