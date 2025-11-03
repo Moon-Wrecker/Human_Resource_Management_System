@@ -14,17 +14,17 @@ export default function GoalTracker() {
     {
       id: 1,
       label: "Checkpoint 1 : Module X Reading",
-      slug: "checkpoint-1-module-x-reading",
+      slug: "module-x",
     },
     {
       id: 2,
       label: "Checkpoint 2 : Module X Practice Exercise",
-      slug: "checkpoint-2-module-x-practice-exercise",
+      slug: "module-y",
     },
     {
       id: 3,
       label: "Checkpoint 3 : Module X Knowledge Check",
-      slug: "checkpoint-1-module-x-knowledge-check",
+      slug: "module-z",
     },
   ];
 
@@ -56,7 +56,7 @@ export default function GoalTracker() {
               >
                 <span className="text-sm sm:text-base">{item.label}</span>
                 <div className="flex gap-2 justify-end">
-                  <a href={`/goal-tracker/${item.slug}`}>
+                  <a href={`goal-tracker/${item.slug}`}>
                     <Button
                       variant="link"
                       size="sm"

@@ -32,6 +32,15 @@ const PerformanceReport = lazy(
 );
 const PoliciesEmployee = lazy(() => import("@/pages/Employee/Policies"));
 const GoalTrackerEmployee = lazy(() => import("@/pages/Employee/GoalTracker"));
+const VisitPage = lazy(() => import("@/pages/Employee/GoalTrackerDetail"));
+const SkillDevelopment = lazy(
+  () => import("@/pages/Employee/SkillDevelopment"),
+);
+
+const EmployeeProfile = lazy(() => import("@/pages/Employee/Profile"));
+const SkillVisit = lazy(
+  () => import("@/pages/Employee/SkillDevelopmentDetail"),
+);
 
 const router = createBrowserRouter([
   {
@@ -80,6 +89,22 @@ const router = createBrowserRouter([
       {
         path: "goal-tracker",
         element: <GoalTrackerEmployee />,
+      },
+      {
+        path: "goal-tracker/:id",
+        element: <VisitPage />,
+      },
+      {
+        path: "skill-development",
+        element: <SkillDevelopment />,
+      },
+      {
+        path: "skills/:slug",
+        element: <SkillVisit />,
+      },
+      {
+        path: "profile",
+        element: <EmployeeProfile />,
       },
     ],
   },
