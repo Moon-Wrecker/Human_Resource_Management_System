@@ -131,7 +131,7 @@ const JobListings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-white">
       <div className="px-12 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-center mb-6">Job Listings</h1>

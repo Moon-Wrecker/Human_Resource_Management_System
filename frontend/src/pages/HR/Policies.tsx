@@ -6,7 +6,7 @@ const Policies = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col items-center px-4 pt-12">
+    <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-12">
       {/* Page Title */}
       <h1 className="text-2xl font-bold mb-12">Policies</h1>
 

@@ -15,7 +15,7 @@ const modulesByMonth = [
 const PerformanceReport = () => {
   const [period, setPeriod] = useState(periodLabels[0]);
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col items-center px-4 pt-12">
+    <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-12">
       <h1 className="text-3xl font-bold mb-3 text-center">
         Person 1 performance report
       </h1>
