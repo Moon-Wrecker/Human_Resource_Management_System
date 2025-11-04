@@ -1,16 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  List,
-  PieChart,
-  Users,
-  Calendar,
-  DollarSign,
-  Speaker,
-  Scan,
-  Book,
-} from "lucide-react";
+import { Book } from "lucide-react";
+import HRSidebarItems from "@/constants/HRSidebaritems";
 
 import {
   Sidebar,
@@ -24,53 +16,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { NavItems } from "./nav-projects";
-
-const data = {
-  navMain: [
-    {
-      name: "Dashboard",
-      url: "/hr-dashboard",
-      icon: PieChart,
-    },
-    {
-      name: "Job Listings",
-      url: "/joblistings",
-      icon: List,
-    },
-    {
-      name: "Employee List",
-      url: "/employees-list",
-      icon: Users,
-    },
-    {
-      name: "Policies",
-      url: "/hr-policies",
-      icon: List,
-    },
-    {
-      name: "Resume Screener",
-      url: "/resume-screener",
-      icon: Scan,
-    },
-    {
-      name: "Announcements",
-      url: "/hr-announcements",
-      icon: Speaker,
-    },
-    {
-      name: "Payslips",
-      url: "/hr-payslips",
-      icon: DollarSign,
-    },
-    {
-      name: "Attendance",
-      url: "/hr-attendance",
-      icon: Calendar,
-    }
-  ],
-};
-
-
 
 export function HRSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -92,7 +37,7 @@ export function HRSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <hr />
       <SidebarContent>
-        <NavItems items={data.navMain} />
+        <NavItems items={HRSidebarItems.navMain} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenuButton size="lg" className="px-0 pl-0">

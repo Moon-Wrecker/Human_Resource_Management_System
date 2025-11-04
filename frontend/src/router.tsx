@@ -2,17 +2,18 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 
+const Employee = lazy(() => import("@/layouts/Employee"));
+const HR = lazy(() => import("@/layouts/HR"));
+const Manager = lazy(() => import("@/layouts/Manager"))
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
-const Employee = lazy(() => import("@/layouts/Employee"));
 const EmployeeDashboard = lazy(() => import("@/pages/Employee/EmployeeDashboard"));
-const HR = lazy(() => import("@/layouts/HR"));
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
-const JobListings = lazy(() => import("@/pages/HR/JobListings"));
+const HRJobListings = lazy(() => import("@/pages/HR/JobListings"));
 const AddJobForm = lazy(() => import ("@/pages/HR/AddJobForm"));
 const EmployeesList = lazy(() => import ("@/pages/HR/EmployeesList"));
 const AddEmployeeForm = lazy(() => import ("@/pages/HR/AddEmployeeForm"));
-const Policies = lazy(() => import ("@/pages/HR/Policies"));
+const HRPolicies = lazy(() => import ("@/pages/HR/Policies"));
 const ResumeScreener = lazy(() => import ("@/pages/HR/ResumeScreener"));
 const ResumeScreenerResults = lazy(() => import ("@/pages/HR/ResumeScreenerResults"));
 const Announcements = lazy(() => import ("@/pages/HR/Announcements"));
@@ -20,6 +21,10 @@ const Payslips = lazy(() => import ("@/pages/Common/Payslips"));
 const Applications = lazy(() => import ("@/pages/HR/Applications"));
 const Attendance = lazy(() => import ("@/pages/Common/Attendance"));
 const PerformanceReport = lazy(() => import ("@/pages/Common/PerformanceReport"));
+const ManagerDashboard = lazy(() => import ("@/pages/Manager/ManagerDashboard"));
+const TeamRequests = lazy(() => import ("@/pages/Manager/TeamRequests"));
+const TeamMembers = lazy(()=>  import ("@/pages/Manager/TeamMembers"));
+const JobListings = lazy(() => import ("@/pages/Common/JobListings"));
 
 const router = createBrowserRouter([
   {
@@ -34,12 +39,22 @@ const router = createBrowserRouter([
   },
   { path: "/login", element: <Login /> },
   {
-    path: "/employee",
+    path: "/employee-dashboard",
     element: <Employee />,
     children: [
       {
         index: true,
         element: <EmployeeDashboard />,
+      },
+    ],
+  },
+  {
+    path: "/employee-payslips",
+    element: <Employee />,
+    children: [
+      {
+        index: true,
+        element: <Payslips/>,
       },
     ],
   },
@@ -54,17 +69,17 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/joblistings",
+    path: "/hrjoblistings",
     element: <HR />,
     children: [
       {
         index: true,
-        element: <JobListings />,
+        element: <HRJobListings />,
       },
     ],
   },
   {
-    path: "/joblistings/add-new-job",
+    path: "/hrjoblistings/add-new-job",
     element: <HR />,
     children: [
       {
@@ -99,7 +114,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: < Policies/>,
+        element: < HRPolicies/>,
       },
     ],
   },
@@ -144,16 +159,6 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/employee-payslips",
-    element: <Employee />,
-    children: [
-      {
-        index: true,
-        element: <Payslips/>,
-      },
-    ],
-  },
-  {
     path: "/manager-payslips",
     element: <HR />,
     children: [
@@ -190,6 +195,56 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <PerformanceReport/>,
+      },
+    ],
+  },
+  {
+    path: "/manager-dashboard",
+    element: <Manager />,
+    children: [
+      {
+        index: true,
+        element: <ManagerDashboard/>,
+      },
+    ],
+  },
+  {
+    path: "/team-requests",
+    element: <Manager />,
+    children: [
+      {
+        index: true,
+        element: <TeamRequests/>,
+      },
+    ],
+  },
+  {
+    path: "/team-members",
+    element: <Manager />,
+    children: [
+      {
+        index: true,
+        element: <TeamMembers/>,
+      },
+    ],
+  },
+  {
+    path: "/manager-joblistings",
+    element: <Manager />,
+    children: [
+      {
+        index: true,
+        element: <JobListings/>,
+      },
+    ],
+  },
+  {
+    path: "/employee-joblistings",
+    element: <Employee />,
+    children: [
+      {
+        index: true,
+        element: <JobListings/>,
       },
     ],
   },
