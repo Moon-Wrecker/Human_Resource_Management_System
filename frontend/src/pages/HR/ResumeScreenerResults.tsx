@@ -34,7 +34,7 @@ const resumeResults = [
 ];
 
 const ResumeScreenerResults = () => (
-  <div className="min-h-screen bg-[#fafafa] flex flex-col items-center px-4 pt-12">
+  <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-12">
     <h1 className="text-2xl font-bold mb-9">Resume Screener</h1>
     <div className="mb-9 font-semibold text-lg underline">
       Results for Role : SDE - II

@@ -1,13 +1,13 @@
 import AppHeader from "@/components/app-header";
-import { EmployeeSidebar } from "@/components/Employee-sidebar";
+import { ManagerSidebar } from "@/components/Manager-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 
 
-const Employee = () => {
+const Manager = () => {
   return (
     <SidebarProvider>
-      <EmployeeSidebar />
+      <ManagerSidebar />
       <SidebarInset>
         <header>
           <AppHeader />
@@ -20,4 +20,4 @@ const Employee = () => {
   );
 };
 
-export default Employee;
+export default Manager;

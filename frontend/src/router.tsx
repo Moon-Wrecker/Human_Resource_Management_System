@@ -2,30 +2,45 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 
-const Employee = lazy(() => import("@/layouts/Employee"));
-const HR = lazy(() => import("@/layouts/HR"));
-const Manager = lazy(() => import("@/layouts/Manager"))
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
+const Employee = lazy(() => import("@/layouts/Employee"));
+const HR = lazy(() => import("@/layouts/HR"));
+const Manager = lazy(() => import("@/layouts/Manager"));
 const EmployeeDashboard = lazy(() => import("@/pages/Employee/EmployeeDashboard"));
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
+const JobListingsEmployee = lazy(() => import("@/pages/Employee/JobListings"));
+const AddJobForm = lazy(() => import("@/pages/HR/AddJobForm"));
+const EmployeesList = lazy(() => import("@/pages/HR/EmployeesList"));
+const AddEmployeeForm = lazy(() => import("@/pages/HR/AddEmployeeForm"));
+const Policies = lazy(() => import("@/pages/HR/Policies"));
+const ResumeScreener = lazy(() => import("@/pages/HR/ResumeScreener"));
 const HRJobListings = lazy(() => import("@/pages/HR/JobListings"));
-const AddJobForm = lazy(() => import ("@/pages/HR/AddJobForm"));
-const EmployeesList = lazy(() => import ("@/pages/HR/EmployeesList"));
-const AddEmployeeForm = lazy(() => import ("@/pages/HR/AddEmployeeForm"));
-const HRPolicies = lazy(() => import ("@/pages/HR/Policies"));
-const ResumeScreener = lazy(() => import ("@/pages/HR/ResumeScreener"));
-const ResumeScreenerResults = lazy(() => import ("@/pages/HR/ResumeScreenerResults"));
-const Announcements = lazy(() => import ("@/pages/HR/Announcements"));
-const Payslips = lazy(() => import ("@/pages/Common/Payslips"));
-const Applications = lazy(() => import ("@/pages/HR/Applications"));
-const Attendance = lazy(() => import ("@/pages/Common/Attendance"));
-const PerformanceReport = lazy(() => import ("@/pages/Common/PerformanceReport"));
-const ManagerDashboard = lazy(() => import ("@/pages/Manager/ManagerDashboard"));
-const TeamRequests = lazy(() => import ("@/pages/Manager/TeamRequests"));
-const TeamMembers = lazy(()=>  import ("@/pages/Manager/TeamMembers"));
-const JobListings = lazy(() => import ("@/pages/Common/JobListings"));
-
+const TeamRequests = lazy(() => import("@/pages/Manager/TeamRequests"));
+const ResumeScreenerResults = lazy(
+  () => import("@/pages/HR/ResumeScreenerResults"),
+);
+const Announcements = lazy(() => import("@/pages/HR/Announcements"));
+const AnnouncementsEmployee = lazy(() => import("@/pages/Common/Announcements"));
+const Payslips = lazy(() => import("@/pages/Common/Payslips"));
+const Applications = lazy(() => import("@/pages/HR/Applications"));
+const Attendance = lazy(() => import("@/pages/Common/Attendance"));
+const PerformanceReport = lazy(
+  () => import("@/pages/Common/PerformanceReport"),
+);
+const PoliciesEmployee = lazy(() => import("@/pages/Common/Policies"));
+const GoalTrackerEmployee = lazy(() => import("@/pages/Employee/GoalTracker"));
+const VisitPage = lazy(() => import("@/pages/Employee/GoalTrackerDetail"));
+const SkillDevelopment = lazy(
+  () => import("@/pages/Employee/SkillDevelopment"),
+);
+const ManagerDashboard = lazy(() => import("@/pages/Manager/ManagerDashboard"));
+const TeamMembers = lazy(() => import("@/pages/Manager/TeamMembers"));
+const EmployeeProfile = lazy(() => import("@/pages/Employee/Profile"));
+const SkillVisit = lazy(
+  () => import("@/pages/Employee/SkillDevelopmentDetail"),
+);
+ 
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,212 +54,165 @@ const router = createBrowserRouter([
   },
   { path: "/login", element: <Login /> },
   {
-    path: "/employee-dashboard",
+    path: "/employee",
     element: <Employee />,
     children: [
       {
         index: true,
         element: <EmployeeDashboard />,
       },
-    ],
-  },
-  {
-    path: "/employee-payslips",
-    element: <Employee />,
-    children: [
       {
-        index: true,
-        element: <Payslips/>,
+        path: "performance-report",
+        element: <PerformanceReport />,
+      },
+      {
+        path: "payslips",
+        element: <Payslips />,
+      },
+      {
+        path: "attendance",
+        element: <Attendance />,
+      },
+      {
+        path: "announcements",
+        element: <AnnouncementsEmployee />,
+      },
+      {
+        path: "job-listings",
+        element: <JobListingsEmployee />,
+      },
+      {
+        path: "policies",
+        element: <PoliciesEmployee />,
+      },
+      {
+        path: "goal-tracker",
+        element: <GoalTrackerEmployee />,
+      },
+      {
+        path: "goal-tracker/:id",
+        element: <VisitPage />,
+      },
+      {
+        path: "skill-development",
+        element: <SkillDevelopment />,
+      },
+      {
+        path: "skills/:slug",
+        element: <SkillVisit />,
+      },
+      {
+        path: "profile",
+        element: <EmployeeProfile />,
       },
     ],
   },
   {
-    path: "/hr-dashboard",
-    element: <HR/>,
+    path: "/hr",
+    element: <HR />,
     children: [
       {
         index: true,
         element: <HRDashboard />,
       },
-    ],
-  },
-  {
-    path: "/hrjoblistings",
-    element: <HR />,
-    children: [
       {
-        index: true,
+        path: "joblistings",
         element: <HRJobListings />,
+        children: [
+          {
+            path: "add-new-job",
+            element: <AddJobForm />,
+          },
+        ],
       },
-    ],
-  },
-  {
-    path: "/hrjoblistings/add-new-job",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: < AddJobForm/>,
+        path: "employees-list",
+        element: <EmployeesList />,
+        children: [
+          {
+            path: "add-new-employee",
+            element: <AddEmployeeForm />,
+          }
+        ]
       },
-    ],
-  },
-  {
-    path: "/employees-list",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: < EmployeesList/>,
+        path: "policies",
+        element: <Policies />,
       },
-    ],
-  },
-  {
-    path: "/employees-list/add-new-employee",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: < AddEmployeeForm/>,
+        path: "resume-screener",
+        element: <ResumeScreener />,
       },
-    ],
-  },
-  {
-    path: "/hr-policies",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: < HRPolicies/>,
+        path: "resume-screener/results",
+        element: <ResumeScreenerResults />
+          
       },
-    ],
-  },
-  {
-    path: "/resume-screener",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: < ResumeScreener/>,
+        path: "announcements",
+        element: <Announcements />,
       },
-    ],
-  },
-  {
-    path: "/resume-screener/results",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: < ResumeScreenerResults/>,
+        path: "payslips",
+        element: <Payslips />,
       },
-    ],
-  },
-  {
-    path: "/hr-announcements",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: <Announcements/>,
+        path: "applications",
+        element: <Applications />,
       },
-    ],
-  },
-  {
-    path: "/hr-payslips",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: <Payslips/>,
+        path: "attendance",
+        element: <Attendance />,
       },
-    ],
-  },
-  {
-    path: "/manager-payslips",
-    element: <HR />,
-    children: [
       {
-        index: true,
-        element: <Payslips/>,
+        path: "performance-report",
+        element: <PerformanceReport />,
       },
     ],
   },
   {
-    path: "/applications",
-    element: <HR />,
-    children: [
-      {
-        index: true,
-        element: <Applications/>,
-      },
-    ],
-  },
-  {
-    path: "/hr-attendance",
-    element: <HR />,
-    children: [
-      {
-        index: true,
-        element: <Attendance/>,
-      },
-    ],
-  },
-  {
-    path: "/hr-performance-report",
-    element: <HR />,
-    children: [
-      {
-        index: true,
-        element: <PerformanceReport/>,
-      },
-    ],
-  },
-  {
-    path: "/manager-dashboard",
+    path: "/manager",
     element: <Manager />,
     children: [
       {
         index: true,
-        element: <ManagerDashboard/>,
+        element: <ManagerDashboard />,
       },
-    ],
-  },
-  {
-    path: "/team-requests",
-    element: <Manager />,
-    children: [
       {
-        index: true,
-        element: <TeamRequests/>,
+        path: "performance-report",
+        element: <PerformanceReport />,
       },
-    ],
-  },
-  {
-    path: "/team-members",
-    element: <Manager />,
-    children: [
       {
-        index: true,
-        element: <TeamMembers/>,
+        path: "team-members",
+        element: <TeamMembers />,
       },
-    ],
-  },
-  {
-    path: "/manager-joblistings",
-    element: <Manager />,
-    children: [
       {
-        index: true,
-        element: <JobListings/>,
+        path: "team-requests",
+        element: <TeamRequests />,
       },
-    ],
-  },
-  {
-    path: "/employee-joblistings",
-    element: <Employee />,
-    children: [
       {
-        index: true,
-        element: <JobListings/>,
+        path: "payslips",
+        element: <Payslips />,
+      },
+      {
+        path: "attendance",
+        element: <Attendance />,
+      },
+      {
+        path: "announcements",
+        element: <AnnouncementsEmployee />,
+      },
+      {
+        path: "job-listings",
+        element: <JobListingsEmployee />,
+      },
+      {
+        path: "policies",
+        element: <PoliciesEmployee />,
+      },
+      {
+        path: "profile",
+        element: <EmployeeProfile />,
       },
     ],
   },

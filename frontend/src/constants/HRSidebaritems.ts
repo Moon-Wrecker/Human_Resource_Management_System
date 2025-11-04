@@ -13,42 +13,42 @@ const HRSidebarItems = {
   navMain: [
     {
       name: "Dashboard",
-      url: "/hr-dashboard",
+      url: "/hr",
       icon: LayoutDashboard,
     },
     {
       name: "Job Listings",
-      url: "/hrjoblistings",
+      url: "/hr/joblistings",
       icon: Briefcase,
     },
     {
       name: "Employee List",
-      url: "/employees-list",
+      url: "employees-list",
       icon: Users,
     },
     {
       name: "Policies",
-      url: "/hr-policies",
+      url: "/hr/policies",
       icon: BookOpen,
     },
     {
       name: "Resume Screener",
-      url: "/resume-screener",
+      url: "hr/resume-screener",
       icon: Scan,
     },
     {
       name: "Announcements",
-      url: "/hr-announcements",
+      url: "/hr/announcements",
       icon: Megaphone,
     },
     {
       name: "Payslips",
-      url: "/hr-payslips",
+      url: "/hr/payslips",
       icon: FileText,
     },
     {
       name: "Attendance",
-      url: "/hr-attendance",
+      url: "/hr/attendance",
       icon: CalendarCheck,
     }
   ],

@@ -153,7 +153,7 @@ const TeamRequests = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col items-center px-4 pt-12">
+    <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-12">
       <h1 className="text-2xl font-bold mb-10">Team Requests</h1>
       <div className="flex gap-4 items-center mb-8 w-full max-w-4xl">
         <input

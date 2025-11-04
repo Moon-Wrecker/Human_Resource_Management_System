@@ -13,7 +13,7 @@ import {
 const EmployeeSidebarItems = [
   {
     name: "Dashboard",
-    url: "/employee/dashboard",
+    url: "/employee",
     icon: LayoutDashboard,
   },
   {

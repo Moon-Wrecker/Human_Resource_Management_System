@@ -64,7 +64,7 @@ const activeApplications = [
 ];
 
 const HRDashboard = () => (
-  <div className="min-h-screen bg-[#fafafa] p-0 m-0">
+  <div className="min-h-screen bg-white p-0 m-0">
     {/* Main content grid */}
     <div className="px-12 py-8">
       <h1 className="text-2xl font-bold text-center mb-6">HR Manager Dashboard</h1>
@@ -145,7 +145,7 @@ const HRDashboard = () => (
               ))}
             </TableBody>
           </Table>
-          <a href="/applications" className="text-blue-600 text-sm mt-2 block w-full text-right">View all applications &gt;</a>
+          <a href="hr/applications" className="text-blue-600 text-sm mt-2 block w-full text-right">View all applications &gt;</a>
         </div>
       </div>
     </div>

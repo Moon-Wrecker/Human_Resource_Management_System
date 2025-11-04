@@ -172,7 +172,7 @@ const TeamMembers = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col items-center px-4 pt-12">
+    <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-12">
       <h1 className="text-2xl font-bold mb-6">Team Members</h1>
       <div className="flex justify-center mb-8 w-full">
         <input
