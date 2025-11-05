@@ -17,7 +17,7 @@ export default function PerformanceReport() {
   return (
     <div className="w-full px-4 flex items-center justify-center flex-col gap-6">
       <h2 className="text-3xl font-semibold text-center mt-8">
-        Peformance Report
+        Performance Report
       </h2>
       <Select onValueChange={(e) => setTimePeriod(e)} value={timePeriod}>
         <SelectTrigger className="w-[20%]">
@@ -31,7 +31,7 @@ export default function PerformanceReport() {
         </SelectContent>
       </Select>
       <h3 className="text-xl font-semibold text-center">
-        Peformance Report for {timePeriod}
+        Performance Report for {timePeriod}
       </h3>
       <div className="grid grid-cols-3 gap-4 w-[80%] grid-rows-4">
         <Card className="w-full text-center">
@@ -40,7 +40,7 @@ export default function PerformanceReport() {
         </Card>
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">
-            Peformance Score
+            Performance Score
           </CardHeader>
           <CardContent className="text-lg font-semibold">4.3</CardContent>
         </Card>
@@ -65,7 +65,7 @@ export default function PerformanceReport() {
           <CardHeader className="text-xl font-bold">Latest Feedback</CardHeader>
           <CardContent className="text-md">
             <span>Good Work completing the milestone</span>
-            <a href="/employee/peformance-report/feedbacks" className="mt-1">
+            <a href="/employee/performance-report/feedbacks" className="mt-1">
               <Button variant="link" className="cursor-pointer">
                 View Previous feedbacks <ArrowRight />
               </Button>

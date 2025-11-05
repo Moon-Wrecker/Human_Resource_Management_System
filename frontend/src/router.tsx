@@ -7,7 +7,9 @@ const Login = lazy(() => import("@/pages/Login"));
 const Employee = lazy(() => import("@/layouts/Employee"));
 const HR = lazy(() => import("@/layouts/HR"));
 const Manager = lazy(() => import("@/layouts/Manager"));
-const EmployeeDashboard = lazy(() => import("@/pages/Employee/EmployeeDashboard"));
+const EmployeeDashboard = lazy(
+  () => import("@/pages/Employee/EmployeeDashboard"),
+);
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
 const JobListingsEmployee = lazy(() => import("@/pages/Employee/JobListings"));
 const AddJobForm = lazy(() => import("@/pages/HR/AddJobForm"));
@@ -21,7 +23,9 @@ const ResumeScreenerResults = lazy(
   () => import("@/pages/HR/ResumeScreenerResults"),
 );
 const Announcements = lazy(() => import("@/pages/HR/Announcements"));
-const AnnouncementsEmployee = lazy(() => import("@/pages/Common/Announcements"));
+const AnnouncementsEmployee = lazy(
+  () => import("@/pages/Common/Announcements"),
+);
 const Payslips = lazy(() => import("@/pages/Common/Payslips"));
 const Applications = lazy(() => import("@/pages/HR/Applications"));
 const Attendance = lazy(() => import("@/pages/Common/Attendance"));
@@ -43,6 +47,7 @@ const EmployeeProfile = lazy(() => import("@/pages/Employee/Profile"));
 const SkillVisit = lazy(
   () => import("@/pages/Employee/SkillDevelopmentDetail"),
 );
+const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackReport"));
 
 const router = createBrowserRouter([
   {
@@ -67,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "performance-report",
         element: <EmployeePerformanceReport />,
+      },
+      {
+        path: "performance-report/feedbacks",
+        element: <FeedbackReport />,
       },
       {
         path: "payslips",
@@ -135,8 +144,8 @@ const router = createBrowserRouter([
           {
             path: "add-new-employee",
             element: <AddEmployeeForm />,
-          }
-        ]
+          },
+        ],
       },
       {
         path: "policies",
@@ -148,8 +157,7 @@ const router = createBrowserRouter([
       },
       {
         path: "resume-screener/results",
-        element: <ResumeScreenerResults />
-
+        element: <ResumeScreenerResults />,
       },
       {
         path: "announcements",
@@ -222,3 +230,4 @@ const router = createBrowserRouter([
 ]);
 
 export default router;
+
