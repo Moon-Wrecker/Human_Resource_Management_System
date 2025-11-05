@@ -2,11 +2,13 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 
+
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
 const Employee = lazy(() => import("@/layouts/Employee"));
 const HR = lazy(() => import("@/layouts/HR"));
 const Manager = lazy(() => import("@/layouts/Manager"));
+const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackPage"));
 const EmployeeDashboard = lazy(() => import("@/pages/Employee/EmployeeDashboard"));
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
 const JobListingsEmployee = lazy(() => import("@/pages/Employee/JobListings"));
@@ -105,6 +107,10 @@ const router = createBrowserRouter([
         path: "profile",
         element: <EmployeeProfile />,
       },
+      {
+        path: "feedback-report",
+        element: <FeedbackReport />,
+      },
     ],
   },
   {
@@ -118,22 +124,18 @@ const router = createBrowserRouter([
       {
         path: "joblistings",
         element: <HRJobListings />,
-        children: [
-          {
-            path: "add-new-job",
+      },
+      {
+        path: "add-new-job",
             element: <AddJobForm />,
-          },
-        ],
       },
       {
         path: "employees-list",
         element: <EmployeesList />,
-        children: [
-          {
-            path: "add-new-employee",
-            element: <AddEmployeeForm />,
-          }
-        ]
+      },
+      {
+          path: "add-new-employee",
+          element: <AddEmployeeForm />,
       },
       {
         path: "policies",
@@ -146,7 +148,6 @@ const router = createBrowserRouter([
       {
         path: "resume-screener/results",
         element: <ResumeScreenerResults />
-          
       },
       {
         path: "announcements",

@@ -253,7 +253,21 @@ export default function JobListingsTable() {
                 className="w-full text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-neutral-700 rounded-md p-2 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-gray-900 file:text-white hover:file:bg-gray-800 cursor-pointer"
               />
             </div>
-            
+            <div className="mb-6">
+              <label
+                htmlFor="resume-upload"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+              >
+                Employee
+              </label>
+              <input
+                id="refer-team-mate"
+                type="text"
+                placeholder="Enter team mate"
+                className="w-full text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-neutral-700 rounded-md p-2 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-gray-900 file:text-white hover:file:bg-gray-800 cursor-pointer"
+              />
+            </div>
+
             {/* Footer Actions */}
             <div className="flex justify-end gap-1">
               <Button
@@ -263,7 +277,7 @@ export default function JobListingsTable() {
               >
                 Cancel
               </Button>
-              <Button onClick={() => handleJobApply()}>Apply</Button>
+              <Button onClick={() => handleJobApply()}>Refer</Button>
             </div>
           </div>
         </div>

@@ -1,249 +1,271 @@
 "use client";
 
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+  CardDescription,
+} from "@/components/ui/card";
+import { ArrowRight, CalendarDays } from "lucide-react";
 
-// Announcement type
-type AnnouncementLink = { text: string; url: string };
-type AnnouncementData = {
-  id: number;
-  title: string;
-  desc: string;
-  links: AnnouncementLink[];
-};
+const initialAnnouncements = [
+  {
+    id: 1,
+    title: "Office Closed for Diwali",
+    message: "All branches will remain closed from November 14–16 for Diwali celebrations. Wishing everyone a joyous festival!",
+    date: "2025-11-02",
+    link: "https://intranet.company.com/holiday-calendar",
+  },
+  {
+    id: 2,
+    title: "Performance Review Cycle Begins",
+    message: "Q3 performance reviews are now open. Please submit your self-assessment by November 10.",
+    date: "2025-11-01",
+    link: "https://hr.company.com/performance-review",
+  },
+  {
+    id: 3,
+    title: "New Expense Policy Update",
+    message: "The revised travel and meal reimbursement policy is effective from November 5. Review the changes carefully.",
+    date: "2025-10-30",
+    link: "https://intranet.company.com/policies/expense-policy",
+  },
+  {
+    id: 4,
+    title: "Wellness Webinar",
+    message: "Join our live wellness webinar on stress management hosted by Dr. Meera Patel on November 6 at 4 PM.",
+    date: "2025-10-29",
+    link: "https://events.company.com/wellness-webinar",
+  },
+  {
+    id: 5,
+    title: "System Downtime Notice",
+    message: "The HRMS portal will be unavailable for scheduled maintenance on November 4 between 1 AM and 3 AM.",
+    date: "2025-10-28",
+    link: "https://status.company.com/hrms",
+  },
+  {
+    id: 6,
+    title: "New Employee Portal Features",
+    message: "Explore new features added to the employee portal, including document uploads and leave tracking.",
+    date: "2025-10-26",
+    link: "https://intranet.company.com/employee-portal",
+  },
+];
 
-// Dialog Props type
-interface AddAnnouncementDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onSave: (data: { title: string; desc: string; links: AnnouncementLink[] }) => void;
-}
-
-// Add Announcement Dialog Component
 const AddAnnouncementDialog = ({
   open,
   onClose,
   onSave,
-}: AddAnnouncementDialogProps) => {
-  const [title, setTitle] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-  const [links, setLinks] = useState<AnnouncementLink[]>([]);
-  const [addingLink, setAddingLink] = useState<boolean>(false);
-  const [newLinkText, setNewLinkText] = useState<string>("");
-  const [newLinkUrl, setNewLinkUrl] = useState<string>("");
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSave: (obj: any) => void;
+}) => {
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const [links, setLinks] = useState<string[]>([]);
+  const [linkInput, setLinkInput] = useState("");
 
-  if (!open) return null;
+  function addLink() {
+    if (linkInput.trim()) {
+      setLinks((prev) => [...prev, linkInput.trim()]);
+      setLinkInput("");
+    }
+  }
+  function removeLink(i: number) {
+    setLinks((prev) => prev.filter((_, idx) => idx !== i));
+  }
+  function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    if (!title.trim() || !desc.trim()) return;
+    onSave({
+      id: Date.now(),
+      title: title.trim(),
+      message: desc.trim(),
+      date: new Date().toISOString(),
+      link: links[0] ?? "",
+    });
+    onClose();
+    setTitle("");
+    setDesc("");
+    setLinks([]);
+    setLinkInput("");
+  }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
-      <div className="bg-[#e9e9ea] rounded-2xl w-[500px] shadow-xl relative p-2">
-        <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b">
-          <span className="font-medium text-lg">Add Announcement</span>
-          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center text-xl hover:bg-gray-300 rounded-full">
-            ×
-          </button>
-        </div>
-        <form
-          className="p-6 flex flex-col gap-6"
-          onSubmit={e => {
-            e.preventDefault();
-            onSave({ title, desc, links });
-            setTitle(""); setDesc(""); setLinks([]);
-          }}
-        >
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-xl bg-[#e9e9ea] rounded-2xl p-2">
+        <DialogHeader>
+          <DialogTitle>Add Announcement</DialogTitle>
+        </DialogHeader>
+        <form className="flex flex-col p-4 gap-5" onSubmit={handleSave}>
           <div>
-            <label className="block font-medium mb-2">Title:</label>
-            <input
-              type="text"
-              className="w-full rounded bg-white border px-4 py-2"
-              placeholder="Announce something..."
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              required
-            />
+            <label className="font-bold underline block mb-1">
+              Title:
+              <input
+                type="text"
+                placeholder="Announce something..."
+                className="w-full px-2 py-1 rounded border ml-2 font-normal"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </label>
           </div>
           <div>
-            <label className="block font-medium mb-2">Description:</label>
-            <textarea
-              className="w-full rounded bg-white border px-4 py-2 resize-none"
-              rows={3}
-              placeholder="Add Announcement Description..."
-              value={desc}
-              onChange={e => setDesc(e.target.value)}
-              required
-            />
+            <label className="font-bold underline block mb-1">
+              Description:
+              <textarea
+                placeholder="Add Announcement Description..."
+                className="w-full rounded border p-2 mt-1 font-normal"
+                rows={3}
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+                required
+              />
+            </label>
           </div>
           <div>
-            <label className="block font-medium underline mb-2">
+            <label className="font-bold underline block mb-1">
               Links (optional):
             </label>
+            <div className="flex items-center gap-2 mb-2">
+              <input
+                type="url"
+                placeholder="https://... (optional)"
+                value={linkInput}
+                className="border rounded px-2 py-1 flex-1"
+                onChange={(e) => setLinkInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addLink();
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addLink}
+              >
+                + Add link
+              </Button>
+            </div>
             {links.length > 0 && (
-              <ul className="mb-2">
-                {links.map((l, idx) => (
-                  <li key={idx} className="flex items-center gap-2 text-sm">
-                    <a href={l.url} className="underline text-blue-600" target="_blank" rel="noopener noreferrer">
-                      {l.text || l.url}
-                    </a>
-                    <button
+              <ul className="pl-2 mt-2 space-y-1">
+                {links.map((link, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm">
+                    <span className="truncate">{link}</span>
+                    <Button
                       type="button"
-                      onClick={() => setLinks(links.filter((_, i) => i !== idx))}
-                      className="ml-1 text-gray-500 hover:text-red-600 px-1"
+                      size="icon"
+                      onClick={() => removeLink(i)}
+                      className="h-6 w-6 p-0"
                     >
-                      ×
-                    </button>
+                      &times;
+                    </Button>
                   </li>
                 ))}
               </ul>
             )}
-            {addingLink ? (
-              <div className="flex gap-2 items-center mb-2">
-                <input
-                  type="text"
-                  className="border rounded px-2 py-1 w-24"
-                  placeholder="Text"
-                  value={newLinkText}
-                  onChange={e => setNewLinkText(e.target.value)}
-                />
-                <input
-                  type="url"
-                  className="border rounded px-2 py-1"
-                  placeholder="https://example.com"
-                  value={newLinkUrl}
-                  onChange={e => setNewLinkUrl(e.target.value)}
-                />
-                <button
-                  type="button"
-                  className="text-sm bg-blue-100 px-2 rounded hover:bg-blue-200"
-                  onClick={() => {
-                    if (newLinkUrl) {
-                      setLinks([...links, { text: newLinkText, url: newLinkUrl }]);
-                      setNewLinkText("");
-                      setNewLinkUrl("");
-                      setAddingLink(false);
-                    }
-                  }}
-                >
-                  Add
-                </button>
-                <button
-                  type="button"
-                  className="text-gray-400 hover:text-gray-600 ml-2"
-                  onClick={() => {
-                    setAddingLink(false);
-                    setNewLinkText("");
-                    setNewLinkUrl("");
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                className="text-sm underline hover:text-blue-600"
-                onClick={() => setAddingLink(true)}
-              >
-                + Add link
-              </button>
-            )}
           </div>
           <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-gray-300 px-7 py-2 rounded font-semibold hover:bg-gray-400 transition flex items-center gap-1"
-            >
-              Save <span className="ml-1">&rarr;</span>
-            </button>
+            <DialogClose asChild>
+              <Button
+                type="submit"
+                className="px-6 py-2 font-semibold"
+                disabled={!title.trim() || !desc.trim()}
+              >
+                Save &rarr;
+              </Button>
+            </DialogClose>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-const initialAnnouncements: AnnouncementData[] = [
-  {
-    id: 1,
-    title: "Quarterly Town Hall Scheduled",
-    desc: "Our next company-wide town hall will be on 24th Nov. All team leads, please prepare your quarterly summaries for presentation.",
-    links: [{ text: "Meeting details", url: "#" }]
-  },
-  {
-    id: 2,
-    title: "New HR Policy Update",
-    desc: "Please review the updated HR leave policies. These come into effect from Dec 1. Contact HR for clarifications.",
-    links: [{ text: "View Policy", url: "/hr-policies" }]
-  },
-  {
-    id: 3,
-    title: "Monthly Upskilling Webinar Series",
-    desc: "We’re starting monthly webinars on advanced React.js topics. Everyone is welcome!",
-    links: [
-      { text: "Schedule", url: "#" },
-      { text: "Register", url: "#" }
-    ]
-  },
-  {
-    id: 4,
-    title: "Office Closed for Holiday",
-    desc: "Our office will be closed on 12th Nov for Diwali. We wish everyone a happy and safe festival!",
-    links: []
-  }
-];
+const Announcements = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [announcements, setAnnouncements] = useState(initialAnnouncements);
 
-const AnnouncementsContent = () => {
-  const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [announcements, setAnnouncements] = useState<AnnouncementData[]>(initialAnnouncements);
+  function handleSave(announcement: any) {
+    setAnnouncements((prev) => [announcement, ...prev]);
+  }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-12">
-      <AddAnnouncementDialog
-        open={showDialog}
-        onClose={() => setShowDialog(false)}
-        onSave={data => {
-          setAnnouncements([
-            ...announcements,
-            { id: Date.now(), ...data }
-          ]);
-          setShowDialog(false);
-        }}
-      />
-      <div className="flex w-full max-w-4xl items-center justify-between mb-10">
-        <h1 className="text-2xl font-bold">Announcements</h1>
-        <button
-          onClick={() => setShowDialog(true)}
-          className="font-medium underline text-base hover:opacity-80 transition"
-        >
+    <>
+      <div className="flex items-center justify-between px-8 mt-10">
+        <h2 className="text-3xl font-semibold">Announcements</h2>
+        <Button onClick={() => setDialogOpen(true)} variant="ghost">
           Create New &rarr;
-        </button>
+        </Button>
       </div>
-      <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-8">
-        {announcements.map((a) => (
-          <div
-            key={a.id}
-            className="w-full min-h-[150px] bg-white shadow border rounded-lg p-5 flex flex-col"
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 my-8 px-4 gap-4">
+        {announcements.map((announcement) => (
+          <Card
+            className="w-full shadow-md rounded-2xl border border-gray-200"
+            key={announcement.id}
           >
-            <div className="font-bold text-lg mb-2">{a.title}</div>
-            <div className="text-gray-700 mb-3 whitespace-pre-line">{a.desc}</div>
-            {a.links && a.links.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-auto">
-                {a.links.map(link => (
-                  <a
-                    key={link.url}
-                    href={link.url}
-                    className="underline text-blue-600 hover:text-blue-800 font-medium text-sm"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {link.text} &rarr;
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                {announcement.title}
+              </CardTitle>
+              <CardDescription className="flex items-center text-sm text-gray-500 mt-1">
+                <CalendarDays className="w-4 h-4 mr-1" />
+                {new Date(announcement.date).toLocaleDateString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                {announcement.message}
+              </p>
+            </CardContent>
+            <CardFooter className="flex justify-end">
+              <Button
+                asChild
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <a
+                  href={announcement.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Details
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </Button>
+            </CardFooter>
+          </Card>
         ))}
       </div>
-    </div>
+      <AddAnnouncementDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSave={handleSave}
+      />
+    </>
   );
 };
 
-export default AnnouncementsContent;
+export default Announcements;
