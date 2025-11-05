@@ -45,3 +45,8 @@ Any other queries can be asked to the frontend team.
 <img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/f9b10e65-9fff-4580-9e52-2a029eb5bfb2" />
 <img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/27a96426-1b20-45db-87ac-a65cddfe3178" />
 <img width="1792" height="1055" alt="image" src="https://github.com/user-attachments/assets/47e3d938-91b6-4f4f-bad3-ed7e9395b888" />
+<img width="3408" height="2156" alt="image" src="https://github.com/user-attachments/assets/4167d62c-c59d-4eeb-afdf-188d28947f51" />
+<img width="3360" height="2100" alt="image" src="https://github.com/user-attachments/assets/0a1504da-267f-484e-9c58-ac9041ce2982" />
+<img width="3360" height="2100" alt="image" src="https://github.com/user-attachments/assets/b6fa88a6-032e-4d5b-8962-69bf584ef653" />
+<img width="3360" height="2100" alt="image" src="https://github.com/user-attachments/assets/e3856934-1411-4e0b-bf55-30dd55d77976" />
+<img width="1680" height="1050" alt="image" src="https://github.com/user-attachments/assets/ca0baaad-4877-424b-8297-ddb7fe374adf" />
