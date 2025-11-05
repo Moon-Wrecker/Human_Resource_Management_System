@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { Book } from "lucide-react";
-import HRSidebarItems from "@/constants/HRSidebaritems";
 
+import { NavItems } from "@/components/nav-projects";
 import {
   Sidebar,
   SidebarContent,
@@ -15,9 +15,10 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { NavItems } from "./nav-projects";
 
-export function HRSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+import ManagerSidebarItems from "@/constants/ManagerSidebarItems";
+
+export function ManagerSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -37,7 +38,7 @@ export function HRSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <hr />
       <SidebarContent>
-        <NavItems items={HRSidebarItems.navMain} />
+        <NavItems items={ManagerSidebarItems} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenuButton size="lg" className="px-0 pl-0">

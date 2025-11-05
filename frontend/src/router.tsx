@@ -28,6 +28,9 @@ const Attendance = lazy(() => import("@/pages/Common/Attendance"));
 const PerformanceReport = lazy(
   () => import("@/pages/Common/PerformanceReport"),
 );
+const EmployeePerformanceReport = lazy(
+  () => import("@/pages/Employee/PerformanceReport"),
+);
 const PoliciesEmployee = lazy(() => import("@/pages/Common/Policies"));
 const GoalTrackerEmployee = lazy(() => import("@/pages/Employee/GoalTracker"));
 const VisitPage = lazy(() => import("@/pages/Employee/GoalTrackerDetail"));
@@ -63,7 +66,7 @@ const router = createBrowserRouter([
       },
       {
         path: "performance-report",
-        element: <PerformanceReport />,
+        element: <EmployeePerformanceReport />,
       },
       {
         path: "payslips",

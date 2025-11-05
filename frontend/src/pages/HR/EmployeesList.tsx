@@ -95,7 +95,7 @@ const handleViewStart = (emp: Employee) => {
 };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col items-center py-8">
+    <div className="min-h-screen bg-white flex flex-col items-center py-8">
       <h1 className="text-2xl font-bold mb-8">Employee List</h1>
       <div className="flex gap-8 mb-8">
         <div className="bg-gray-200 flex items-center rounded w-80 px-4 py-2">
@@ -158,7 +158,7 @@ const handleViewStart = (emp: Employee) => {
                   >
                     Edit
                   </button>
-                  <a href="#" className="underline">
+                  <a href="performance-report" className="underline">
                     Performance
                   </a>
                 </TableCell>
