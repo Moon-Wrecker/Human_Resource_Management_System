@@ -33,7 +33,7 @@ const HRSidebarItems = {
     },
     {
       name: "Resume Screener",
-      url: "hr/resume-screener",
+      url: "/hr/resume-screener",
       icon: Scan,
     },
     {
@@ -50,9 +50,9 @@ const HRSidebarItems = {
       name: "Attendance",
       url: "/hr/attendance",
       icon: CalendarCheck,
-    }
+    },
   ],
 };
 
-
 export default HRSidebarItems;
+

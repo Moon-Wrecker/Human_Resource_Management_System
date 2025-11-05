@@ -2,14 +2,14 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 
-
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
 const Employee = lazy(() => import("@/layouts/Employee"));
 const HR = lazy(() => import("@/layouts/HR"));
 const Manager = lazy(() => import("@/layouts/Manager"));
-const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackPage"));
-const EmployeeDashboard = lazy(() => import("@/pages/Employee/EmployeeDashboard"));
+const EmployeeDashboard = lazy(
+  () => import("@/pages/Employee/EmployeeDashboard"),
+);
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
 const JobListingsEmployee = lazy(() => import("@/pages/Employee/JobListings"));
 const AddJobForm = lazy(() => import("@/pages/HR/AddJobForm"));
@@ -23,12 +23,17 @@ const ResumeScreenerResults = lazy(
   () => import("@/pages/HR/ResumeScreenerResults"),
 );
 const Announcements = lazy(() => import("@/pages/HR/Announcements"));
-const AnnouncementsEmployee = lazy(() => import("@/pages/Common/Announcements"));
+const AnnouncementsEmployee = lazy(
+  () => import("@/pages/Common/Announcements"),
+);
 const Payslips = lazy(() => import("@/pages/Common/Payslips"));
 const Applications = lazy(() => import("@/pages/HR/Applications"));
 const Attendance = lazy(() => import("@/pages/Common/Attendance"));
 const PerformanceReport = lazy(
   () => import("@/pages/Common/PerformanceReport"),
+);
+const EmployeePerformanceReport = lazy(
+  () => import("@/pages/Employee/PerformanceReport"),
 );
 const PoliciesEmployee = lazy(() => import("@/pages/Common/Policies"));
 const GoalTrackerEmployee = lazy(() => import("@/pages/Employee/GoalTracker"));
@@ -42,7 +47,8 @@ const EmployeeProfile = lazy(() => import("@/pages/Employee/Profile"));
 const SkillVisit = lazy(
   () => import("@/pages/Employee/SkillDevelopmentDetail"),
 );
- 
+const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackReport"));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -65,7 +71,11 @@ const router = createBrowserRouter([
       },
       {
         path: "performance-report",
-        element: <PerformanceReport />,
+        element: <EmployeePerformanceReport />,
+      },
+      {
+        path: "performance-report/feedbacks",
+        element: <FeedbackReport />,
       },
       {
         path: "payslips",
@@ -107,10 +117,6 @@ const router = createBrowserRouter([
         path: "profile",
         element: <EmployeeProfile />,
       },
-      {
-        path: "feedback-report",
-        element: <FeedbackReport />,
-      },
     ],
   },
   {
@@ -124,18 +130,22 @@ const router = createBrowserRouter([
       {
         path: "joblistings",
         element: <HRJobListings />,
-      },
-      {
-        path: "add-new-job",
+        children: [
+          {
+            path: "add-new-job",
             element: <AddJobForm />,
+          },
+        ],
       },
       {
         path: "employees-list",
         element: <EmployeesList />,
-      },
-      {
-          path: "add-new-employee",
-          element: <AddEmployeeForm />,
+        children: [
+          {
+            path: "add-new-employee",
+            element: <AddEmployeeForm />,
+          },
+        ],
       },
       {
         path: "policies",
@@ -147,7 +157,7 @@ const router = createBrowserRouter([
       },
       {
         path: "resume-screener/results",
-        element: <ResumeScreenerResults />
+        element: <ResumeScreenerResults />,
       },
       {
         path: "announcements",
