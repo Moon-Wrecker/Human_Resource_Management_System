@@ -32,4 +32,8 @@ OR using yarn
 ``` yarn dev ```
 
 4. **Open the app**
-- Visit [http://localhost:3000](http://localhost:3000) (or the port stated in terminal) in your web browser.
+- Visit [http://localhost:5173](http://localhost:5173) (or the port stated in terminal) in your web browser.
+
+- [http://localhost:5173/employee](http://localhost:5173/employee)
+- [http://localhost:5173/hr](http://localhost:5173/hr)
+- [http://localhost:5173/manager](http://localhost:5173/manager)
