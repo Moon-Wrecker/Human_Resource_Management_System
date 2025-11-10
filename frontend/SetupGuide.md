@@ -33,7 +33,7 @@ OR using yarn
 
 4. **Open the app**
 - Visit [http://localhost:5173](http://localhost:5173) (or the port stated in terminal) in your web browser.
-
-- [http://localhost:5173/employee](http://localhost:5173/employee)
-- [http://localhost:5173/hr](http://localhost:5173/hr)
-- [http://localhost:5173/manager](http://localhost:5173/manager)
+- Root routes for each role:
+    - [http://localhost:5173/employee](http://localhost:5173/employee)
+    - [http://localhost:5173/hr](http://localhost:5173/hr)
+    - [http://localhost:5173/manager](http://localhost:5173/manager)
