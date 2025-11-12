@@ -4,7 +4,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 import enum
 
-Base = declarative_base()
+# Import Base from database.py for consistency
+try:
+    from database import Base
+except ImportError:
+    # Fallback if database.py not available
+    Base = declarative_base()
 
 # Enums for consistent data
 class UserRole(enum.Enum):
@@ -44,6 +49,52 @@ class GoalStatus(enum.Enum):
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
 
+class RequestType(enum.Enum):
+    WFH = "wfh"
+    LEAVE = "leave"
+    EQUIPMENT = "equipment"
+    TRAVEL = "travel"
+    OTHER = "other"
+
+class ModuleStatus(enum.Enum):
+    NOT_STARTED = "not_started"
+    PENDING = "pending"
+    COMPLETED = "completed"
+
+# Department Model (for HR Dashboard department-wise data)
+class Department(Base):
+    __tablename__ = 'departments'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=True, nullable=False)
+    code = Column(String(20), unique=True)
+    description = Column(Text)
+    head_id = Column(Integer, ForeignKey('users.id'))
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    head = relationship("User", foreign_keys=[head_id], back_populates="headed_department")
+    employees = relationship("User", foreign_keys="User.department_id", back_populates="department_obj")
+    teams = relationship("Team", back_populates="department")
+
+# Team Model (for Manager Dashboard team overview)
+class Team(Base):
+    __tablename__ = 'teams'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    department_id = Column(Integer, ForeignKey('departments.id'))
+    manager_id = Column(Integer, ForeignKey('users.id'))
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    department = relationship("Department", back_populates="teams")
+    manager = relationship("User", foreign_keys=[manager_id], back_populates="managed_team")
+    members = relationship("User", foreign_keys="User.team_id", back_populates="team_obj")
+
 # Core User/Employee Model
 class User(Base):
     __tablename__ = 'users'
@@ -57,12 +108,20 @@ class User(Base):
     
     # Employee details
     employee_id = Column(String(20), unique=True)
-    department = Column(String(50))
+    department_id = Column(Integer, ForeignKey('departments.id'))
     job_role = Column(String(100))
-    team_name = Column(String(100))
+    job_level = Column(String(50))  # e.g., "Junior", "Mid-level", "Senior", "Lead", "Principal"
+    hierarchy_level = Column(Integer, default=5)  # 1=Top (CEO), 2=VP/Director, 3=Manager, 4=Lead, 5=Senior, 6=Mid, 7=Junior
+    team_id = Column(Integer, ForeignKey('teams.id'))
     manager_id = Column(Integer, ForeignKey('users.id'))
     hire_date = Column(Date)
     salary = Column(Float)
+    
+    # Leave balances (shown in frontend dashboards)
+    casual_leave_balance = Column(Integer, default=12)
+    sick_leave_balance = Column(Integer, default=12)
+    annual_leave_balance = Column(Integer, default=15)
+    wfh_balance = Column(Integer, default=24)
     
     # Document paths
     aadhar_document_path = Column(String(255))
@@ -75,14 +134,28 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     
     # Relationships
-    manager = relationship("User", remote_side=[id])
-    team_members = relationship("User", back_populates="manager")
-    applications = relationship("Application", back_populates="applicant")
+    manager = relationship("User", remote_side=[id], foreign_keys=[manager_id])
+    team_members = relationship("User", back_populates="manager", foreign_keys="User.manager_id")
+    
+    # Organization relationships
+    department_obj = relationship("Department", foreign_keys=[department_id], back_populates="employees")
+    team_obj = relationship("Team", foreign_keys=[team_id], back_populates="members")
+    headed_department = relationship("Department", foreign_keys="Department.head_id", back_populates="head", uselist=False)
+    managed_team = relationship("Team", foreign_keys="Team.manager_id", back_populates="manager", uselist=False)
+    
+    # Activity relationships
+    applications = relationship("Application", foreign_keys="Application.applicant_id", back_populates="applicant")
+    referred_applications = relationship("Application", foreign_keys="Application.referred_by", back_populates="referrer")
     attendance_records = relationship("Attendance", back_populates="employee")
-    leave_requests = relationship("LeaveRequest", back_populates="employee")
+    leave_requests = relationship("LeaveRequest", foreign_keys="LeaveRequest.employee_id", back_populates="employee")
+    requests = relationship("Request", foreign_keys="Request.employee_id", back_populates="employee")
     payslips = relationship("Payslip", back_populates="employee")
-    goals = relationship("Goal", back_populates="employee")
+    goals = relationship("Goal", foreign_keys="Goal.employee_id", back_populates="employee")
     skill_developments = relationship("SkillDevelopment", back_populates="employee")
+    skill_enrollments = relationship("SkillModuleEnrollment", back_populates="employee")
+    feedback_received = relationship("Feedback", foreign_keys="Feedback.employee_id", back_populates="employee")
+    feedback_given = relationship("Feedback", foreign_keys="Feedback.given_by", back_populates="given_by_user")
+    notifications = relationship("Notification", back_populates="user")
 
 # Job Listings Model
 class JobListing(Base):
@@ -90,7 +163,7 @@ class JobListing(Base):
     
     id = Column(Integer, primary_key=True)
     position = Column(String(100), nullable=False)
-    department = Column(String(50), nullable=False)
+    department_id = Column(Integer, ForeignKey('departments.id'))
     experience_required = Column(String(50))
     skills_required = Column(Text)
     description = Column(Text)
@@ -110,6 +183,7 @@ class JobListing(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
+    department = relationship("Department")
     posted_by_user = relationship("User")
     applications = relationship("Application", back_populates="job")
 
@@ -128,6 +202,7 @@ class Application(Base):
     resume_path = Column(String(255))
     cover_letter = Column(Text)
     source = Column(String(50))  # referral, self-applied, recruitment
+    referred_by = Column(Integer, ForeignKey('users.id'))
     
     # Status and screening
     status = Column(Enum(ApplicationStatus), default=ApplicationStatus.PENDING)
@@ -140,7 +215,9 @@ class Application(Base):
     
     # Relationships
     job = relationship("JobListing", back_populates="applications")
-    applicant = relationship("User", back_populates="applications")
+    applicant = relationship("User", foreign_keys=[applicant_id], back_populates="applications")
+    referrer = relationship("User", foreign_keys=[referred_by], back_populates="referred_applications")
+    screening_result = relationship("ResumeScreeningResult", back_populates="application", uselist=False)
 
 # Announcements Model
 class Announcement(Base):
@@ -219,7 +296,7 @@ class LeaveRequest(Base):
     requested_date = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
-    employee = relationship("User", back_populates="leave_requests")
+    employee = relationship("User", foreign_keys=[employee_id], back_populates="leave_requests")
     approver = relationship("User", foreign_keys=[approved_by])
 
 # Payslips Model
@@ -287,9 +364,9 @@ class Goal(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
-    employee = relationship("User", back_populates="goals")
+    employee = relationship("User", foreign_keys=[employee_id], back_populates="goals")
     assigned_by_user = relationship("User", foreign_keys=[assigned_by])
-    checkpoints = relationship("GoalCheckpoint", back_populates="goal")
+    checkpoints = relationship("GoalCheckpoint", back_populates="goal", cascade="all, delete-orphan")
 
 # Goal Checkpoints Model
 class GoalCheckpoint(Base):
@@ -405,7 +482,7 @@ class ResumeScreeningResult(Base):
     screened_date = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
-    application = relationship("Application")
+    application = relationship("Application", back_populates="screening_result")
 
 # Performance Reports Model (for dashboard analytics)
 class PerformanceReport(Base):
@@ -436,7 +513,7 @@ class PerformanceReport(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
-    employee = relationship("User")
+    employee = relationship("User", foreign_keys=[employee_id])
     created_by_user = relationship("User", foreign_keys=[created_by])
 
 # Database setup
@@ -473,3 +550,115 @@ if __name__ == "__main__":
     print("- PerformanceReport")
     
     session.close()
+
+# Holiday Model (for dashboard "Upcoming holidays")
+class Holiday(Base):
+    __tablename__ = 'holidays'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
+    is_mandatory = Column(Boolean, default=True)
+    holiday_type = Column(String(50))
+    is_active = Column(Boolean, default=True)
+    created_by = Column(Integer, ForeignKey('users.id'))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    created_by_user = relationship("User")
+
+# Request Model (for Manager's "Team requests" page)
+class Request(Base):
+    __tablename__ = 'requests'
+    
+    id = Column(Integer, primary_key=True)
+    employee_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    request_type = Column(Enum(RequestType), nullable=False)
+    subject = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    request_date = Column(Date)
+    status = Column(Enum(LeaveStatus), default=LeaveStatus.PENDING)
+    approved_by = Column(Integer, ForeignKey('users.id'))
+    approved_date = Column(DateTime)
+    rejection_reason = Column(Text)
+    submitted_date = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    employee = relationship("User", foreign_keys=[employee_id], back_populates="requests")
+    approver = relationship("User", foreign_keys=[approved_by])
+
+# Feedback Model (for FeedbackPage.tsx and FeedbackReport.tsx)
+class Feedback(Base):
+    __tablename__ = 'feedback'
+    
+    id = Column(Integer, primary_key=True)
+    employee_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    given_by = Column(Integer, ForeignKey('users.id'), nullable=False)
+    subject = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    feedback_type = Column(String(50))
+    rating = Column(Float)
+    given_on = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    employee = relationship("User", foreign_keys=[employee_id], back_populates="feedback_received")
+    given_by_user = relationship("User", foreign_keys=[given_by], back_populates="feedback_given")
+
+# Notification Model (for better UX)
+class Notification(Base):
+    __tablename__ = 'notifications'
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    title = Column(String(200), nullable=False)
+    message = Column(Text, nullable=False)
+    notification_type = Column(String(50))
+    resource_type = Column(String(50))
+    resource_id = Column(Integer)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    read_at = Column(DateTime)
+    
+    # Relationships
+    user = relationship("User", back_populates="notifications")
+
+# Skill Module Master (for detailed module tracking)
+class SkillModule(Base):
+    __tablename__ = 'skill_modules'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    category = Column(String(100))
+    module_link = Column(String(500))
+    duration_hours = Column(Float)
+    difficulty_level = Column(String(20))
+    skill_areas = Column(Text)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    enrollments = relationship("SkillModuleEnrollment", back_populates="module")
+
+# Skill Module Enrollment (for tracking individual module progress)
+class SkillModuleEnrollment(Base):
+    __tablename__ = 'skill_module_enrollments'
+    
+    id = Column(Integer, primary_key=True)
+    employee_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    module_id = Column(Integer, ForeignKey('skill_modules.id'), nullable=False)
+    status = Column(Enum(ModuleStatus), default=ModuleStatus.NOT_STARTED)
+    progress_percentage = Column(Float, default=0.0)
+    enrolled_date = Column(Date, default=datetime.utcnow)
+    started_date = Column(Date)
+    completed_date = Column(Date)
+    target_completion_date = Column(Date)
+    certificate_path = Column(String(255))
+    score = Column(Float)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    employee = relationship("User", back_populates="skill_enrollments")
+    module = relationship("SkillModule", back_populates="enrollments")
