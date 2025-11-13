@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
@@ -13,21 +14,8 @@ import {
   TableCaption,
 } from "@/components/ui/table";
 
-const attendanceData = [
-  { name: "HR", present: 80, absent: 20 },
-  { name: "Finance", present: 60, absent: 40 },
-  { name: "Sales", present: 50, absent: 50 },
-  { name: "Engg.", present: 90, absent: 10 },
-  { name: "Oper.", present: 65, absent: 35 },
-];
-
-const leaderboardData = [
-  { dept: "Dept 2", score: 15 },
-  { dept: "Dept 4", score: 14.5 },
-  { dept: "Dept 3", score: 14 },
-  { dept: "Dept 1", score: 13.8 },
-  { dept: "Dept 5", score: 13 },
-];
+import { dashboardService } from '@/services/dashboardService';
+import type { HRDashboardData } from '@/services/dashboardService';
 
 const attendanceChartConfig = {
   present: {
@@ -47,23 +35,64 @@ const leaderboardChartConfig = {
   }
 };
 
-const employeeData = [
-  { department: "Finance", count: 5 },
-  { department: "HR", count: 10 },
-  { department: "Engineering", count: 20 },
-  { department: "Operations", count: 10 },
-  { department: "Sales", count: 5 },
-  { department: "Department 7", count: 7 },
-];
+const HRDashboard = () => {
+  const [dashboardData, setDashboardData] = useState<HRDashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const activeApplications = [
-  { name: "Person 1", position: "SDE - III" },
-  { name: "Person 2", position: "Project Manager" },
-  { name: "Person 3", position: "SDE - III" },
-  { name: "Person 4", position: "SDE - II" },
-];
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const data = await dashboardService.getHRDashboard();
+        setDashboardData(data);
+      } catch (err: any) {
+        console.error('Failed to fetch HR dashboard data:', err);
+        setError(err.response?.data?.detail || 'Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const HRDashboard = () => (
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-xl font-semibold">Loading dashboard...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-xl font-semibold text-red-600">Error: {error}</div>
+      </div>
+    );
+  }
+
+  if (!dashboardData) {
+    return null;
+  }
+
+  // Transform data for charts
+  const attendanceData = dashboardData.department_attendance.map(dept => ({
+    name: dept.department_name.substring(0, 8), // Shorten for display
+    present: dept.present_percentage,
+    absent: dept.absent_percentage
+  }));
+
+  const leaderboardData = dashboardData.department_modules
+    .sort((a, b) => b.modules_completed - a.modules_completed)
+    .slice(0, 5)
+    .map(dept => ({
+      dept: dept.department_name,
+      score: dept.modules_completed
+    }));
+
+  return (
   <div className="min-h-screen bg-white p-0 m-0">
     {/* Main content grid */}
     <div className="px-12 py-8">
@@ -114,10 +143,10 @@ const HRDashboard = () => (
               </TableRow>
             </TableHeader>
             <TableBody>
-              {employeeData.map((row) => (
-                <TableRow key={row.department}>
-                  <TableCell>{row.department}</TableCell>
-                  <TableCell>{row.count}</TableCell>
+              {dashboardData.departments.map((row) => (
+                <TableRow key={row.department_id}>
+                  <TableCell>{row.department_name}</TableCell>
+                  <TableCell>{row.employee_count}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -134,13 +163,13 @@ const HRDashboard = () => (
               </TableRow>
             </TableHeader>
             <TableBody>
-              {activeApplications.map((app, idx) => (
-                <TableRow key={idx}>
+              {dashboardData.active_applications.map((app) => (
+                <TableRow key={app.application_id}>
                   <TableCell className="flex items-center gap-2">
                     <span className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-100 text-purple-700">👤</span> 
-                    {app.name}
+                    {app.applicant_name}
                   </TableCell>
-                  <TableCell>{app.position}</TableCell>
+                  <TableCell>{app.applied_role}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -150,6 +179,7 @@ const HRDashboard = () => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default HRDashboard;

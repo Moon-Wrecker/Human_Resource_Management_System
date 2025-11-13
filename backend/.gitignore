@@ -30,10 +30,10 @@ ENV/
 *.log
 
 # Database
-*.db
-*.sqlite
-*.sqlite3
-hr_system.db
+# *.db
+# *.sqlite
+# *.sqlite3
+# hr_system.db - Allow database file to be committed for project
 
 # Environment variables
 .env

@@ -7,7 +7,7 @@ import {
   CalendarNextTrigger,
   CalendarPrevTrigger,
   CalendarTodayTrigger,
-} from "@/components/fullCalendar";
+} from "@/components/FullCalendar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

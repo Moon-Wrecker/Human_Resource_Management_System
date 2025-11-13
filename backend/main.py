@@ -177,15 +177,15 @@ async def api_v1_root():
 
 # Import and include routers
 from routes.auth import router as auth_router
+from routes.dashboard import router as dashboard_router
 
 # Include routers
 app.include_router(auth_router, prefix="/api/v1")
+app.include_router(dashboard_router, prefix="/api/v1")
 
 # More routers will be added as we build them
 # from routes.users import router as users_router
-# from routes.dashboard import router as dashboard_router
 # app.include_router(users_router, prefix="/api/v1")
-# app.include_router(dashboard_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn
