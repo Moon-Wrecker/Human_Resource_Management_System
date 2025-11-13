@@ -14,7 +14,6 @@ astunparse==1.6.3
 async-lru==2.0.5
 attrs==23.2.0
 Babel==2.10.3
-bcc==0.29.1
 beautifulsoup4==4.14.2
 bleach==6.2.0
 blinker==1.7.0
@@ -274,3 +273,35 @@ xgboost==3.1.1
 xkit==0.0.0
 xxhash==3.6.0
 yarl==1.22.0
+# Core web framework
+fastapi==0.104.1
+uvicorn==0.24.0
+
+# Database
+# sqlalchemy==2.0.23  # Duplicate - using SQLAlchemy==2.0.44 from line 226
+alembic==1.12.1
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# File handling
+aiofiles==23.2.0
+
+# Data validation
+# pydantic==2.5.0  # Duplicate - using version 2.12.3 from line 185
+
+# CORS
+fastapi-cors==0.0.6
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Date/time utilities
+# python-dateutil==2.8.2  # Duplicate - already included on line 195
+
+# Testing (optional)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+# httpx==0.25.2  # Duplicate - using httpx==0.28.1 from line 73
