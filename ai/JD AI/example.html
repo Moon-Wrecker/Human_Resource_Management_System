@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Description Generator - Frontend Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            margin-top: 15px;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #resultContainer {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h3 {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .section ul {
+            margin-top: 10px;
+        }
+        .result-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .dynamic-list {
+            margin-bottom: 20px;
+        }
+        .list-item {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .list-item input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .list-item select {
+            width: 100px;
+            margin-right: 10px;
+        }
+        .add-btn {
+            background-color: #2ecc71;
+            margin-bottom: 10px;
+        }
+        .remove-btn {
+            background-color: #e74c3c;
+            padding: 8px 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Job Description Generator</h1>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('formTab')">Create Job Description</div>
+            <div class="tab" onclick="showTab('codeTab')">Code Example</div>
+        </div>
+        
+        <div id="formTab" class="tab-content active">
+            <form id="jobForm">
+                <div class="form-group">
+                    <label for="jobTitle">Job Title*</label>
+                    <input type="text" id="jobTitle" required placeholder="e.g., Software Engineer">
+                </div>
+                
+                <div class="form-group">
+                    <label for="jobLevel">Job Level*</label>
+                    <select id="jobLevel" required>
+                        <option value="">Select a level</option>
+                        <option value="Entry Level">Entry Level</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Mid-Level">Mid-Level</option>
+                        <option value="Senior">Senior</option>
+                        <option value="Lead">Lead</option>
+                        <option value="Principal">Principal</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">Department*</label>
+                    <input type="text" id="department" required placeholder="e.g., Engineering">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location*</label>
+                    <input type="text" id="location" required placeholder="e.g., Remote, Hybrid (New York)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="employmentType">Employment Type*</label>
+                    <select id="employmentType" required>
+                        <option value="">Select a type</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                        <option value="Temporary">Temporary</option>
+                    </select>
+                </div>
+                
+                <h3>Company Information</h3>
+                
+                <div class="form-group">
+                    <label for="companyName">Company Name*</label>
+                    <input type="text" id="companyName" required placeholder="e.g., TechCorp Inc.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyDescription">Company Description*</label>
+                    <textarea id="companyDescription" required rows="3" placeholder="Brief description of the company..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry">Industry*</label>
+                    <input type="text" id="industry" required placeholder="e.g., Technology, Healthcare">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyValues">Company Values (comma-separated)</label>
+                    <input type="text" id="companyValues" placeholder="e.g., Innovation, Collaboration, Excellence">
+                </div>
+                
+                <h3>Responsibilities*</h3>
+                
+                <div id="responsibilitiesList" class="dynamic-list">
+                    <div class="list-item">
+                        <input type="text" class="responsibility-input" placeholder="Enter a responsibility">
+                        <button type="button" class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </div>
+                
+                <button type="button" class="add-btn" onclick="addResponsibility()">Add Responsibility</button>
+                
+                <h3>Requirements*</h3>
+                
+                <div id="requirementsList" class="dynamic-list">
+                    <div class="list-item">
+                        <input type="text" class="requirement-input" placeholder="Enter a requirement">
+                        <select class="requirement-type">
+                            <option value="true">Required</option>
+                            <option value="false">Preferred</option>
+                        </select>
+                        <button type="button" class="remove-btn" onclick="removeItem(this)">Remove</button>
+                    </div>
+                </div>
+                
+                <button type="button" class="add-btn" onclick="addRequirement()">Add Requirement</button>
+                
+                <h3>Additional Information</h3>
+                
+                <div class="form-group">
+                    <label for="salaryRange">Salary Range</label>
+                    <input type="text" id="salaryRange" placeholder="e.g., $80,000 - $100,000 per year">
+                </div>
+                
+                <div class="form-group">
+                    <label for="benefits">Benefits (comma-separated)</label>
+                    <input type="text" id="benefits" placeholder="e.g., Health insurance, 401(k), Flexible hours">
+                </div>
+                
+                <div class="form-group">
+                    <label for="applicationProcess">Application Process</label>
+                    <textarea id="applicationProcess" rows="2" placeholder="How candidates should apply..."></textarea>
+                </div>
+                
+                <button type="submit" id="generateBtn">Generate Job Description</button>
+                
+                <div id="errorMessage" class="error"></div>
+                
+                <div id="loadingSpinner" class="loading">
+                    <div class="spinner"></div>
+                    <p>Generating job description... This may take a moment.</p>
+                </div>
+            </form>
+            
+            <div id="resultContainer">
+                <div class="section">
+                    <h2 id="resultTitle"></h2>
+                    <p id="resultCompanyOverview"></p>
+                    <p id="resultJobSummary"></p>
+                </div>
+                
+                <div class="section">
+                    <h3>Responsibilities</h3>
+                    <ul id="resultResponsibilities"></ul>
+                </div>
+                
+                <div class="section">
+                    <h3>Required Qualifications</h3>
+                    <ul id="resultRequiredQualifications"></ul>
+                </div>
+                
+                <div class="section">
+                    <h3>Preferred Qualifications</h3>
+                    <ul id="resultPreferredQualifications"></ul>
+                </div>
+                
+                <div class="section" id="resultBenefitsSection">
+                    <h3>Benefits</h3>
+                    <p id="resultBenefits"></p>
+                </div>
+                
+                <div class="section" id="resultApplicationSection">
+                    <h3>How to Apply</h3>
+                    <p id="resultApplication"></p>
+                </div>
+                
+                <div class="result-actions">
+                    <button id="viewFullBtn" onclick="toggleFullDescription()">View Full Description</button>
+                    <button onclick="copyToClipboard()">Copy to Clipboard</button>
+                </div>
+                
+                <div id="fullDescriptionContainer" style="display: none; margin-top: 20px;">
+                    <h3>Full Description</h3>
+                    <pre id="fullDescription" style="white-space: pre-wrap; font-family: inherit;"></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div id="codeTab" class="tab-content">
+            <h2>How to Integrate with Your Frontend</h2>
+            
+            <p>This example shows how to call the Job Description Generator API from your JavaScript code:</p>
+            
+            <pre style="background-color: #f8f8f8; padding: 15px; border-radius: 4px; overflow-x: auto;">
+// Function to generate job description
+async function generateJobDescription(jobData) {
+  try {
+    // Show loading spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('errorMessage').textContent = '';
+    
+    const response = await fetch('http://localhost:8000/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jobData)
+    });
+    
+    // Hide loading spinner
+    document.getElementById('loadingSpinner').style.display = 'none';
+    
+    const result = await response.json();
+    
+    if (response.ok && result.status === 'success') {
+      // Process successful response
+      displayResults(result.data);
+      return result.data;
+    } else {
+      // Handle error
+      document.getElementById('errorMessage').textContent = 
+        result.error || 'Failed to generate job description';
+      return null;
+    }
+  } catch (error) {
+    // Hide loading spinner
+    document.getElementById('loadingSpinner').style.display = 'none';
+    
+    // Show error message
+    document.getElementById('errorMessage').textContent = 
+      'Network error - could not connect to the API';
+    console.error('API request failed:', error);
+    return null;
+  }
+}
+
+// Format request data from form
+function collectFormData() {
+  // Get responsibilities
+  const responsibilities = [];
+  document.querySelectorAll('.responsibility-input').forEach(input => {
+    if (input.value.trim()) {
+      responsibilities.push(input.value.trim());
+    }
+  });
+  
+  // Get requirements
+  const requirements = [];
+  const reqInputs = document.querySelectorAll('.requirement-input');
+  const reqTypes = document.querySelectorAll('.requirement-type');
+  
+  for (let i = 0; i < reqInputs.length; i++) {
+    if (reqInputs[i].value.trim()) {
+      requirements.push({
+        requirement: reqInputs[i].value.trim(),
+        is_required: reqTypes[i].value === 'true'
+      });
+    }
+  }
+  
+  // Get company values
+  let companyValues = null;
+  if (document.getElementById('companyValues').value.trim()) {
+    companyValues = document.getElementById('companyValues').value
+      .split(',')
+      .map(value => value.trim())
+      .filter(value => value);
+  }
+  
+  // Get benefits
+  let benefits = null;
+  if (document.getElementById('benefits').value.trim()) {
+    benefits = document.getElementById('benefits').value
+      .split(',')
+      .map(benefit => benefit.trim())
+      .filter(benefit => benefit);
+  }
+  
+  // Return formatted data
+  return {
+    job_title: document.getElementById('jobTitle').value.trim(),
+    job_level: document.getElementById('jobLevel').value,
+    department: document.getElementById('department').value.trim(),
+    location: document.getElementById('location').value.trim(),
+    employment_type: document.getElementById('employmentType').value,
+    company_info: {
+      name: document.getElementById('companyName').value.trim(),
+      description: document.getElementById('companyDescription').value.trim(),
+      industry: document.getElementById('industry').value.trim(),
+      values: companyValues
+    },
+    responsibilities: responsibilities,
+    requirements: requirements,
+    salary_range: document.getElementById('salaryRange').value.trim() || null,
+    benefits: benefits,
+    application_process: document.getElementById('applicationProcess').value.trim() || null
+  };
+}
+            </pre>
+            
+            <h3>API Setup Instructions</h3>
+            
+            <p>To run the API locally:</p>
+            
+            <ol>
+                <li>Install required packages:<br><code>pip install fastapi uvicorn langchain langchain-google-genai pydantic</code></li>
+                <li>Set your Google API key:<br><code>export GOOGLE_API_KEY=your_api_key_here</code></li>
+                <li>Run the API server:<br><code>python simple_job_api.py</code></li>
+                <li>The API will be running at <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></li>
+                <li>Documentation will be available at <a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a></li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        // Show/hide tabs
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Set active class on clicked tab button
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Add responsibility field
+        function addResponsibility() {
+            const container = document.getElementById('responsibilitiesList');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input type="text" class="responsibility-input" placeholder="Enter a responsibility">
+                <button type="button" class="remove-btn" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(newItem);
+        }
+        
+        // Add requirement field
+        function addRequirement() {
+            const container = document.getElementById('requirementsList');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input type="text" class="requirement-input" placeholder="Enter a requirement">
+                <select class="requirement-type">
+                    <option value="true">Required</option>
+                    <option value="false">Preferred</option>
+                </select>
+                <button type="button" class="remove-btn" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(newItem);
+        }
+        
+        // Remove item from list
+        function removeItem(button) {
+            const listItem = button.parentNode;
+            listItem.parentNode.removeChild(listItem);
+        }
+        
+        // Function to collect form data
+        function collectFormData() {
+            // Get responsibilities
+            const responsibilities = [];
+            document.querySelectorAll('.responsibility-input').forEach(input => {
+                if (input.value.trim()) {
+                    responsibilities.push(input.value.trim());
+                }
+            });
+            
+            // Get requirements
+            const requirements = [];
+            const reqInputs = document.querySelectorAll('.requirement-input');
+            const reqTypes = document.querySelectorAll('.requirement-type');
+            
+            for (let i = 0; i < reqInputs.length; i++) {
+                if (reqInputs[i].value.trim()) {
+                    requirements.push({
+                        requirement: reqInputs[i].value.trim(),
+                        is_required: reqTypes[i].value === 'true'
+                    });
+                }
+            }
+            
+            // Get company values
+            let companyValues = null;
+            if (document.getElementById('companyValues').value.trim()) {
+                companyValues = document.getElementById('companyValues').value
+                    .split(',')
+                    .map(value => value.trim())
+                    .filter(value => value);
+            }
+            
+            // Get benefits
+            let benefits = null;
+            if (document.getElementById('benefits').value.trim()) {
+                benefits = document.getElementById('benefits').value
+                    .split(',')
+                    .map(benefit => benefit.trim())
+                    .filter(benefit => benefit);
+            }
+            
+            // Return formatted data
+            return {
+                job_title: document.getElementById('jobTitle').value.trim(),
+                job_level: document.getElementById('jobLevel').value,
+                department: document.getElementById('department').value.trim(),
+                location: document.getElementById('location').value.trim(),
+                employment_type: document.getElementById('employmentType').value,
+                company_info: {
+                    name: document.getElementById('companyName').value.trim(),
+                    description: document.getElementById('companyDescription').value.trim(),
+                    industry: document.getElementById('industry').value.trim(),
+                    values: companyValues
+                },
+                responsibilities: responsibilities,
+                requirements: requirements,
+                salary_range: document.getElementById('salaryRange').value.trim() || null,
+                benefits: benefits,
+                application_process: document.getElementById('applicationProcess').value.trim() || null
+            };
+        }
+        
+        // Function to validate form
+        function validateForm() {
+            // Check required fields
+            if (!document.getElementById('jobTitle').value.trim()) {
+                return "Job Title is required";
+            }
+            if (!document.getElementById('jobLevel').value) {
+                return "Job Level is required";
+            }
+            if (!document.getElementById('department').value.trim()) {
+                return "Department is required";
+            }
+            if (!document.getElementById('location').value.trim()) {
+                return "Location is required";
+            }
+            if (!document.getElementById('employmentType').value) {
+                return "Employment Type is required";
+            }
+            if (!document.getElementById('companyName').value.trim()) {
+                return "Company Name is required";
+            }
+            if (!document.getElementById('companyDescription').value.trim()) {
+                return "Company Description is required";
+            }
+            if (!document.getElementById('industry').value.trim()) {
+                return "Industry is required";
+            }
+            
+            // Check responsibilities
+            const responsibilities = [];
+            document.querySelectorAll('.responsibility-input').forEach(input => {
+                if (input.value.trim()) {
+                    responsibilities.push(input.value.trim());
+                }
+            });
+            if (responsibilities.length === 0) {
+                return "At least one responsibility is required";
+            }
+            
+            // Check requirements
+            const requirements = [];
+            document.querySelectorAll('.requirement-input').forEach(input => {
+                if (input.value.trim()) {
+                    requirements.push(input.value.trim());
+                }
+            });
+            if (requirements.length === 0) {
+                return "At least one requirement is required";
+            }
+            
+            return null;
+        }
+        
+        // Function to generate job description
+        async function generateJobDescription(jobData) {
+            try {
+                // Show loading spinner
+                document.getElementById('loadingSpinner').style.display = 'block';
+                document.getElementById('errorMessage').textContent = '';
+                
+                const response = await fetch('http://localhost:8000/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jobData)
+                });
+                
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+                
+                const result = await response.json();
+                
+                if (response.ok && result.status === 'success') {
+                    // Process successful response
+                    displayResults(result.data);
+                    return result.data;
+                } else {
+                    // Handle error
+                    document.getElementById('errorMessage').textContent = 
+                        result.error || 'Failed to generate job description';
+                    return null;
+                }
+            } catch (error) {
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+                
+                // Show error message
+                document.getElementById('errorMessage').textContent = 
+                    'Network error - could not connect to the API. Make sure the API is running.';
+                console.error('API request failed:', error);
+                return null;
+            }
+        }
+        
+        // Function to display results
+        function displayResults(data) {
+            // Set job details
+            document.getElementById('resultTitle').textContent = data.title;
+            document.getElementById('resultCompanyOverview').textContent = data.company_overview;
+            document.getElementById('resultJobSummary').textContent = data.job_summary;
+            
+            // Set responsibilities
+            const respList = document.getElementById('resultResponsibilities');
+            respList.innerHTML = '';
+            data.key_responsibilities.forEach(resp => {
+                const li = document.createElement('li');
+                li.textContent = resp;
+                respList.appendChild(li);
+            });
+            
+            // Set required qualifications
+            const reqList = document.getElementById('resultRequiredQualifications');
+            reqList.innerHTML = '';
+            data.required_qualifications.forEach(qual => {
+                const li = document.createElement('li');
+                li.textContent = qual;
+                reqList.appendChild(li);
+            });
+            
+            // Set preferred qualifications
+            const prefList = document.getElementById('resultPreferredQualifications');
+            prefList.innerHTML = '';
+            data.preferred_qualifications.forEach(qual => {
+                const li = document.createElement('li');
+                li.textContent = qual;
+                prefList.appendChild(li);
+            });
+            
+            // Set benefits section
+            if (data.benefits_section) {
+                document.getElementById('resultBenefitsSection').style.display = 'block';
+                document.getElementById('resultBenefits').textContent = data.benefits_section;
+            } else {
+                document.getElementById('resultBenefitsSection').style.display = 'none';
+            }
+            
+            // Set application section
+            if (data.how_to_apply) {
+                document.getElementById('resultApplicationSection').style.display = 'block';
+                document.getElementById('resultApplication').textContent = data.how_to_apply;
+            } else {
+                document.getElementById('resultApplicationSection').style.display = 'none';
+            }
+            
+            // Set full description
+            document.getElementById('fullDescription').textContent = data.full_description;
+            
+            // Show result container
+            document.getElementById('resultContainer').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Toggle full description view
+        function toggleFullDescription() {
+            const container = document.getElementById('fullDescriptionContainer');
+            const button = document.getElementById('viewFullBtn');
+            
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                button.textContent = 'Hide Full Description';
+            } else {
+                container.style.display = 'none';
+                button.textContent = 'View Full Description';
+            }
+        }
+        
+        // Copy to clipboard
+        function copyToClipboard() {
+            const fullDescription = document.getElementById('fullDescription').textContent;
+            
+            navigator.clipboard.writeText(fullDescription).then(() => {
+                alert('Job description copied to clipboard!');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                alert('Failed to copy job description');
+            });
+        }
+        
+        // Form submission
+        document.getElementById('jobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Validate form
+            const validationError = validateForm();
+            if (validationError) {
+                document.getElementById('errorMessage').textContent = validationError;
+                return;
+            }
+            
+            // Collect form data
+            const jobData = collectFormData();
+            
+            // Call API
+            await generateJobDescription(jobData);
+        });
+        
+        // Initialize with at least one responsibility and requirement
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make sure at least one responsibility and requirement field exists
+            if (document.querySelectorAll('.responsibility-input').length === 0) {
+                addResponsibility();
+            }
+            
+            if (document.querySelectorAll('.requirement-input').length === 0) {
+                addRequirement();
+            }
+        });
+    </script>
+</body>
+</html>
