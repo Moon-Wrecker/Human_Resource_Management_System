@@ -6,9 +6,11 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 import time
 import logging
+import os
 
 from config import settings, create_upload_directories
 from database import engine, create_tables
@@ -158,8 +160,9 @@ async def api_v1_root():
             "message": "GenAI HRMS API v1",
             "endpoints": {
                 "auth": "/api/v1/auth",
-                "users": "/api/v1/users",
+                "profile": "/api/v1/profile",
                 "dashboard": "/api/v1/dashboard",
+                "users": "/api/v1/users",
                 "jobs": "/api/v1/jobs",
                 "applications": "/api/v1/applications",
                 "employees": "/api/v1/employees",
@@ -178,10 +181,22 @@ async def api_v1_root():
 # Import and include routers
 from routes.auth import router as auth_router
 from routes.dashboard import router as dashboard_router
+from routes.profile import router as profile_router
+from routes.attendance import router as attendance_router
+from routes.jobs import router as jobs_router
+from routes.applications import router as applications_router
 
 # Include routers
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(dashboard_router, prefix="/api/v1")
+app.include_router(profile_router, prefix="/api/v1")
+app.include_router(attendance_router, prefix="/api/v1")
+app.include_router(jobs_router, prefix="/api/v1")
+app.include_router(applications_router, prefix="/api/v1")
+
+# Mount static files for uploads (must be after routers)
+if os.path.exists(settings.UPLOAD_DIR):
+    app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 
 # More routers will be added as we build them
 # from routes.users import router as users_router

@@ -15,7 +15,7 @@ from utils.dependencies import (
     require_employee
 )
 from services.dashboard_service import DashboardService
-from schemas.dashboard_schemas import (
+from pydantic_models import (
     HRDashboardResponse,
     ManagerDashboardResponse,
     EmployeeDashboardResponse,

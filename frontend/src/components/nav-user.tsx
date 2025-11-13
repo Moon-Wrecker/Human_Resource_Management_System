@@ -5,6 +5,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User,
 } from "lucide-react"
 
 import {
@@ -27,6 +28,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "@/contexts/AuthContext"
 
 export function NavUser({
   user,
@@ -38,6 +41,32 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const navigate = useNavigate()
+  const { logout, user: authUser } = useAuth()
+
+  // Get role-based profile path
+  const getProfilePath = () => {
+    const role = authUser?.role?.toLowerCase()
+    if (role === 'hr' || role === 'admin') return '/hr/profile'
+    if (role === 'manager') return '/manager/profile'
+    return '/employee/profile'
+  }
+
+  const handleLogout = async (e?: Event) => {
+    console.log('Logout button clicked') // Debug log
+    try {
+      await logout()
+      console.log('Logout successful') // Debug log
+    } catch (error) {
+      console.error('Logout failed:', error)
+      // Force navigation even if logout API fails
+      navigate('/login')
+    }
+  }
+
+  const handleProfileClick = () => {
+    navigate(getProfilePath())
+  }
 
   return (
     <SidebarMenu>
@@ -79,20 +108,22 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem asChild>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleProfileClick()
+                  }}
+                  className="flex w-full cursor-pointer items-center gap-2 hover:bg-accent"
+                  type="button"
+                >
+                  <User className="h-4 w-4" />
+                  Profile
+                </button>
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
                 Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
@@ -100,9 +131,18 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem asChild>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleLogout()
+                }}
+                className="flex w-full cursor-pointer items-center gap-2 hover:bg-accent"
+                type="button"
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

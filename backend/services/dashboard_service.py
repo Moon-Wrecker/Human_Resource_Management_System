@@ -11,7 +11,7 @@ from models import (
     Attendance, AttendanceStatus, LeaveRequest, Goal, GoalStatus,
     SkillModuleEnrollment, ModuleStatus, Holiday, PerformanceReport
 )
-from schemas.dashboard_schemas import (
+from pydantic_models import (
     DepartmentEmployeeCount, DepartmentAttendance, DepartmentModulesCompleted,
     ActiveApplicationInfo, HRDashboardResponse, TeamMemberAttendance,
     TeamMemberModules, TeamGoalsStats, TeamStats, ManagerDashboardResponse,

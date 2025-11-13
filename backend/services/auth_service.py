@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from models import User
 from utils.password_utils import hash_password, verify_password
 from utils.jwt_utils import create_access_token, create_refresh_token, verify_token
-from schemas.auth_schemas import UserInfoResponse
+from pydantic_models import UserInfoResponse
 from config import settings
 
 

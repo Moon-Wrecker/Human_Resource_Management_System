@@ -6,7 +6,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from database import get_db
 from services.auth_service import AuthService
-from schemas.auth_schemas import (
+from pydantic_models import (
     LoginRequest,
     LoginResponse,
     RefreshTokenRequest,

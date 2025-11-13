@@ -194,6 +194,10 @@ const router = createBrowserRouter([
         path: "performance-report",
         element: <PerformanceReport />,
       },
+      {
+        path: "profile",
+        element: <EmployeeProfile />,
+      },
     ],
   },
   {

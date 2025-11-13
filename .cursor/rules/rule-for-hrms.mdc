@@ -1,4 +1,3 @@
 ---
-description: whenever if you makind a markdown, put it inside the docs folder, and keep the code strurcture clean, and name the files according to the serial number in the docs folder, so can be looked in to a serialized manner, try to make 1 doc file per conversation (less)
-alwaysApply: false
+alwaysApply: true
 ---
