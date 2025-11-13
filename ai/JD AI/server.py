@@ -200,12 +200,8 @@ class JobDescriptionGenerator:
         
         # Generate job description using the chain
         return self.chain.invoke(inputs).dict()
-
-# ----- API Configuration -----
-# Get API key from environment variable
-GOOGLE_API_KEY = "AIzaSyDV1Wvu-i1vXOAbfCzDdjvCp4ap722z13E"
-print(GOOGLE_API_KEY,"this is the key")
-MODEL_NAME = os.environ.get("GEMINI_MODEL_NAME", "gemini-2.5-flash-lite")
+# model config
+MODEL_NAME = "gemini-2.5-flash"
 TEMPERATURE = float(os.environ.get("GEMINI_TEMPERATURE", "0.2"))
 
 # ----- API Endpoints -----
