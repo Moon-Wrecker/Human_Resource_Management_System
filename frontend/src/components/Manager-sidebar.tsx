@@ -41,12 +41,10 @@ export function ManagerSidebar({ ...props }: React.ComponentProps<typeof Sidebar
         <NavItems items={ManagerSidebarItems} />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenuButton size="lg" className="px-0 pl-0">
-          <SidebarTrigger
-            className="flex items-center justify-between px-0 pl-0 mx-0"
-            withText
-          />
-        </SidebarMenuButton>
+        <SidebarTrigger
+          className="flex items-center justify-between px-2"
+          withText
+        />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

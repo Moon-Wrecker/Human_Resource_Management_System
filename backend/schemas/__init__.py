@@ -12,7 +12,18 @@ from .auth_schemas import (
     MessageResponse
 )
 
+from .dashboard_schemas import (
+    HRDashboardResponse,
+    ManagerDashboardResponse,
+    EmployeeDashboardResponse,
+    PerformanceMetrics,
+    HolidayInfo,
+    LeaveBalanceInfo,
+    AttendanceInfo
+)
+
 __all__ = [
+    # Auth schemas
     "LoginRequest",
     "LoginResponse",
     "TokenResponse",
@@ -20,6 +31,14 @@ __all__ = [
     "RefreshTokenRequest",
     "ChangePasswordRequest",
     "ResetPasswordRequest",
-    "MessageResponse"
+    "MessageResponse",
+    # Dashboard schemas
+    "HRDashboardResponse",
+    "ManagerDashboardResponse",
+    "EmployeeDashboardResponse",
+    "PerformanceMetrics",
+    "HolidayInfo",
+    "LeaveBalanceInfo",
+    "AttendanceInfo"
 ]
 
