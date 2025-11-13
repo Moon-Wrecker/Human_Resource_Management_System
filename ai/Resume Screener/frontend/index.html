@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Resume Screener</title>
+    <style>
+        :root {
+            --primary-color: #1E88E5;
+            --primary-dark: #1565C0;
+            --secondary-color: #26C6DA;
+            --text-color: #333;
+            --light-text: #757575;
+            --background: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --border-color: #E0E0E0;
+            --success-color: #2E7D32;
+            --error-color: #C62828;
+            --warning-color: #F9A825;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            font-size: 1.8rem;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            transition: all 0.2s ease;
+        }
+        
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 25px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border 0.2s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .file-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .file-input label {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 10px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .file-input label:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .file-input input[type="file"] {
+            display: none;
+        }
+        
+        .file-list {
+            margin-top: 15px;
+            border: 1px dashed var(--border-color);
+            padding: 15px;
+            border-radius: 4px;
+            min-height: 100px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            background-color: var(--background);
+            border-radius: 4px;
+        }
+        
+        .file-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .file-item button {
+            background-color: transparent;
+            color: var(--error-color);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        button:disabled {
+            background-color: var(--light-text);
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #00ACC1;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .progress {
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 5px;
+            background-color: var(--primary-color);
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-info {
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .result {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .high-score {
+            background-color: rgba(46, 125, 50, 0.2);
+            color: var(--success-color);
+            border: 2px solid var(--success-color);
+        }
+        
+        .medium-score {
+            background-color: rgba(249, 168, 37, 0.2);
+            color: var(--warning-color);
+            border: 2px solid var(--warning-color);
+        }
+        
+        .low-score {
+            background-color: rgba(198, 40, 40, 0.2);
+            color: var(--error-color);
+            border: 2px solid var(--error-color);
+        }
+        
+        .result-section {
+            margin-bottom: 25px;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .skill {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .skill.present {
+            background-color: rgba(46, 125, 50, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .skill.missing {
+            background-color: rgba(198, 40, 40, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+        
+        .experience-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: var(--background);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .experience-area {
+            font-weight: 500;
+        }
+        
+        .experience-years {
+            display: flex;
+            align-items: center;
+        }
+        
+        .experience-years.sufficient {
+            color: var(--success-color);
+        }
+        
+        .experience-years.insufficient {
+            color: var(--error-color);
+        }
+        
+        .points-list {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+        
+        .points-list li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .points-list li:before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+        
+        .batch-results {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-error {
+            background-color: rgba(198, 40, 40, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+        
+        .alert-success {
+            background-color: rgba(46, 125, 50, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .alert-warning {
+            background-color: rgba(249, 168, 37, 0.1);
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+        }
+        
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        /* Debug panel */
+        .debug-panel {
+            background-color: #000;
+            color: #0f0;
+            font-family: monospace;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                border: none;
+            }
+            
+            .tab {
+                margin-right: 0;
+                margin-bottom: 5px;
+                border-radius: 4px;
+                border: 1px solid var(--border-color);
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-file-alt"></i>
+                Smart Resume Screener
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('single')">Single Resume</div>
+            <div class="tab" onclick="switchTab('batch')">Batch Processing</div>
+            <div class="tab" onclick="switchTab('job-description')">Create Job Description</div>
+            <div class="tab" onclick="switchTab('debug')">Debug</div>
+        </div>
+        
+        <!-- Single Resume Tab -->
+        <div id="single-tab" class="tab-content active">
+            <div class="card">
+                <h2>Screen a Single Resume</h2>
+                <form id="singleResumeForm">
+                    <div class="form-group">
+                        <label for="jobDescription">Job Description:</label>
+                        <textarea id="jobDescription" name="jobDescription" required placeholder="Paste the job description here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Upload Resume:</label>
+                        <div class="file-input">
+                            <div class="file-list" id="singleResumeList">
+                                <p id="singleNoFileText">No file selected</p>
+                            </div>
+                            <label for="singleResumeUpload">
+                                <i class="fas fa-upload"></i> Choose Resume File
+                            </label>
+                            <input type="file" id="singleResumeUpload" accept=".pdf,.doc,.docx,.txt" onchange="handleSingleFileUpload(event)">
+                        </div>
+                        <p class="file-hint">Supported formats: PDF, DOC, DOCX, TXT</p>
+                    </div>
+                    
+                    <div class="actions">
+                        <button type="reset" class="btn-secondary">Reset</button>
+                        <button type="submit" id="singleScreenBtn">Screen Resume</button>
+                    </div>
+                </form>
+                
+                <div id="singleProgress" class="progress">
+                    <div class="progress-bar" id="singleProgressBar"></div>
+                    <p class="progress-info" id="singleProgressInfo">Processing resume...</p>
+                </div>
+                
+                <div id="singleError" class="alert alert-error" style="display: none;"></div>
+                
+                <div id="singleResult" class="result">
+                    <div class="result-header">
+                        <div>
+                            <h3>Resume Analysis for <span id="candidateName">Candidate</span></h3>
+                        </div>
+                        <div class="score-container">
+                            <div class="score" id="fitScore">0</div>
+                            <p>Fit Score</p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h3>Summary</h3>
+                        <p id="summary"></p>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h3>Skills Assessment</h3>
+                        <div class="skills-container">
+                            <h4>Skills Present</h4>
+                            <div class="skills-list" id="skillsPresent"></div>
+                            
+                            <h4>Skills Missing</h4>
+                            <div class="skills-list" id="skillsMissing"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h3>Experience Assessment</h3>
+                        <div id="experienceList"></div>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h3>Education Assessment</h3>
+                        <p id="education"></p>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h3>Key Strengths</h3>
+                        <ul class="points-list" id="strengths"></ul>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h3>Areas for Improvement</h3>
+                        <ul class="points-list" id="gaps"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Batch Processing Tab -->
+        <div id="batch-tab" class="tab-content">
+            <div class="card">
+                <h2>Screen Multiple Resumes</h2>
+                <form id="batchResumeForm">
+                    <div class="form-group">
+                        <label for="batchJobDescription">Job Description:</label>
+                        <textarea id="batchJobDescription" name="jobDescription" required placeholder="Paste the job description here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Upload Resumes:</label>
+                        <div class="file-input">
+                            <div class="file-list" id="batchResumeList">
+                                <p id="batchNoFileText">No files selected</p>
+                            </div>
+                            <label for="batchResumeUpload">
+                                <i class="fas fa-upload"></i> Choose Resume Files
+                            </label>
+                            <input type="file" id="batchResumeUpload" accept=".pdf,.doc,.docx,.txt" multiple onchange="handleBatchFileUpload(event)">
+                        </div>
+                        <p class="file-hint">Supported formats: PDF, DOC, DOCX, TXT</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="outputFormat">Output Format:</label>
+                        <select id="outputFormat" name="outputFormat">
+                            <option value="excel">Excel (.xlsx)</option>
+                            <option value="csv">CSV (.csv)</option>
+                            <option value="json">JSON (.json)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="actions">
+                        <button type="reset" class="btn-secondary">Reset</button>
+                        <button type="submit" id="batchScreenBtn">Process Resumes</button>
+                    </div>
+                </form>
+                
+                <div id="batchProgress" class="progress">
+                    <div class="progress-bar" id="batchProgressBar"></div>
+                    <p class="progress-info" id="batchProgressInfo">Processing resumes...</p>
+                </div>
+                
+                <div id="batchError" class="alert alert-error" style="display: none;"></div>
+                
+                <div id="batchResult" class="batch-results">
+                    <h3>Batch Processing Results</h3>
+                    <div id="batchSummary"></div>
+                    
+                    <div class="result-actions">
+                        <button id="downloadBtn" onclick="downloadResults()">
+                            <i class="fas fa-download"></i> Download Results
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Description Tab -->
+        <div id="job-description-tab" class="tab-content">
+            <div class="card">
+                <h2>Generate Job Description</h2>
+                <form id="jobDescriptionForm">
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title:</label>
+                        <input type="text" id="jobTitle" name="jobTitle" required placeholder="e.g. Senior Software Engineer">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="companyName">Company Name:</label>
+                        <input type="text" id="companyName" name="companyName" required placeholder="e.g. ABC Technology Inc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="basicDescription">Basic Description:</label>
+                        <textarea id="basicDescription" name="basicDescription" required placeholder="Enter a brief description of the role and key responsibilities..."></textarea>
+                    </div>
+                    
+                    <div class="actions">
+                        <button type="reset" class="btn-secondary">Reset</button>
+                        <button type="submit" id="generateDescriptionBtn">Generate Description</button>
+                    </div>
+                </form>
+                
+                <div id="descriptionProgress" class="progress">
+                    <div class="progress-bar" id="descriptionProgressBar"></div>
+                    <p class="progress-info">Generating job description...</p>
+                </div>
+                
+                <div id="descriptionError" class="alert alert-error" style="display: none;"></div>
+                
+                <div id="descriptionResult" class="result">
+                    <h3>Generated Job Description</h3>
+                    <div id="generatedDescription" style="white-space: pre-wrap; margin-top: 15px;"></div>
+                    
+                    <div class="result-actions">
+                        <button onclick="copyDescription()">
+                            <i class="fas fa-copy"></i> Copy to Clipboard
+                        </button>
+                        <button onclick="useForScreening()">
+                            <i class="fas fa-check"></i> Use for Screening
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Debug Tab -->
+        <div id="debug-tab" class="tab-content">
+            <div class="card">
+                <h2>Debug Information</h2>
+                <div class="form-group">
+                    <button onclick="checkAPIHealth()" class="btn-secondary">Check API Health</button>
+                    <button onclick="testEndpoint('/screen/single')" class="btn-secondary">Test /screen/single</button>
+                    <button onclick="clearDebugLog()" class="btn-secondary">Clear Log</button>
+                </div>
+                <div class="debug-panel" id="debugLog" style="display: block;">Debug log will appear here...</div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Smart Resume Screener. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Debug log function
+        function logDebug(message) {
+            const debugLog = document.getElementById('debugLog');
+            const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+            debugLog.innerHTML += `[${timestamp}] ${message}\n`;
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearDebugLog() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+        
+        // Check API health
+        async function checkAPIHealth() {
+            logDebug("Checking API health...");
+            try {
+                const response = await fetch(`${API_ENDPOINT}/health`);
+                const result = await response.json();
+                logDebug(`Health check result: ${JSON.stringify(result, null, 2)}`);
+            } catch (error) {
+                logDebug(`Health check error: ${error.message}`);
+            }
+        }
+        
+        // Test specific endpoint
+        async function testEndpoint(endpoint) {
+            logDebug(`Testing endpoint: ${endpoint}...`);
+            try {
+                const response = await fetch(`${API_ENDPOINT}${endpoint}`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                logDebug(`Endpoint test status: ${response.status} ${response.statusText}`);
+                
+                // Show response headers
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                logDebug(`Response headers: ${JSON.stringify(headers, null, 2)}`);
+            } catch (error) {
+                logDebug(`Endpoint test error: ${error.message}`);
+            }
+        }
+        
+        // API Endpoint
+        const API_ENDPOINT = window.location.origin;
+        logDebug(`API endpoint set to: ${API_ENDPOINT}`);
+        
+        // Variables for batch processing
+        let batchTaskId = null;
+        let batchResultFile = null;
+        let pollingInterval = null;
+        
+        // Single resume file
+        let singleResumeFile = null;
+        
+        // Batch resume files
+        let batchResumeFiles = [];
+        
+        // Tab switching
+        function switchTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tabButton => {
+                tabButton.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tab}-tab`).classList.add('active');
+            
+            // Activate tab button
+            const tabs = {
+                'single': 0,
+                'batch': 1,
+                'job-description': 2,
+                'debug': 3
+            };
+            
+            document.querySelectorAll('.tab')[tabs[tab]].classList.add('active');
+            logDebug(`Switched to ${tab} tab`);
+        }
+        
+        // Handle single file upload
+        function handleSingleFileUpload(event) {
+            const fileInput = event.target;
+            const fileList = document.getElementById('singleResumeList');
+            const noFileText = document.getElementById('singleNoFileText');
+            
+            if (fileInput.files.length > 0) {
+                singleResumeFile = fileInput.files[0];
+                logDebug(`Single file selected: ${singleResumeFile.name}, type: ${singleResumeFile.type}, size: ${singleResumeFile.size} bytes`);
+                
+                // Update UI
+                noFileText.style.display = 'none';
+                fileList.innerHTML = createFileItem(singleResumeFile, 'single');
+            } else {
+                singleResumeFile = null;
+                noFileText.style.display = 'block';
+                fileList.innerHTML = '<p id="singleNoFileText">No file selected</p>';
+                logDebug('Single file selection cleared');
+            }
+        }
+        
+        // Handle batch file upload
+        function handleBatchFileUpload(event) {
+            const fileInput = event.target;
+            const fileList = document.getElementById('batchResumeList');
+            const noFileText = document.getElementById('batchNoFileText');
+            
+            if (fileInput.files.length > 0) {
+                batchResumeFiles = Array.from(fileInput.files);
+                logDebug(`Batch files selected: ${batchResumeFiles.length} files`);
+                
+                // Update UI
+                noFileText.style.display = 'none';
+                
+                let fileItems = '';
+                batchResumeFiles.forEach(file => {
+                    fileItems += createFileItem(file, 'batch');
+                });
+                
+                fileList.innerHTML = fileItems;
+            } else {
+                batchResumeFiles = [];
+                noFileText.style.display = 'block';
+                fileList.innerHTML = '<p id="batchNoFileText">No files selected</p>';
+                logDebug('Batch file selection cleared');
+            }
+        }
+        
+        // Create file item HTML
+        function createFileItem(file, type) {
+            const fileName = file.name;
+            const fileSize = (file.size / 1024).toFixed(1) + ' KB';
+            
+            return `
+                <div class="file-item">
+                    <div class="file-info">
+                        <span class="file-name">${fileName}</span>
+                        <span class="file-size">${fileSize}</span>
+                    </div>
+                    <button type="button" onclick="removeFile('${type}', '${fileName}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Remove file
+        function removeFile(type, fileName) {
+            if (type === 'single') {
+                singleResumeFile = null;
+                const fileList = document.getElementById('singleResumeList');
+                const noFileText = document.getElementById('singleNoFileText');
+                
+                noFileText.style.display = 'block';
+                fileList.innerHTML = '<p id="singleNoFileText">No file selected</p>';
+                
+                // Reset file input
+                document.getElementById('singleResumeUpload').value = '';
+                logDebug(`Removed single file: ${fileName}`);
+            } else {
+                // Find file index
+                const index = batchResumeFiles.findIndex(file => file.name === fileName);
+                
+                if (index !== -1) {
+                    batchResumeFiles.splice(index, 1);
+                    logDebug(`Removed batch file: ${fileName}`);
+                    
+                    // Update UI
+                    const fileList = document.getElementById('batchResumeList');
+                    const noFileText = document.getElementById('batchNoFileText');
+                    
+                    if (batchResumeFiles.length === 0) {
+                        noFileText.style.display = 'block';
+                        fileList.innerHTML = '<p id="batchNoFileText">No files selected</p>';
+                    } else {
+                        let fileItems = '';
+                        batchResumeFiles.forEach(file => {
+                            fileItems += createFileItem(file, 'batch');
+                        });
+                        
+                        fileList.innerHTML = fileItems;
+                    }
+                }
+            }
+        }
+        
+        // Screen single resume
+        document.getElementById('singleResumeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const jobDescription = document.getElementById('jobDescription').value.trim();
+            
+            if (!jobDescription) {
+                showError('singleError', 'Please enter a job description.');
+                return;
+            }
+            
+            if (!singleResumeFile) {
+                showError('singleError', 'Please upload a resume file.');
+                return;
+            }
+            
+            // Hide previous results and errors
+            document.getElementById('singleResult').style.display = 'none';
+            document.getElementById('singleError').style.display = 'none';
+            
+            // Show progress
+            const progress = document.getElementById('singleProgress');
+            const progressBar = document.getElementById('singleProgressBar');
+            const progressInfo = document.getElementById('singleProgressInfo');
+            
+            progress.style.display = 'block';
+            progressBar.style.width = '50%';
+            progressInfo.textContent = 'Processing resume...';
+            
+            // Disable submit button
+            document.getElementById('singleScreenBtn').disabled = true;
+            
+            logDebug(`Submitting single resume for screening: ${singleResumeFile.name}`);
+            logDebug(`Job description length: ${jobDescription.length} chars`);
+            
+            try {
+                // Create form data
+                const formData = new FormData();
+                formData.append('job_description', jobDescription);
+                formData.append('resume_file', singleResumeFile);
+                
+                // Log request details
+                logDebug(`Sending request to: ${API_ENDPOINT}/screen/single`);
+                
+                // Make API request
+                const response = await fetch(`${API_ENDPOINT}/screen/single`, {
+                    method: 'POST',
+                    body: formData
+                }).catch(err => {
+                    logDebug(`Network error: ${err.message}`);
+                    throw err;
+                });
+                
+                progressBar.style.width = '100%';
+                
+                // Log response status
+                logDebug(`Response status: ${response.status} ${response.statusText}`);
+                
+                if (!response.ok) {
+                    // Try to get error details
+                    let errorDetail = '';
+                    try {
+                        const errorResponse = await response.json();
+                        errorDetail = errorResponse.detail || 'Unknown server error';
+                        logDebug(`Error response: ${JSON.stringify(errorResponse, null, 2)}`);
+                    } catch (e) {
+                        // If can't parse JSON, use text
+                        errorDetail = await response.text();
+                        logDebug(`Error response text: ${errorDetail}`);
+                    }
+                    
+                    throw new Error(`Server error: ${errorDetail}`);
+                }
+                
+                const result = await response.json();
+                logDebug(`Response received. Status: ${result.status}`);
+                
+                if (result.status === 'success') {
+                    progressInfo.textContent = 'Analysis complete!';
+                    logDebug(`Analysis complete. Fit score: ${result.result.analysis.overall_fit_score}`);
+                    
+                    // Display results
+                    displaySingleResult(result.result.analysis);
+                } else {
+                    showError('singleError', result.message || 'An error occurred while processing the resume.');
+                    progress.style.display = 'none';
+                }
+            } catch (error) {
+                logDebug(`Error: ${error.message}`);
+                showError('singleError', `Error: ${error.message}`);
+                progress.style.display = 'none';
+            } finally {
+                // Re-enable submit button
+                document.getElementById('singleScreenBtn').disabled = false;
+            }
+        });
+        
+        // Process batch resumes
+        document.getElementById('batchResumeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const jobDescription = document.getElementById('batchJobDescription').value.trim();
+            const outputFormat = document.getElementById('outputFormat').value;
+            
+            if (!jobDescription) {
+                showError('batchError', 'Please enter a job description.');
+                return;
+            }
+            
+            if (batchResumeFiles.length === 0) {
+                showError('batchError', 'Please upload at least one resume file.');
+                return;
+            }
+            
+            // Hide previous results and errors
+            document.getElementById('batchResult').style.display = 'none';
+            document.getElementById('batchError').style.display = 'none';
+            
+            // Show progress
+            const progress = document.getElementById('batchProgress');
+            const progressBar = document.getElementById('batchProgressBar');
+            const progressInfo = document.getElementById('batchProgressInfo');
+            
+            progress.style.display = 'block';
+            progressBar.style.width = '20%';
+            progressInfo.textContent = 'Starting batch processing...';
+            
+            // Disable submit button
+            document.getElementById('batchScreenBtn').disabled = true;
+            
+            logDebug(`Submitting batch of ${batchResumeFiles.length} resumes for screening`);
+            
+            try {
+                // Create form data
+                const formData = new FormData();
+                formData.append('job_description', jobDescription);
+                formData.append('output_format', outputFormat);
+                
+                // Append all resume files
+                batchResumeFiles.forEach(file => {
+                    formData.append('resume_files', file);
+                });
+                
+                logDebug(`Sending batch request to: ${API_ENDPOINT}/screen/batch`);
+                
+                // Make API request to start batch processing
+                const response = await fetch(`${API_ENDPOINT}/screen/batch`, {
+                    method: 'POST',
+                    body: formData
+                }).catch(err => {
+                    logDebug(`Network error: ${err.message}`);
+                    throw err;
+                });
+                
+                // Log response status
+                logDebug(`Response status: ${response.status} ${response.statusText}`);
+                
+                if (!response.ok) {
+                    // Try to get error details
+                    let errorDetail = '';
+                    try {
+                        const errorResponse = await response.json();
+                        errorDetail = errorResponse.detail || 'Unknown server error';
+                        logDebug(`Error response: ${JSON.stringify(errorResponse, null, 2)}`);
+                    } catch (e) {
+                        // If can't parse JSON, use text
+                        errorDetail = await response.text();
+                        logDebug(`Error response text: ${errorDetail}`);
+                    }
+                    
+                    throw new Error(`Server error: ${errorDetail}`);
+                }
+                
+                const result = await response.json();
+                logDebug(`Batch response received. Status: ${result.status}`);
+                
+                if (result.status === 'processing') {
+                    progressInfo.textContent = 'Processing resumes...';
+                    progressBar.style.width = '40%';
+                    
+                    // Start polling for task status
+                    batchTaskId = result.result.task_id;
+                    logDebug(`Task ID: ${batchTaskId}`);
+                    startPolling(batchTaskId);
+                } else {
+                    showError('batchError', result.message || 'An error occurred while starting batch processing.');
+                    progress.style.display = 'none';
+                    document.getElementById('batchScreenBtn').disabled = false;
+                }
+            } catch (error) {
+                logDebug(`Error: ${error.message}`);
+                showError('batchError', `Error: ${error.message}`);
+                progress.style.display = 'none';
+                document.getElementById('batchScreenBtn').disabled = false;
+            }
+        });
+        
+        // Poll for batch task status
+        function startPolling(taskId) {
+            // Clear any existing interval
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+            }
+            
+            // Progress elements
+            const progressBar = document.getElementById('batchProgressBar');
+            const progressInfo = document.getElementById('batchProgressInfo');
+            
+            // Start with 40% progress
+            let progress = 40;
+            
+            logDebug(`Starting polling for task: ${taskId}`);
+            
+            // Poll every 3 seconds
+            pollingInterval = setInterval(async function() {
+                try {
+                    logDebug(`Polling task status: ${taskId}`);
+                    
+                    // Make API request to check task status
+                    const response = await fetch(`${API_ENDPOINT}/task/${taskId}/status`);
+                    const result = await response.json();
+                    
+                    logDebug(`Task status: ${result.status}`);
+                    
+                    if (result.status === 'completed') {
+                        // Task completed
+                        clearInterval(pollingInterval);
+                        
+                        // Update progress
+                        progressBar.style.width = '100%';
+                        progressInfo.textContent = 'Processing complete!';
+                        
+                        // Display results
+                        displayBatchResult(result);
+                        
+                        // Store result file
+                        batchResultFile = result.result_file;
+                        
+                        // Re-enable submit button
+                        document.getElementById('batchScreenBtn').disabled = false;
+                        
+                        logDebug(`Batch processing complete. Result file: ${batchResultFile}`);
+                    } else if (result.status === 'error') {
+                        // Task failed
+                        clearInterval(pollingInterval);
+                        
+                        // Show error
+                        showError('batchError', result.message || 'An error occurred during batch processing.');
+                        
+                        // Hide progress
+                        document.getElementById('batchProgress').style.display = 'none';
+                        
+                        // Re-enable submit button
+                        document.getElementById('batchScreenBtn').disabled = false;
+                        
+                        logDebug(`Batch processing failed: ${result.message}`);
+                    } else {
+                        // Task still processing
+                        // Increment progress up to 90%
+                        if (progress < 90) {
+                            progress += 5;
+                            progressBar.style.width = `${progress}%`;
+                        }
+                        logDebug(`Task still processing. Progress: ${progress}%`);
+                    }
+                } catch (error) {
+                    console.error('Error polling task status:', error);
+                    logDebug(`Error polling task status: ${error.message}`);
+                }
+            }, 3000);
+        }
+        
+        // Display single resume result
+        function displaySingleResult(analysis) {
+            const resultDiv = document.getElementById('singleResult');
+            
+            // Set candidate name
+            document.getElementById('candidateName').textContent = analysis.candidate_name;
+            
+            // Set fit score
+            const scoreDiv = document.getElementById('fitScore');
+            scoreDiv.textContent = analysis.overall_fit_score;
+            
+            // Set score class
+            scoreDiv.className = 'score';
+            if (analysis.overall_fit_score >= 80) {
+                scoreDiv.classList.add('high-score');
+            } else if (analysis.overall_fit_score >= 60) {
+                scoreDiv.classList.add('medium-score');
+            } else {
+                scoreDiv.classList.add('low-score');
+            }
+            
+            // Set summary
+            document.getElementById('summary').textContent = analysis.summary;
+            
+            // Set skills
+            const skillsPresentDiv = document.getElementById('skillsPresent');
+            const skillsMissingDiv = document.getElementById('skillsMissing');
+            
+            skillsPresentDiv.innerHTML = '';
+            skillsMissingDiv.innerHTML = '';
+            
+            analysis.skill_matches.forEach(skill => {
+                const skillElement = document.createElement('div');
+                skillElement.className = skill.present_in_resume ? 'skill present' : 'skill missing';
+                skillElement.textContent = skill.skill_name;
+                
+                if (skill.present_in_resume) {
+                    skillsPresentDiv.appendChild(skillElement);
+                } else {
+                    skillsMissingDiv.appendChild(skillElement);
+                }
+            });
+            
+            // Set experience
+            const experienceListDiv = document.getElementById('experienceList');
+            experienceListDiv.innerHTML = '';
+            
+            analysis.experience_matches.forEach(exp => {
+                const expElement = document.createElement('div');
+                expElement.className = 'experience-item';
+                
+                const sufficient = exp.years_present >= exp.years_required;
+                
+                expElement.innerHTML = `
+                    <div class="experience-area">${exp.area}</div>
+                    <div class="experience-years ${sufficient ? 'sufficient' : 'insufficient'}">
+                        ${exp.years_present} / ${exp.years_required} years
+                    </div>
+                `;
+                
+                experienceListDiv.appendChild(expElement);
+            });
+            
+            // Set education
+            document.getElementById('education').textContent = 
+                `${analysis.education_match.has_match ? '✓' : '✗'} ${analysis.education_match.details}`;
+            
+            // Set strengths
+            const strengthsList = document.getElementById('strengths');
+            strengthsList.innerHTML = '';
+            
+            analysis.strengths.forEach(strength => {
+                const li = document.createElement('li');
+                li.textContent = strength;
+                strengthsList.appendChild(li);
+            });
+            
+            // Set gaps
+            const gapsList = document.getElementById('gaps');
+            gapsList.innerHTML = '';
+            
+            analysis.gaps.forEach(gap => {
+                const li = document.createElement('li');
+                li.textContent = gap;
+                gapsList.appendChild(li);
+            });
+            
+            // Show result
+            resultDiv.style.display = 'block';
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Display batch result
+        function displayBatchResult(result) {
+            const resultDiv = document.getElementById('batchResult');
+            const summaryDiv = document.getElementById('batchSummary');
+            
+            // Get summary
+            const summary = result.result.summary;
+            
+            summaryDiv.innerHTML = `
+                <p><strong>Total Resumes:</strong> ${summary.total_resumes}</p>
+                <p><strong>Successfully Analyzed:</strong> ${summary.successfully_analyzed}</p>
+                <p><strong>Average Score:</strong> ${summary.average_score.toFixed(2)}</p>
+                <p><strong>Top Candidate:</strong> ${summary.top_candidate} (Score: ${summary.top_score})</p>
+                <p><strong>Processing Time:</strong> ${summary.processing_time_seconds.toFixed(2)} seconds</p>
+            `;
+            
+            // Show result
+            resultDiv.style.display = 'block';
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Download batch results
+        function downloadResults() {
+            if (batchResultFile) {
+                const url = `${API_ENDPOINT}/download/${batchResultFile}`;
+                logDebug(`Downloading results from: ${url}`);
+                window.location.href = url;
+            }
+        }
+        
+        // Generate job description
+        document.getElementById('jobDescriptionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            const companyName = document.getElementById('companyName').value.trim();
+            const basicDescription = document.getElementById('basicDescription').value.trim();
+            
+            if (!jobTitle || !companyName || !basicDescription) {
+                showError('descriptionError', 'Please fill out all fields.');
+                return;
+            }
+            
+            // Hide previous results and errors
+            document.getElementById('descriptionResult').style.display = 'none';
+            document.getElementById('descriptionError').style.display = 'none';
+            
+            // Show progress
+            const progress = document.getElementById('descriptionProgress');
+            const progressBar = document.getElementById('descriptionProgressBar');
+            
+            progress.style.display = 'block';
+            progressBar.style.width = '50%';
+            
+            // Disable submit button
+            document.getElementById('generateDescriptionBtn').disabled = true;
+            
+            logDebug(`Generating job description for: ${jobTitle} at ${companyName}`);
+            
+            try {
+                // Make API request
+                const response = await fetch(`${API_ENDPOINT}/job-description/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: jobTitle,
+                        company: companyName,
+                        description: basicDescription
+                    })
+                }).catch(err => {
+                    logDebug(`Network error: ${err.message}`);
+                    throw err;
+                });
+                
+                progressBar.style.width = '100%';
+                
+                // Log response status
+                logDebug(`Response status: ${response.status} ${response.statusText}`);
+                
+                if (!response.ok) {
+                    // Try to get error details
+                    let errorDetail = '';
+                    try {
+                        const errorResponse = await response.json();
+                        errorDetail = errorResponse.detail || 'Unknown server error';
+                        logDebug(`Error response: ${JSON.stringify(errorResponse)}`);
+                    } catch (e) {
+                        // If can't parse JSON, use text
+                        errorDetail = await response.text();
+                        logDebug(`Error response text: ${errorDetail}`);
+                    }
+                    
+                    throw new Error(`Server error: ${errorDetail}`);
+                }
+                
+                const result = await response.json();
+                
+                if (response.ok && result.status === 'success') {
+                    // Display generated description
+                    document.getElementById('generatedDescription').textContent = result.result.job_description;
+                    document.getElementById('descriptionResult').style.display = 'block';
+                    
+                    // Scroll to result
+                    document.getElementById('descriptionResult').scrollIntoView({ behavior: 'smooth' });
+                    
+                    logDebug(`Job description generated successfully (${result.result.job_description.length} chars)`);
+                } else {
+                    showError('descriptionError', result.message || 'An error occurred while generating job description.');
+                }
+            } catch (error) {
+                logDebug(`Error: ${error.message}`);
+                showError('descriptionError', `Error: ${error.message}`);
+            } finally {
+                // Hide progress
+                progress.style.display = 'none';
+                
+                // Re-enable submit button
+                document.getElementById('generateDescriptionBtn').disabled = false;
+            }
+        });
+        
+        // Copy job description to clipboard
+        function copyDescription() {
+            const description = document.getElementById('generatedDescription').textContent;
+            
+            navigator.clipboard.writeText(description).then(function() {
+                alert('Job description copied to clipboard!');
+                logDebug('Job description copied to clipboard');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+                logDebug(`Copy error: ${err.message}`);
+            });
+        }
+        
+        // Use generated description for screening
+        function useForScreening() {
+            const description = document.getElementById('generatedDescription').textContent;
+            
+            // Switch to single tab
+            switchTab('single');
+            
+            // Set job description
+            document.getElementById('jobDescription').value = description;
+            
+            // Focus on resume upload
+            document.getElementById('singleResumeUpload').focus();
+            
+            logDebug('Job description transferred to screening tab');
+        }
+        
+        // Show error message
+        function showError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            logDebug(`Error shown: ${message}`);
+        }
+        
+        // Load Font Awesome
+        document.addEventListener('DOMContentLoaded', function() {
+            const fontAwesome = document.createElement('link');
+            fontAwesome.rel = 'stylesheet';
+            fontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css';
+            document.head.appendChild(fontAwesome);
+            logDebug('Font Awesome loaded');
+            
+            // Check if API is reachable
+            checkAPIHealth();
+        });
+    </script>
+</body>
+</html>
