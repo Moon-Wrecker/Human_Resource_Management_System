@@ -350,7 +350,8 @@ class Goal(Base):
     # Goal details
     title = Column(String(200), nullable=False)
     description = Column(Text)
-    category = Column(String(100))  # learning, performance, project
+    category_id = Column(Integer, ForeignKey('goal_categories.id'))
+    priority = Column(String(20), default="medium")  # low, medium, high
     
     # Timeline
     start_date = Column(Date, nullable=False)
@@ -361,15 +362,26 @@ class Goal(Base):
     status = Column(Enum(GoalStatus), default=GoalStatus.NOT_STARTED)
     progress_percentage = Column(Float, default=0.0)
     
+    # Goal type
+    is_personal = Column(Boolean, default=False)  # True if self-created, False if assigned
+    
+    # Template reference
+    template_id = Column(Integer, ForeignKey('goal_templates.id'))
+    
     # Metadata
     assigned_by = Column(Integer, ForeignKey('users.id'))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_deleted = Column(Boolean, default=False)
     
     # Relationships
     employee = relationship("User", foreign_keys=[employee_id], back_populates="goals")
     assigned_by_user = relationship("User", foreign_keys=[assigned_by])
+    category = relationship("GoalCategory", back_populates="goals")
+    template = relationship("GoalTemplate", foreign_keys=[template_id])
     checkpoints = relationship("GoalCheckpoint", back_populates="goal", cascade="all, delete-orphan")
+    comments = relationship("GoalComment", back_populates="goal", cascade="all, delete-orphan")
+    history = relationship("GoalHistory", back_populates="goal", cascade="all, delete-orphan")
 
 # Goal Checkpoints Model
 class GoalCheckpoint(Base):
@@ -386,12 +398,15 @@ class GoalCheckpoint(Base):
     # Status
     is_completed = Column(Boolean, default=False)
     completed_date = Column(DateTime)
+    completed_by = Column(Integer, ForeignKey('users.id'))
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
     goal = relationship("Goal", back_populates="checkpoints")
+    completed_by_user = relationship("User", foreign_keys=[completed_by])
 
 # Skill Development Model
 class SkillDevelopment(Base):
@@ -679,3 +694,93 @@ class SkillModuleEnrollment(Base):
     # Relationships
     employee = relationship("User", back_populates="skill_enrollments")
     module = relationship("SkillModule", back_populates="enrollments")
+
+# Goal Categories Model (Master data for goal categorization)
+class GoalCategory(Base):
+    __tablename__ = 'goal_categories'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=True, nullable=False)
+    description = Column(Text)
+    color_code = Column(String(20))  # For UI visualization
+    icon = Column(String(50))  # Icon identifier
+    is_active = Column(Boolean, default=True)
+    created_by = Column(Integer, ForeignKey('users.id'))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    created_by_user = relationship("User", foreign_keys=[created_by])
+    goals = relationship("Goal", back_populates="category")
+
+# Goal Templates Model (Reusable goal structures)
+class GoalTemplate(Base):
+    __tablename__ = 'goal_templates'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    category_id = Column(Integer, ForeignKey('goal_categories.id'))
+    priority = Column(String(20), default="medium")
+    default_duration_days = Column(Integer)  # Suggested duration
+    
+    # Template checkpoints (JSON stored as text)
+    checkpoint_template = Column(Text)  # JSON array of checkpoint titles/descriptions
+    
+    # Metadata
+    is_active = Column(Boolean, default=True)
+    created_by = Column(Integer, ForeignKey('users.id'))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    usage_count = Column(Integer, default=0)
+    
+    # Relationships
+    created_by_user = relationship("User", foreign_keys=[created_by])
+    category = relationship("GoalCategory", foreign_keys=[category_id])
+
+# Goal Comments Model (Collaboration and updates)
+class GoalComment(Base):
+    __tablename__ = 'goal_comments'
+    
+    id = Column(Integer, primary_key=True)
+    goal_id = Column(Integer, ForeignKey('goals.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    
+    # Comment content
+    comment = Column(Text, nullable=False)
+    comment_type = Column(String(50))  # update, feedback, question, blocker
+    
+    # Attachments (optional)
+    attachment_path = Column(String(255))
+    
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_deleted = Column(Boolean, default=False)
+    
+    # Relationships
+    goal = relationship("Goal", back_populates="comments")
+    user = relationship("User", foreign_keys=[user_id])
+
+# Goal History Model (Audit trail for performance reports)
+class GoalHistory(Base):
+    __tablename__ = 'goal_history'
+    
+    id = Column(Integer, primary_key=True)
+    goal_id = Column(Integer, ForeignKey('goals.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    
+    # Change tracking
+    action = Column(String(50), nullable=False)  # created, updated, status_changed, checkpoint_completed, deleted
+    field_name = Column(String(100))  # Which field changed
+    old_value = Column(Text)  # Previous value (JSON if complex)
+    new_value = Column(Text)  # New value (JSON if complex)
+    
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    ip_address = Column(String(50))
+    user_agent = Column(String(255))
+    
+    # Relationships
+    goal = relationship("Goal", back_populates="history")
+    user = relationship("User", foreign_keys=[user_id])

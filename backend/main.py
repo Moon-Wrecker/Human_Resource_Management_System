@@ -172,12 +172,12 @@ async def api_v1_root():
                 "leaves": "/api/v1/leaves",
                 "goals": "/api/v1/goals",
                 "skills": "/api/v1/skills",
+                "requests": "/api/v1/requests",
                 "announcements": "/api/v1/announcements",
                 "policies": "/api/v1/policies",
                 "holidays": "/api/v1/holidays",
                 "departments": "/api/v1/departments",
                 "organization": "/api/v1/organization",
-                "employees": "/api/v1/employees",
                 "ai_policy_rag": "/api/v1/ai/policy-rag",
                 "ai_resume_screener": "/api/v1/ai/resume-screener",
                 "ai_job_description": "/api/v1/ai/job-description"
@@ -200,6 +200,10 @@ from routes.holidays import router as holidays_router
 from routes.departments import router as departments_router
 from routes.organization import router as organization_router
 from routes.employees import router as employees_router
+from routes.leaves import router as leaves_router
+from routes.skills import router as skills_router
+from routes.requests import router as requests_router
+from routes.goals import router as goals_router
 
 # Import AI routers (optional - will load if dependencies available)
 try:
@@ -228,6 +232,10 @@ app.include_router(holidays_router, prefix="/api/v1")
 app.include_router(departments_router, prefix="/api/v1")
 app.include_router(organization_router, prefix="/api/v1")
 app.include_router(employees_router, prefix="/api/v1")
+app.include_router(leaves_router, prefix="/api/v1")
+app.include_router(skills_router, prefix="/api/v1")
+app.include_router(requests_router, prefix="/api/v1")
+app.include_router(goals_router, prefix="/api/v1")
 
 # Include AI routers if available
 if AI_ROUTES_AVAILABLE:
