@@ -1,6 +1,25 @@
 """
-Job Description Generator AI Routes
-AI-powered job description generation with dual modes
+Job Description Generator AI Routes - GenAI Integration
+AI-powered job description generation with dual modes (preview/save)
+
+**User Story Implemented:**
+- HR Manager: Job Description Management - Efficiently create and manage job descriptions with 
+  structured approach to save time and maintain up-to-date role definitions
+
+**GenAI Integration:**
+- Uses Google Gemini API for professional JD generation
+- Template-based structured output
+- Context-aware content generation
+- SEO and ATS optimization
+
+**Key Features:**
+- Dual mode: Generate for review OR Save as draft
+- Professional, compelling content generation
+- Structured sections (summary, responsibilities, qualifications, benefits)
+- Company culture integration
+- SEO keyword extraction
+- Improvement suggestions for existing JDs
+- ATS-friendly formatting
 """
 import logging
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -18,7 +37,14 @@ from ai_services.job_description_generator_service import JobDescriptionGenerato
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/ai/job-description", tags=["AI - Job Description Generator"])
+router = APIRouter(
+    prefix="/ai/job-description",
+    tags=["AI - Job Description Generator"],
+    responses={
+        503: {"description": "Service Unavailable - AI service not configured"},
+        500: {"description": "Internal Server Error - Generation failed"}
+    }
+)
 
 # Singleton instance
 _jd_generator_service = None
@@ -39,27 +65,104 @@ def get_jd_generator_service() -> JobDescriptionGeneratorService:
     return _jd_generator_service
 
 
-@router.post("/generate", response_model=JobDescriptionGenerateResponse)
+@router.post(
+    "/generate",
+    response_model=JobDescriptionGenerateResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Generate Job Description with AI (GenAI)",
+    description="Create professional, ATS-optimized job descriptions using Google Gemini",
+    responses={
+        201: {
+            "description": "Job description generated successfully",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "success": True,
+                        "data": {
+                            "title": "Senior Software Engineer",
+                            "summary": "We are seeking an experienced Senior Software Engineer...",
+                            "key_responsibilities": [
+                                "Design and develop scalable backend systems",
+                                "Lead technical architecture decisions",
+                                "Mentor junior developers"
+                            ],
+                            "required_qualifications": [
+                                "5+ years of software development experience",
+                                "Strong proficiency in Python and JavaScript",
+                                "Experience with cloud platforms (AWS/GCP)"
+                            ],
+                            "preferred_qualifications": [
+                                "Experience with microservices architecture",
+                                "Knowledge of DevOps practices"
+                            ],
+                            "benefits": ["Competitive salary", "Health insurance", "Remote work"],
+                            "full_description": "Complete formatted JD..."
+                        },
+                        "job_listing_id": 42,
+                        "message": "Job description saved as draft"
+                    }
+                }
+            }
+        },
+        400: {"description": "Bad Request - Invalid input data"},
+        403: {"description": "Forbidden - HR access required"}
+    }
+)
 async def generate_job_description(
     request: JobDescriptionGenerateRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Generate a professional job description using AI
+    ## Generate Job Description with AI - Automated JD Creation
+    
+    **User Story:**
+    - **HR Manager - Job Description Management**: Saves time creating professional job descriptions
+      with AI-powered generation that maintains consistency and quality
     
     **Two Modes:**
-    1. **Generate Only** (`save_as_draft=False`): Returns JD for review/editing
-    2. **Save as Draft** (`save_as_draft=True`): Creates job listing draft in database
+    1. **Preview Mode** (`save_as_draft=False`): Generate and review before saving
+    2. **Draft Mode** (`save_as_draft=True`): Automatically save as job listing draft
     
-    The AI generates:
-    - Compelling job summary
-    - Detailed responsibilities
-    - Clear qualifications (required & preferred)
-    - Benefits section
-    - Complete, ready-to-publish description
+    **Features:**
+    - **Professional Content**: AI generates compelling, clear job descriptions
+    - **Structured Output**: Summary, responsibilities, qualifications, benefits
+    - **Company Culture Integration**: Incorporates company values and culture
+    - **ATS Optimization**: Formatted for Applicant Tracking Systems
+    - **SEO Friendly**: Includes relevant keywords
+    - **Customizable**: Accepts detailed requirements and preferences
+    
+    **How it Works:**
+    1. Accepts job details, requirements, and company info
+    2. Gemini AI generates structured, professional content
+    3. Returns formatted JD with all required sections
+    4. Optionally saves as draft job listing in database
+    
+    **Request Body:**
+    - `job_title` (required): Job title
+    - `job_level` (required): Entry/Mid/Senior/Lead
+    - `department` (optional): Department name
+    - `location` (optional): Job location or "Remote"
+    - `employment_type` (optional): Full-time/Part-time/Contract
+    - `responsibilities` (optional): List of key responsibilities
+    - `requirements` (optional): List of qualifications with required/preferred flag
+    - `company_info` (optional): Company name, description, industry, values
+    - `salary_range` (optional): Salary range
+    - `benefits` (optional): List of benefits
+    - `save_as_draft` (optional): Whether to save as job listing draft
+    
+    **Response:**
+    - Generated JD content with all sections
+    - Job listing ID if saved as draft
+    - Success message
+    
+    **Error Handling:**
+    - Validates HR permission
+    - Handles AI generation failures gracefully
+    - Returns detailed error messages
     
     **Access**: HR only
+    **Performance**: Typically 5-10 seconds for generation
     """
     # Check HR permission
     if current_user.role != UserRole.HR:

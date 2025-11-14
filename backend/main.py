@@ -22,14 +22,109 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Create FastAPI app
+# Create FastAPI app with comprehensive metadata
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="GenAI-powered Human Resource Management System API",
+    description="""
+# PulseTrack HRMS - GenAI-Powered Human Resource Management System
+
+## Overview
+PulseTrack HRMS is a comprehensive, AI-powered Human Resource Management System designed to revolutionize 
+workforce management by making HR processes smarter, faster, and more human-centric.
+
+## Key Features
+- 🤖 **AI-Powered**: Integrated GenAI services (Policy RAG, Resume Screening, JD Generation)
+- 👥 **Multi-Role Support**: HR, Managers, Employees, Executives, IT Admins
+- 📊 **Real-time Dashboards**: Role-specific dashboards with analytics
+- 🎯 **Performance Tracking**: Goals, feedback, and skill development
+- 📋 **Leave Management**: Comprehensive leave and attendance tracking
+- 💼 **Recruitment**: Job posting, applications, AI resume screening
+- 📄 **Policy Management**: 24/7 AI chatbot for policy queries
+
+## GenAI Integrations
+- **Google Gemini API**: For natural language processing and content generation
+- **ChromaDB**: Vector database for semantic search
+- **Langchain**: RAG pipeline orchestration
+- **PyPDF2**: Document processing
+
+## User Stories Implemented (16 Total)
+### HR Manager (6)
+1. Dashboard Monitoring - Real-time workforce analytics
+2. Job Description Management - AI-powered JD generation
+3. Job Posting Management - Centralized job portal
+4. Employee Database - Complete employee information system
+5. Resume Screening - AI-powered candidate matching
+6. Policy Access - 24/7 self-service policy portal
+
+### Employee (4)
+7. Performance Tracking - View metrics and feedback
+8. Payslip Access - Download monthly payslips
+9. Leave Notifications - Timely approval notifications
+10. Policy Queries - AI chatbot for instant answers
+
+### Team Lead (4)
+11. Skill Development - Team skill module access
+12. Goal Setting - Set and track employee goals
+13. Team Performance Dashboard - Monitor team progress
+14. Employee Reviews - Provide continuous feedback
+
+### Executive (1)
+15. Strategic Analytics - High-level HR insights
+
+### IT Administrator (1)
+16. System Administration - User roles and permissions
+
+## Authentication
+All endpoints require JWT authentication unless specified otherwise.
+Include the JWT token in the Authorization header: `Bearer <token>`
+
+## Error Handling
+All endpoints follow consistent error response format with proper HTTP status codes.
+
+## Documentation
+- Interactive API Docs: /api/docs (Swagger UI)
+- Alternative Docs: /api/redoc (ReDoc)
+- OpenAPI JSON: /api/openapi.json
+- OpenAPI YAML: /api/openapi.yaml (downloadable)
+    """,
     docs_url="/api/docs",
     redoc_url="/api/redoc",
-    openapi_url="/api/openapi.json"
+    openapi_url="/api/openapi.json",
+    contact={
+        "name": "PulseTrack HRMS Team 11",
+        "email": "support@pulsetrack-hrms.com"
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT"
+    },
+    openapi_tags=[
+        {"name": "Root", "description": "Root and health check endpoints"},
+        {"name": "Health", "description": "Health check endpoints"},
+        {"name": "API", "description": "API information endpoints"},
+        {"name": "Authentication", "description": "User authentication and authorization"},
+        {"name": "Dashboard", "description": "Role-specific dashboard endpoints - **User Stories: Dashboard Monitoring, Team Performance Dashboard, Strategic Analytics**"},
+        {"name": "Employee Management", "description": "Employee CRUD operations (HR only) - **User Story: Employee Database**"},
+        {"name": "Profile", "description": "User profile management"},
+        {"name": "Attendance", "description": "Attendance tracking and management"},
+        {"name": "Leave Management", "description": "Leave requests and approvals - **User Story: Leave Notifications**"},
+        {"name": "Jobs", "description": "Job listings management - **User Story: Job Posting Management**"},
+        {"name": "Applications", "description": "Job applications management"},
+        {"name": "Feedback", "description": "Performance feedback system - **User Stories: Performance Tracking, Employee Reviews**"},
+        {"name": "Payslips", "description": "Payslip management and access - **User Story: Payslip Access**"},
+        {"name": "Goals", "description": "Goal setting and tracking - **User Story: Goal Setting**"},
+        {"name": "Skills", "description": "Skill development and modules - **User Story: Skill Development**"},
+        {"name": "Policies", "description": "Company policy management"},
+        {"name": "Announcements", "description": "Company announcements"},
+        {"name": "Holidays", "description": "Holiday calendar management"},
+        {"name": "Departments", "description": "Department management"},
+        {"name": "Organization", "description": "Organization structure"},
+        {"name": "Requests", "description": "Various employee requests (WFH, equipment, etc.)"},
+        {"name": "AI - Policy RAG", "description": "**[GenAI]** AI-powered policy Q&A chatbot - **User Stories: Policy Access, Policy Queries**"},
+        {"name": "AI - Resume Screener", "description": "**[GenAI]** AI-powered resume screening - **User Story: Resume Screening**"},
+        {"name": "AI - Job Description Generator", "description": "**[GenAI]** AI-powered JD generation - **User Story: Job Description Management**"}
+    ]
 )
 
 # Configure CORS
@@ -149,6 +244,28 @@ async def health_check():
         }
     }
 
+# OpenAPI YAML endpoint
+@app.get("/api/openapi.yaml", tags=["API"], include_in_schema=False)
+async def get_openapi_yaml():
+    """
+    Download OpenAPI specification as YAML
+    
+    Provides the complete API specification in YAML format, compatible with Swagger and other tools.
+    """
+    from fastapi.responses import Response
+    import yaml
+    
+    openapi_schema = app.openapi()
+    yaml_content = yaml.dump(openapi_schema, sort_keys=False, default_flow_style=False, allow_unicode=True)
+    
+    return Response(
+        content=yaml_content,
+        media_type="application/x-yaml",
+        headers={
+            "Content-Disposition": "attachment; filename=openapi.yaml"
+        }
+    )
+
 # API v1 Router placeholder
 @app.get("/api/v1", tags=["API"])
 async def api_v1_root():
@@ -181,6 +298,12 @@ async def api_v1_root():
                 "ai_policy_rag": "/api/v1/ai/policy-rag",
                 "ai_resume_screener": "/api/v1/ai/resume-screener",
                 "ai_job_description": "/api/v1/ai/job-description"
+            },
+            "documentation": {
+                "swagger_ui": "/api/docs",
+                "redoc": "/api/redoc",
+                "openapi_json": "/api/openapi.json",
+                "openapi_yaml": "/api/openapi.yaml"
             }
         }
     }

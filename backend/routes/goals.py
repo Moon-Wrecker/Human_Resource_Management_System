@@ -671,9 +671,9 @@ async def create_template(
     description="Get all goal templates"
 )
 async def get_templates(
-    include_inactive: bool = Query(False, description="Include inactive templates"),
     current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    include_inactive: bool = Query(False, description="Include inactive templates")
 ):
     """
     ## Get Goal Templates
