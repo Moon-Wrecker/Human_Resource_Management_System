@@ -165,15 +165,22 @@ async def api_v1_root():
                 "users": "/api/v1/users",
                 "jobs": "/api/v1/jobs",
                 "applications": "/api/v1/applications",
+                "feedback": "/api/v1/feedback",
+                "payslips": "/api/v1/payslips",
                 "employees": "/api/v1/employees",
                 "attendance": "/api/v1/attendance",
                 "leaves": "/api/v1/leaves",
                 "goals": "/api/v1/goals",
                 "skills": "/api/v1/skills",
-                "feedback": "/api/v1/feedback",
                 "announcements": "/api/v1/announcements",
                 "policies": "/api/v1/policies",
-                "payslips": "/api/v1/payslips"
+                "holidays": "/api/v1/holidays",
+                "departments": "/api/v1/departments",
+                "organization": "/api/v1/organization",
+                "employees": "/api/v1/employees",
+                "ai_policy_rag": "/api/v1/ai/policy-rag",
+                "ai_resume_screener": "/api/v1/ai/resume-screener",
+                "ai_job_description": "/api/v1/ai/job-description"
             }
         }
     }
@@ -185,6 +192,26 @@ from routes.profile import router as profile_router
 from routes.attendance import router as attendance_router
 from routes.jobs import router as jobs_router
 from routes.applications import router as applications_router
+from routes.announcements import router as announcements_router
+from routes.policies import router as policies_router
+from routes.feedback import router as feedback_router
+from routes.payslips import router as payslips_router
+from routes.holidays import router as holidays_router
+from routes.departments import router as departments_router
+from routes.organization import router as organization_router
+from routes.employees import router as employees_router
+
+# Import AI routers (optional - will load if dependencies available)
+try:
+    from routes.ai_policy_rag import router as ai_policy_rag_router
+    from routes.ai_resume_screener import router as ai_resume_screener_router
+    from routes.ai_job_description import router as ai_job_description_router
+    AI_ROUTES_AVAILABLE = True
+    logger.info("AI services routes loaded successfully")
+except ImportError as e:
+    AI_ROUTES_AVAILABLE = False
+    logger.warning(f"AI services not available: {e}")
+    logger.warning("Install AI dependencies with: pip install -r requirements_ai.txt")
 
 # Include routers
 app.include_router(auth_router, prefix="/api/v1")
@@ -193,6 +220,21 @@ app.include_router(profile_router, prefix="/api/v1")
 app.include_router(attendance_router, prefix="/api/v1")
 app.include_router(jobs_router, prefix="/api/v1")
 app.include_router(applications_router, prefix="/api/v1")
+app.include_router(announcements_router, prefix="/api/v1")
+app.include_router(policies_router, prefix="/api/v1")
+app.include_router(feedback_router, prefix="/api/v1")
+app.include_router(payslips_router, prefix="/api/v1")
+app.include_router(holidays_router, prefix="/api/v1")
+app.include_router(departments_router, prefix="/api/v1")
+app.include_router(organization_router, prefix="/api/v1")
+app.include_router(employees_router, prefix="/api/v1")
+
+# Include AI routers if available
+if AI_ROUTES_AVAILABLE:
+    app.include_router(ai_policy_rag_router, prefix="/api/v1")
+    app.include_router(ai_resume_screener_router, prefix="/api/v1")
+    app.include_router(ai_job_description_router, prefix="/api/v1")
+    logger.info("AI routes registered: Policy RAG, Resume Screener, JD Generator")
 
 # Mount static files for uploads (must be after routers)
 if os.path.exists(settings.UPLOAD_DIR):

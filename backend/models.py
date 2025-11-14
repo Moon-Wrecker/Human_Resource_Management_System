@@ -331,11 +331,14 @@ class Payslip(Base):
     # Document
     payslip_file_path = Column(String(255))
     
-    # Timestamps
+    # Metadata
+    issued_by = Column(Integer, ForeignKey('users.id'))
+    issued_at = Column(DateTime, default=datetime.utcnow)
     generated_date = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
-    employee = relationship("User", back_populates="payslips")
+    employee = relationship("User", foreign_keys=[employee_id], back_populates="payslips")
+    issued_by_user = relationship("User", foreign_keys=[issued_by])
 
 # Goals and Performance Model
 class Goal(Base):
@@ -452,6 +455,20 @@ class Policy(Base):
     
     # Relationships
     created_by_user = relationship("User")
+    acknowledgments = relationship("PolicyAcknowledgment", back_populates="policy", cascade="all, delete-orphan")
+
+# Policy Acknowledgment Model (for tracking who has acknowledged policies)
+class PolicyAcknowledgment(Base):
+    __tablename__ = 'policy_acknowledgments'
+    
+    id = Column(Integer, primary_key=True)
+    policy_id = Column(Integer, ForeignKey('policies.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    acknowledged_date = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    policy = relationship("Policy", back_populates="acknowledgments")
+    user = relationship("User")
 
 # Resume Screening Results Model
 class ResumeScreeningResult(Base):
