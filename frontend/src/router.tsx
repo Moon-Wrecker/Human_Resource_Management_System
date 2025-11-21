@@ -1,6 +1,9 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
+import RootLayout from "@/layouts/RootLayout";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { UserRole } from "@/types/auth";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
@@ -52,18 +55,26 @@ const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackReport"));
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <RootLayout />,
     children: [
       {
-        index: true,
-        element: <Home />,
+        path: "/",
+        element: <App />,
+        children: [
+          {
+            index: true,
+            element: <Home />,
+          },
+        ],
       },
-    ],
-  },
-  { path: "/login", element: <Login /> },
+      { path: "/login", element: <Login /> },
   {
     path: "/employee",
-    element: <Employee />,
+    element: (
+      <ProtectedRoute allowedRoles={[UserRole.EMPLOYEE, UserRole.MANAGER]}>
+        <Employee />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -121,7 +132,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/hr",
-    element: <HR />,
+    element: (
+      <ProtectedRoute allowedRoles={[UserRole.HR, UserRole.ADMIN]}>
+        <HR />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -179,11 +194,19 @@ const router = createBrowserRouter([
         path: "performance-report",
         element: <PerformanceReport />,
       },
+      {
+        path: "profile",
+        element: <EmployeeProfile />,
+      },
     ],
   },
   {
     path: "/manager",
-    element: <Manager />,
+    element: (
+      <ProtectedRoute allowedRoles={[UserRole.MANAGER]}>
+        <Manager />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -225,6 +248,8 @@ const router = createBrowserRouter([
         path: "profile",
         element: <EmployeeProfile />,
       },
+    ],
+  },
     ],
   },
 ]);

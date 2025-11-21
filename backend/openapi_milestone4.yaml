@@ -1,0 +1,1470 @@
+openapi: 3.0.3
+info:
+  title: PulseTrack HRMS API - Milestone 4
+  version: 1.0.0
+  description: |
+    # PulseTrack HRMS - GenAI-Powered Human Resource Management System
+    
+    ## Project Information
+    - **Team**: Team 11, IIT Madras
+    - **Course**: Software Engineering (SEP 2025)
+    - **Milestone**: 4 - API Endpoints Documentation
+    
+    ## Overview
+    PulseTrack HRMS is a comprehensive, AI-powered Human Resource Management System designed to revolutionize 
+    workforce management by making HR processes smarter, faster, and more human-centric.
+    
+    ## GenAI Integrations
+    This system integrates multiple GenAI services to automate and enhance HR processes:
+    
+    ### 1. Google Gemini API
+    - **Purpose**: Natural language processing, content generation, and intelligent analysis
+    - **Used In**: Policy RAG, Resume Screening, Job Description Generation
+    - **Model**: gemini-1.5-flash
+    - **Features**: Text generation, embedding, multi-turn conversations
+    
+    ### 2. ChromaDB
+    - **Purpose**: Vector database for semantic search
+    - **Used In**: Policy RAG for document similarity search
+    - **Features**: Persistent storage, similarity search, metadata filtering
+    
+    ### 3. Langchain
+    - **Purpose**: RAG pipeline orchestration
+    - **Used In**: Policy RAG question-answering system
+    - **Features**: Document loading, text splitting, retrieval chains
+    
+    ### 4. PyPDF2
+    - **Purpose**: PDF text extraction
+    - **Used In**: Resume Screener, Policy document processing
+    - **Features**: Text extraction from uploaded PDF files
+    
+    ## User Stories Implemented (16 Total)
+    
+    ### HR Manager User Stories (6)
+    1. **Dashboard Monitoring** - Access real-time dashboard showing department-wise attendance and employee headcount
+       - APIs: GET /api/v1/dashboard/hr
+    
+    2. **Job Description Management** - Efficiently create and manage job descriptions with AI
+       - APIs: POST /api/v1/ai/job-description/generate, GET /api/v1/jobs, POST /api/v1/jobs
+    
+    3. **Job Posting Management** - Manage all job postings in centralized portal
+       - APIs: GET /api/v1/jobs, PUT /api/v1/jobs/{id}, DELETE /api/v1/jobs/{id}
+    
+    4. **Employee Database** - Maintain and update employee information
+       - APIs: GET /api/v1/employees, POST /api/v1/employees, PUT /api/v1/employees/{id}, GET /api/v1/employees/stats
+    
+    5. **Resume Screening** - AI-powered resume screening to shortlist candidates
+       - APIs: POST /api/v1/ai/resume-screener/screen, GET /api/v1/ai/resume-screener/results/{id}
+    
+    6. **Policy Access** - Make company policies accessible 24/7 through self-service portal
+       - APIs: POST /api/v1/ai/policy-rag/ask, GET /api/v1/policies, POST /api/v1/policies
+    
+    ### Employee User Stories (4)
+    7. **Performance Tracking** - View performance metrics and feedback
+       - APIs: GET /api/v1/dashboard/performance/me, GET /api/v1/feedback/me
+    
+    8. **Payslip Access** - Access and download monthly payslips
+       - APIs: GET /api/v1/payslips/me, GET /api/v1/payslips/{id}/download
+    
+    9. **Leave Notifications** - Receive timely notifications for leave approvals/rejections
+       - APIs: GET /api/v1/leaves/me, POST /api/v1/leaves
+    
+    10. **Policy Queries** - Quickly find answers to policy questions using AI chatbot
+        - APIs: POST /api/v1/ai/policy-rag/ask, GET /api/v1/ai/policy-rag/suggestions
+    
+    ### Team Lead User Stories (4)
+    11. **Skill Development** - Enable team members to access skill modules
+        - APIs: GET /api/v1/skills/team, POST /api/v1/skills/assign
+    
+    12. **Goal Setting** - Set clear and effective goals for employees
+        - APIs: POST /api/v1/goals, PUT /api/v1/goals/{id}, GET /api/v1/goals/team
+    
+    13. **Team Performance Dashboard** - Monitor team performance and progress
+        - APIs: GET /api/v1/dashboard/manager, GET /api/v1/feedback/employee/{id}
+    
+    14. **Employee Reviews** - Review team employees and provide feedback
+        - APIs: POST /api/v1/feedback, GET /api/v1/feedback/employee/{id}
+    
+    ### Executive User Story (1)
+    15. **Strategic Analytics** - Access high-level HR analytics and workforce insights
+        - APIs: GET /api/v1/dashboard/hr, GET /api/v1/employees/stats, GET /api/v1/attendance/summary
+    
+    ### IT Administrator User Story (1)
+    16. **System Administration** - Manage user roles, permissions, and system integrations
+        - APIs: GET /api/v1/employees, PUT /api/v1/employees/{id}, GET /api/v1/organization
+    
+  contact:
+    name: PulseTrack HRMS Team 11
+    email: support@pulsetrack-hrms.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.pulsetrack-hrms.com
+    description: Production server (example)
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Dashboard
+    description: "Role-specific dashboards (User Stories: #1, #13, #15)"
+  - name: AI - Policy RAG
+    description: "**[GenAI Integration]** AI-powered policy Q&A using RAG (User Stories: #6, #10)"
+  - name: AI - Resume Screener
+    description: "**[GenAI Integration]** AI-powered resume screening (User Story: #5)"
+  - name: AI - Job Description Generator
+    description: "**[GenAI Integration]** AI-powered JD generation (User Story: #2)"
+  - name: Employee Management
+    description: "Employee CRUD operations (User Story: #4)"
+  - name: Jobs
+    description: "Job listings management (User Stories: #2, #3)"
+  - name: Applications
+    description: "Job applications management"
+  - name: Feedback
+    description: "Performance feedback system (User Stories: #7, #14)"
+  - name: Payslips
+    description: "Payslip management (User Story: #8)"
+  - name: Leave Management
+    description: "Leave requests and approvals (User Story: #9)"
+  - name: Goals
+    description: "Goal setting and tracking (User Story: #12)"
+  - name: Skills
+    description: "Skill development modules (User Story: #11)"
+  - name: Policies
+    description: "Company policy management"
+  - name: Attendance
+    description: "Attendance tracking"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT token obtained from /api/v1/auth/login endpoint"
+  
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              example: "Invalid request data"
+            details:
+              type: array
+              items:
+                type: object
+      required:
+        - success
+        - error
+    
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "hr@pulsetrack.com"
+        password:
+          type: string
+          format: password
+          example: "password123"
+      required:
+        - email
+        - password
+    
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        token_type:
+          type: string
+          example: "bearer"
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            email:
+              type: string
+            name:
+              type: string
+            role:
+              type: string
+              enum: [employee, hr, manager, admin]
+    
+    PolicyQuestionRequest:
+      type: object
+      properties:
+        question:
+          type: string
+          example: "What is the leave policy for annual leave?"
+          description: "Natural language question about company policies"
+        chat_history:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [user, assistant]
+              content:
+                type: string
+          description: "Previous conversation for context (optional)"
+      required:
+        - question
+    
+    PolicyAnswerResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        answer:
+          type: string
+          example: "According to our leave policy, employees are entitled to 12 days of annual leave per year..."
+        sources:
+          type: array
+          items:
+            type: string
+          example: ["leave_policy.pdf", "hr_handbook.pdf"]
+        confidence:
+          type: number
+          format: float
+          example: 0.92
+          description: "Confidence score (0-1)"
+        related_topics:
+          type: array
+          items:
+            type: string
+          example: ["Sick Leave", "WFH Policy", "Casual Leave"]
+        error:
+          type: string
+          description: "Error message if success is false"
+    
+    ResumeScreeningRequest:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          example: 5
+          description: "Job listing ID to screen candidates for"
+        resume_ids:
+          type: array
+          items:
+            type: integer
+          example: [101, 102, 103]
+          description: "Specific application IDs to screen (optional, screens all if not provided)"
+        job_description:
+          type: string
+          description: "Override job description from listing (optional)"
+      required:
+        - job_id
+    
+    ResumeScreeningResult:
+      type: object
+      properties:
+        candidate_name:
+          type: string
+          example: "Jane Smith"
+        application_id:
+          type: integer
+          example: 101
+        overall_fit_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 92
+        skills_match:
+          type: array
+          items:
+            type: string
+          example: ["Python (Expert)", "React (Advanced)", "AWS (Intermediate)"]
+        experience_match:
+          type: string
+          example: "8 years - Excellent match"
+        education:
+          type: string
+          example: "B.S. Computer Science, MIT"
+        strengths:
+          type: array
+          items:
+            type: string
+          example: ["Strong technical leadership", "Cloud architecture expertise"]
+        gaps:
+          type: array
+          items:
+            type: string
+          example: ["Limited DevOps experience"]
+        summary:
+          type: string
+          example: "Excellent candidate with strong technical background and relevant experience..."
+    
+    ResumeScreeningResultResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        job_id:
+          type: integer
+          example: 5
+        job_title:
+          type: string
+          example: "Senior Software Engineer"
+        total_analyzed:
+          type: integer
+          example: 15
+        average_score:
+          type: number
+          format: float
+          example: 78.5
+        top_candidate:
+          type: string
+          example: "Jane Smith"
+        analysis_id:
+          type: string
+          example: "abc123def456"
+          description: "Unique ID for retrieving results later"
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeScreeningResult'
+    
+    JobDescriptionGenerateRequest:
+      type: object
+      properties:
+        job_title:
+          type: string
+          example: "Senior Software Engineer"
+        job_level:
+          type: string
+          enum: [Entry, Mid, Senior, Lead, Executive]
+          example: "Senior"
+        department:
+          type: string
+          example: "Engineering"
+        location:
+          type: string
+          example: "Remote"
+        employment_type:
+          type: string
+          enum: [Full-time, Part-time, Contract, Temporary]
+          example: "Full-time"
+        responsibilities:
+          type: array
+          items:
+            type: string
+          example: ["Design and develop scalable systems", "Lead technical decisions"]
+        requirements:
+          type: array
+          items:
+            type: object
+            properties:
+              requirement:
+                type: string
+              is_required:
+                type: boolean
+          example: [{"requirement": "5+ years Python", "is_required": true}]
+        company_info:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            industry:
+              type: string
+            values:
+              type: array
+              items:
+                type: string
+        salary_range:
+          type: string
+          example: "$120,000 - $160,000"
+        benefits:
+          type: array
+          items:
+            type: string
+          example: ["Health insurance", "401k", "Remote work"]
+        save_as_draft:
+          type: boolean
+          example: true
+          description: "If true, saves as job listing draft in database"
+      required:
+        - job_title
+        - job_level
+    
+    JobDescriptionContent:
+      type: object
+      properties:
+        title:
+          type: string
+        summary:
+          type: string
+        key_responsibilities:
+          type: array
+          items:
+            type: string
+        required_qualifications:
+          type: array
+          items:
+            type: string
+        preferred_qualifications:
+          type: array
+          items:
+            type: string
+        benefits:
+          type: array
+          items:
+            type: string
+        full_description:
+          type: string
+          description: "Complete formatted job description"
+    
+    JobDescriptionGenerateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/JobDescriptionContent'
+        job_listing_id:
+          type: integer
+          example: 42
+          description: "Job listing ID if saved as draft"
+        message:
+          type: string
+          example: "Job description saved as draft"
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User Login
+      description: |
+        Authenticate user and receive JWT token.
+        
+        **Error Handling:**
+        - 401: Invalid credentials
+        - 422: Validation error (missing fields)
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/dashboard/hr:
+    get:
+      tags:
+        - Dashboard
+      summary: Get HR Dashboard Data
+      description: |
+        **User Story #1: Dashboard Monitoring**
+        
+        Get comprehensive dashboard data for HR users including:
+        - Department-wise employee counts
+        - Department-wise attendance statistics (present/absent percentages)
+        - Department-wise skill modules completion
+        - Active job applications with status tracking
+        - Overall statistics (total employees, departments, active applications)
+        
+        **Access:** HR only
+        
+        **Error Handling:**
+        - 401: Unauthorized (invalid/missing token)
+        - 403: Forbidden (non-HR user)
+        - 500: Internal server error
+      operationId: getHRDashboard
+      responses:
+        '200':
+          description: Dashboard data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  departments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        department_id:
+                          type: integer
+                        department_name:
+                          type: string
+                        employee_count:
+                          type: integer
+                  department_attendance:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        department_id:
+                          type: integer
+                        department_name:
+                          type: string
+                        present_percentage:
+                          type: number
+                        absent_percentage:
+                          type: number
+                  total_employees:
+                    type: integer
+                  total_departments:
+                    type: integer
+                  total_active_applications:
+                    type: integer
+        '403':
+          description: Access forbidden - HR role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/dashboard/manager:
+    get:
+      tags:
+        - Dashboard
+      summary: Get Manager Dashboard Data
+      description: |
+        **User Story #13: Team Performance Dashboard**
+        
+        Get comprehensive dashboard data for Manager users including:
+        - Personal information (leave balance, attendance)
+        - Team statistics (members, training hours, performance score)
+        - Team goals progress
+        - Team member attendance
+        - Team learning leaderboard
+        
+        **Access:** Manager only
+        
+        **Error Handling:**
+        - 401: Unauthorized
+        - 403: Forbidden (non-Manager user)
+        - 500: Internal server error
+      operationId: getManagerDashboard
+      responses:
+        '200':
+          description: Manager dashboard data retrieved successfully
+        '403':
+          description: Access forbidden - Manager role required
+
+  /api/v1/ai/policy-rag/ask:
+    post:
+      tags:
+        - AI - Policy RAG
+      summary: Ask Policy Question (GenAI)
+      description: |
+        **User Stories:**
+        - **#6 (HR Manager - Policy Access):** Provides 24/7 policy access without HR intervention
+        - **#10 (Employee - Policy Queries):** Instant answers to policy questions
+        
+        **GenAI Integration Details:**
+        - **Model:** Google Gemini 1.5 Flash
+        - **Vector DB:** ChromaDB for semantic search
+        - **Framework:** Langchain for RAG pipeline
+        - **Embedding:** Gemini embedding model
+        
+        **Features:**
+        - Natural language question processing
+        - Retrieval Augmented Generation (RAG) for accurate answers
+        - Conversational context support (chat history)
+        - Source citation with confidence scoring
+        - Related topic suggestions
+        
+        **How it Works:**
+        1. Question is embedded using Gemini embedding model
+        2. Similar policy sections retrieved from ChromaDB vector store
+        3. Gemini generates contextualized answer using retrieved context
+        4. Sources, confidence score, and related topics returned
+        
+        **Error Handling:**
+        - 400: Invalid question format
+        - 503: AI service unavailable
+        - 500: AI processing error
+        
+        **Access:** All authenticated users
+      operationId: askPolicyQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyQuestionRequest'
+      responses:
+        '200':
+          description: Question answered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyAnswerResponse'
+        '400':
+          description: Bad Request - Invalid question format
+        '503':
+          description: Service Unavailable - AI service not ready
+
+  /api/v1/ai/policy-rag/suggestions:
+    get:
+      tags:
+        - AI - Policy RAG
+      summary: Get Policy Question Suggestions
+      description: |
+        Get suggested policy questions to help users get started.
+        
+        Returns common questions like:
+        - "What is the leave policy?"
+        - "How do I apply for WFH?"
+        - "What are the working hours?"
+        
+        **Access:** All authenticated users
+      operationId: getPolicySuggestions
+      responses:
+        '200':
+          description: Suggestions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestions:
+                    type: array
+                    items:
+                      type: string
+
+  /api/v1/ai/policy-rag/status:
+    get:
+      tags:
+        - AI - Policy RAG
+      summary: Get Policy Index Status
+      description: |
+        Get status of the policy index to check if policies are indexed and ready for Q&A.
+        
+        **Access:** All authenticated users
+      operationId: getPolicyIndexStatus
+      responses:
+        '200':
+          description: Index status retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  indexed:
+                    type: boolean
+                  document_count:
+                    type: integer
+                  last_indexed:
+                    type: string
+                    format: date-time
+
+  /api/v1/ai/resume-screener/screen:
+    post:
+      tags:
+        - AI - Resume Screener
+      summary: Screen Resumes with AI (GenAI)
+      description: |
+        **User Story #5: Resume Screening**
+        Reduce manual effort in screening resumes by automatically analyzing candidates using AI.
+        
+        **GenAI Integration Details:**
+        - **Model:** Google Gemini 1.5 Flash
+        - **PDF Processing:** PyPDF2 for text extraction
+        - **Analysis:** AI-powered skill matching and experience validation
+        
+        **Features:**
+        - Intelligent resume matching against job description
+        - Skill detection with proficiency levels
+        - Experience level verification
+        - Education qualification validation
+        - 0-100 scoring system with detailed breakdown
+        - Batch processing support
+        - Permanent storage with unique analysis ID
+        - Top candidate identification
+        
+        **How it Works:**
+        1. Extract text from PDF resumes using PyPDF2
+        2. Analyze each resume against job description using Gemini
+        3. Score candidates on multiple dimensions (skills, experience, education)
+        4. Generate detailed analysis with strengths and gaps
+        5. Store results permanently with unique analysis ID
+        
+        **Error Handling:**
+        - 400: Invalid job ID or no resumes found
+        - 403: HR access required
+        - 404: Job listing or applications not found
+        - 500: AI processing error
+        
+        **Access:** HR only
+        **Performance:** Typically 3-5 seconds per resume
+      operationId: screenResumes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResumeScreeningRequest'
+      responses:
+        '200':
+          description: Resumes screened successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeScreeningResultResponse'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden - HR access required
+        '404':
+          description: Not Found - Job listing or applications not found
+
+  /api/v1/ai/resume-screener/results/{analysis_id}:
+    get:
+      tags:
+        - AI - Resume Screener
+      summary: Get Saved Screening Results
+      description: |
+        Retrieve previously saved resume screening results by analysis ID.
+        
+        **Access:** HR only
+      operationId: getScreeningResults
+      parameters:
+        - name: analysis_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique analysis ID from screening operation
+      responses:
+        '200':
+          description: Results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeScreeningResultResponse'
+        '404':
+          description: Analysis not found
+
+  /api/v1/ai/resume-screener/history:
+    get:
+      tags:
+        - AI - Resume Screener
+      summary: Get Screening History
+      description: |
+        Get history of all resume screening analyses.
+        Optionally filter by job_id.
+        
+        **Access:** HR only
+      operationId: getScreeningHistory
+      parameters:
+        - name: job_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by job listing ID (optional)
+      responses:
+        '200':
+          description: History retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  total:
+                    type: integer
+                  history:
+                    type: array
+                    items:
+                      type: object
+
+  /api/v1/ai/job-description/generate:
+    post:
+      tags:
+        - AI - Job Description Generator
+      summary: Generate Job Description with AI (GenAI)
+      description: |
+        **User Story #2: Job Description Management**
+        Efficiently create professional job descriptions using AI with structured approach.
+        
+        **GenAI Integration Details:**
+        - **Model:** Google Gemini 1.5 Flash
+        - **Features:** Template-based generation, SEO optimization, ATS-friendly formatting
+        
+        **Two Modes:**
+        1. **Preview Mode** (save_as_draft=false): Generate and review before saving
+        2. **Draft Mode** (save_as_draft=true): Automatically save as job listing draft
+        
+        **Features:**
+        - Professional, compelling content generation
+        - Structured sections (summary, responsibilities, qualifications, benefits)
+        - Company culture integration
+        - ATS optimization
+        - SEO-friendly keyword inclusion
+        - Customizable based on requirements
+        
+        **How it Works:**
+        1. Accept job details, requirements, and company information
+        2. Gemini AI generates structured, professional content
+        3. Return formatted JD with all required sections
+        4. Optionally save as draft job listing in database
+        
+        **Error Handling:**
+        - 400: Invalid input data
+        - 403: HR access required
+        - 500: AI generation failed
+        
+        **Access:** HR only
+        **Performance:** Typically 5-10 seconds
+      operationId: generateJobDescription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobDescriptionGenerateRequest'
+      responses:
+        '201':
+          description: Job description generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobDescriptionGenerateResponse'
+        '400':
+          description: Bad Request - Invalid input
+        '403':
+          description: Forbidden - HR access required
+
+  /api/v1/employees:
+    get:
+      tags:
+        - Employee Management
+      summary: Get All Employees (Paginated)
+      description: |
+        **User Story #4: Employee Database**
+        Maintain and update employee personal, job, and contact details in one central place.
+        
+        **Features:**
+        - Pagination support
+        - Search by name, email, or employee ID
+        - Filter by department, team, role, active status
+        - Returns summary view of employees
+        
+        **Error Handling:**
+        - 403: HR access required
+        - 422: Invalid query parameters
+        
+        **Access:** HR only
+      operationId: getEmployees
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 100
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by name, email, or employee ID
+        - name: department_id
+          in: query
+          schema:
+            type: integer
+        - name: team_id
+          in: query
+          schema:
+            type: integer
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [employee, manager, hr]
+        - name: is_active
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Employees retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employees:
+                    type: array
+                    items:
+                      type: object
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  total_pages:
+                    type: integer
+        '403':
+          description: Forbidden - HR access required
+    
+    post:
+      tags:
+        - Employee Management
+      summary: Create New Employee
+      description: |
+        **User Story #4: Employee Database**
+        Create a new employee account with all required information.
+        
+        **Features:**
+        - Auto-generate employee ID if not provided
+        - Hash password securely
+        - Set initial leave balances
+        - Validate department, team, manager
+        - Email uniqueness validation
+        
+        **Access:** HR only
+      operationId: createEmployee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+                position:
+                  type: string
+                department_id:
+                  type: integer
+                team_id:
+                  type: integer
+                manager_id:
+                  type: integer
+                role:
+                  type: string
+                  enum: [employee, manager, hr]
+              required:
+                - name
+                - email
+                - password
+      responses:
+        '201':
+          description: Employee created successfully
+        '400':
+          description: Bad Request - Validation failed
+        '403':
+          description: Forbidden - HR access required
+
+  /api/v1/employees/{employee_id}:
+    get:
+      tags:
+        - Employee Management
+      summary: Get Employee Details
+      description: |
+        Get complete employee details by ID.
+        
+        **Access:** HR only
+      operationId: getEmployee
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Employee details retrieved
+        '404':
+          description: Employee not found
+    
+    put:
+      tags:
+        - Employee Management
+      summary: Update Employee
+      description: |
+        **User Story #4: Employee Database**
+        Update employee details. All fields are optional.
+        
+        **Access:** HR only
+      operationId: updateEmployee
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                position:
+                  type: string
+                department_id:
+                  type: integer
+                is_active:
+                  type: boolean
+      responses:
+        '200':
+          description: Employee updated successfully
+        '404':
+          description: Employee not found
+    
+    delete:
+      tags:
+        - Employee Management
+      summary: Deactivate Employee
+      description: |
+        **User Story #4: Employee Database**
+        Soft delete employee (sets is_active to false).
+        
+        **Access:** HR only
+      operationId: deactivateEmployee
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Employee deactivated successfully
+        '400':
+          description: Cannot deactivate - has active team members
+
+  /api/v1/jobs:
+    get:
+      tags:
+        - Jobs
+      summary: Get All Job Listings
+      description: |
+        **User Story #3: Job Posting Management**
+        Manage all job postings in centralized portal to view, edit, or close listings.
+        
+        **Features:**
+        - View all job listings
+        - Filter by status, department, location
+        - Search by title or description
+        
+        **Access:** HR (all jobs), Others (active jobs only)
+      operationId: getJobs
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, active, closed]
+        - name: department
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job listings retrieved successfully
+    
+    post:
+      tags:
+        - Jobs
+      summary: Create Job Listing
+      description: |
+        **User Stories #2 & #3: Job Description Management, Job Posting Management**
+        Create a new job listing (can be from AI-generated JD or manual).
+        
+        **Access:** HR only
+      operationId: createJob
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                department:
+                  type: string
+                location:
+                  type: string
+                job_type:
+                  type: string
+                status:
+                  type: string
+                  enum: [draft, active, closed]
+              required:
+                - title
+                - description
+      responses:
+        '201':
+          description: Job listing created successfully
+        '403':
+          description: Forbidden - HR access required
+
+  /api/v1/feedback:
+    post:
+      tags:
+        - Feedback
+      summary: Create Feedback
+      description: |
+        **User Story #14: Employee Reviews**
+        Review team employees to provide continuous feedback and help them improve.
+        
+        **Features:**
+        - Create feedback for employees
+        - Support for different feedback types (positive, constructive, goal-related)
+        - Optional 1-5 rating
+        - Feedback visible to employee and HR
+        
+        **Access:** Manager or HR only
+      operationId: createFeedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee_id:
+                  type: integer
+                feedback_type:
+                  type: string
+                  enum: [positive, constructive, goal-related, performance, general]
+                content:
+                  type: string
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+              required:
+                - employee_id
+                - content
+      responses:
+        '201':
+          description: Feedback created successfully
+        '403':
+          description: Forbidden - Manager/HR access required
+
+  /api/v1/feedback/me:
+    get:
+      tags:
+        - Feedback
+      summary: Get My Feedback
+      description: |
+        **User Story #7: Performance Tracking**
+        View performance metrics and feedback to understand areas of improvement.
+        
+        **Features:**
+        - View all feedback received
+        - Filter by date range and type
+        - Pagination support
+        
+        **Access:** All authenticated users
+      operationId: getMyFeedback
+      parameters:
+        - name: skip
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Feedback retrieved successfully
+
+  /api/v1/payslips/me:
+    get:
+      tags:
+        - Payslips
+      summary: Get My Payslips
+      description: |
+        **User Story #8: Payslip Access**
+        Access and download monthly payslips to track earnings and deductions.
+        
+        **Features:**
+        - View all payslips for current user
+        - Filter by year and month
+        - See earnings, deductions, net pay
+        
+        **Access:** All authenticated users (own payslips only)
+      operationId: getMyPayslips
+      parameters:
+        - name: year
+          in: query
+          schema:
+            type: integer
+        - name: month
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+      responses:
+        '200':
+          description: Payslips retrieved successfully
+
+  /api/v1/payslips/{payslip_id}/download:
+    get:
+      tags:
+        - Payslips
+      summary: Download Payslip
+      description: |
+        **User Story #8: Payslip Access**
+        Download payslip PDF file.
+        
+        **Access:** Employees (own payslips), HR (all payslips)
+      operationId: downloadPayslip
+      parameters:
+        - name: payslip_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Payslip file
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '403':
+          description: Forbidden - Cannot access this payslip
+        '404':
+          description: Payslip not found
+
+  /api/v1/leaves/me:
+    get:
+      tags:
+        - Leave Management
+      summary: Get My Leave Requests
+      description: |
+        **User Story #9: Leave Notifications**
+        Receive timely notifications for leave approvals/rejections to stay informed.
+        
+        **Features:**
+        - View all leave requests
+        - See approval status
+        - Filter by status, type, date range
+        
+        **Access:** All authenticated users
+      operationId: getMyLeaves
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+        - name: leave_type
+          in: query
+          schema:
+            type: string
+            enum: [casual, sick, annual, maternity, paternity]
+      responses:
+        '200':
+          description: Leave requests retrieved successfully
+
+  /api/v1/leaves:
+    post:
+      tags:
+        - Leave Management
+      summary: Create Leave Request
+      description: |
+        **User Story #9: Leave Notifications**
+        Submit a leave request. Notifications will be sent upon approval/rejection.
+        
+        **Access:** All authenticated users
+      operationId: createLeaveRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                leave_type:
+                  type: string
+                  enum: [casual, sick, annual, maternity, paternity]
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                reason:
+                  type: string
+              required:
+                - leave_type
+                - start_date
+                - end_date
+      responses:
+        '201':
+          description: Leave request created successfully
+        '400':
+          description: Bad Request - Insufficient leave balance
+
+  /api/v1/goals:
+    post:
+      tags:
+        - Goals
+      summary: Create Goal
+      description: |
+        **User Story #12: Goal Setting**
+        Set clear and effective goals for employees to improve their performance.
+        
+        **Features:**
+        - Create goals for team members
+        - Set target dates and success criteria
+        - Track progress
+        
+        **Access:** Manager or HR only
+      operationId: createGoal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee_id:
+                  type: integer
+                title:
+                  type: string
+                description:
+                  type: string
+                target_date:
+                  type: string
+                  format: date
+                success_criteria:
+                  type: string
+              required:
+                - employee_id
+                - title
+      responses:
+        '201':
+          description: Goal created successfully
+        '403':
+          description: Forbidden - Manager/HR access required
+
+  /api/v1/skills/team:
+    get:
+      tags:
+        - Skills
+      summary: Get Team Skills Progress
+      description: |
+        **User Story #11: Skill Development**
+        Enable team members to access relevant skill modules to develop needed skills.
+        
+        **Features:**
+        - View team members' skill module progress
+        - See completion status
+        - Track learning hours
+        
+        **Access:** Manager only
+      operationId: getTeamSkills
+      responses:
+        '200':
+          description: Team skills retrieved successfully
+        '403':
+          description: Forbidden - Manager access required
+
+  /api/v1/dashboard/performance/me:
+    get:
+      tags:
+        - Dashboard
+      summary: Get My Performance Metrics
+      description: |
+        **User Story #7: Performance Tracking**
+        View detailed performance metrics including monthly trends, attendance, and goals.
+        
+        **Access:** All authenticated users
+      operationId: getMyPerformance
+      parameters:
+        - name: months
+          in: query
+          schema:
+            type: integer
+            default: 12
+            minimum: 1
+            maximum: 24
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully
+
+

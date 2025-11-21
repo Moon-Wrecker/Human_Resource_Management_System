@@ -1,0 +1,435 @@
+﻿Page-wise data requirements
+HR Pages
+
+
+HR Dashboard : 
+{
+        Department data : {
+Department name : Varchar, 
+Count of Employees (Department-wise) : int,
+},
+Applications : {
+                Applicant Name: Varchar,
+Applied Role: Varchar,        
+},
+Attendance : {
+        Average Attendance (Department-wise graph) : double,
+        Count of Modules completed (Department-wise) : int,
+}
+}
+
+
+Job Listings Page: 
+
+
+{
+        Job Listings : {
+                Position : varchar,
+                Location : varchar,
+                Department : varchar,
+`        }
+}
+
+
+Job post (Add/View/Edit) modal : {
+        Job Post : {
+                Position : varchar,
+                Location : varchar,
+                Department : varchar,
+                Experience Required : Varchar,
+                Skills required : Varchar,
+                Job Description : Varchar
+`        }
+}
+
+
+Employee List page :{ 
+        Employee name: Varchar,
+        Department : Varchar,
+        Employee details modal (view/edit):{
+                Employee name: Varchar,
+                Department : Varchar,
+                Email : varchar,
+                Phone number: int,
+                Position : Varchar,
+                Team name  : varchar,
+                Team manager : varchar,
+                Submitted documents : {
+                        Aadhar : pdf,
+                        PAN card : pdf
+                }
+        }
+}
+
+
+Employee performance page : {
+        Modules completed month-wise : graph,
+        Total modules completed : int,
+        [ more metrics to be discussed in meeting]
+}
+
+
+
+
+
+
+Announcements : {
+        Title : varchar,
+        Announcement View modal : {
+                Title : varchar,
+                Description : varchar,
+                Links : varchar (optional)
+}
+}
+
+
+Policies : {
+        Current Policy Document : pdf
+}
+
+
+Applications Page: {
+        Applicant name : varchar,
+        Role : varchar,
+        Source: [Applied/Referred],
+        Applied On : Date,
+
+
+        View Application modal : {
+                Applicant name : varchar,
+                Role : varchar,
+                Source: [Applied/Referred],
+                Manager of applicant : varchar,
+                Applied On : Date,
+Resume : pdf,
+}
+}
+
+
+Attendance Page : {
+        WFH left : int,
+        Leaves left : int,
+        Holidays : varchar,
+}
+
+
+Payslips page : {
+        Payslip month : varchar,
+        Payslip : pdf,
+        Issue date : Date,
+}
+
+
+Profile page : {
+        Employee ID : Varchar,
+        Name : varchar,
+Role : varchar,
+Department : varchar,
+Team name : varchar,
+Phone number : int,
+        Email :varchar,
+        Manager : varchar,
+        Documents : {
+                Aadhar : pdf,
+                Pan card : pdf
+        }
+}
+
+
+Org Hierarchy page : {
+        Manager : varchar,
+        Manager of manager : varchar
+        [ tree like hierarchy with images as shown in figma wireframe]
+}
+
+
+
+
+Employee Pages
+
+
+Employee Dashboard : 
+{        
+        WFH Left : int,
+        Leaves left : int,
+        Punch in time : datetime,
+        Punch out time : datetime,
+        Upcoming holidays list,
+        Learning goals : pie chart (Completed/not completed)
+}
+
+
+Employee performance page : {
+        Modules completed month-wise : graph,
+        Total modules completed : int,
+        [ more metrics to be discussed in meeting]
+}
+
+
+
+
+Employee performance page : {
+        Modules completed month-wise : graph,
+        Total modules completed : int,
+        [ more metrics to be discussed in meeting]
+}
+
+
+
+
+
+
+Announcements : {
+        Title : varchar,
+        Announcement View modal : {
+                Title : varchar,
+                Description : varchar,
+                Links : varchar (optional)
+}
+}
+
+
+Policies : {
+        Current Policy Document : pdf
+}
+
+
+Job Listings Page: 
+
+
+{
+        Job Listings : {
+                Position : varchar,
+                Location : varchar,
+                Department : varchar,
+`        }
+}
+
+
+Job post (View) modal : {
+        Job Post : {
+                Position : varchar,
+                Location : varchar,
+                Department : varchar,
+                Experience Required : Varchar,
+                Skills required : Varchar,
+                Job Description : Varchar
+`        }
+}
+
+
+Feedback page : {
+        Subject : varchar,
+        Description : varchar,
+        Given by Manager : varchar,
+        Given on : Date
+}
+
+
+Goal Tracker : {
+        Goal view : {
+                Goal title : varchar,
+                Description : varchar,
+                Deadline : date,
+                Checklist items : array
+}
+}
+
+
+Skill development modules : {
+        Module name : varchar,
+        Short description : varchar,
+        Status : [completed/ pending/ not started]
+        Module link : varchar [open external course link]
+}
+
+
+Attendance Page : {
+        WFH left : int,
+        Leaves left : int,
+        Holidays : varchar,
+}
+
+
+Payslips page : {
+        Payslip month : varchar,
+        Payslip : pdf,
+        Issue date : Date,
+}
+
+
+Profile page : {
+        Employee ID : Varchar,
+        Name : varchar,
+Role : varchar,
+Department : varchar,
+Team name : varchar,
+Phone number : int,
+        Email :varchar,
+        Manager : varchar,
+        Documents : {
+                Aadhar : pdf,
+                Pan card : pdf
+        }
+}
+
+
+Org Hierarchy page : {
+        Manager : varchar,
+        Manager of manager : varchar
+        [ tree like hierarchy with images as shown in figma wireframe]
+}
+
+
+
+
+Manager Pages
+
+
+Manager Dashboard : 
+{        
+        WFH Left : int,
+        Leaves left : int,
+        Punch in time : datetime,
+        Punch out time : datetime,
+        Upcoming holidays list,
+        Team overview section : {
+                Team goals completed : int,
+                Attendance (employee wise graph) : int,
+        [more overview metrics to be discussed]
+
+
+        }
+}
+
+
+Employee performance page : {
+        Modules completed month-wise : graph,
+        Total modules completed : int,
+        [ more metrics to be discussed in meeting]
+}
+
+
+
+
+Employee performance page : {
+        Modules completed month-wise : graph,
+        Total modules completed : int,
+        [ more metrics to be discussed in meeting]
+}
+
+
+Team requests : {
+        Employee name : varchar,
+        Request type : varchar,
+        Status : [pending approval/ rejected/ approved],
+        Date : date,
+        View request modal : {
+                Employee name : varchar,
+        Request type : varchar,
+        Status : [pending approval/ rejected/ approved],
+        Date : date
+        }
+}
+
+
+Announcements : {
+        Title : varchar,
+        Announcement View modal : {
+                Title : varchar,
+                Description : varchar,
+                Links : varchar (optional)
+}
+}
+
+
+Policies : {
+        Current Policy Document : pdf
+}
+
+
+Job Listings Page: 
+
+
+{
+        Job Listings : {
+                Position : varchar,
+                Location : varchar,
+                Department : varchar,
+`        }
+}
+
+
+Job post (View) modal : {
+        Job Post : {
+                Position : varchar,
+                Location : varchar,
+                Department : varchar,
+                Experience Required : Varchar,
+                Skills required : Varchar,
+                Job Description : Varchar
+`        }
+}
+
+
+Feedback page : {
+        Subject : varchar,
+        Description : varchar,
+        Given by Manager : varchar,
+        Given on : Date
+}
+
+
+Goal Tracker : {
+        Goal view : {
+                Goal title : varchar,
+                Description : varchar,
+                Deadline : date,
+                Checklist items : array
+}
+}
+
+
+Skill development modules : {
+        Module name : varchar,
+        Short description : varchar,
+        Status : [completed/ pending/ not started]
+        Module link : varchar [open external course link]
+}
+
+
+Attendance Page : {
+        WFH left : int,
+        Leaves left : int,
+        Holidays : varchar,
+}
+
+
+Payslips page : {
+        Payslip month : varchar,
+        Payslip : pdf,
+        Issue date : Date,
+}
+
+
+Profile page : {
+        Employee ID : Varchar,
+        Name : varchar,
+Role : varchar,
+Department : varchar,
+Team name : varchar,
+Phone number : int,
+        Email :varchar,
+        Manager : varchar,
+        Documents : {
+                Aadhar : pdf,
+                Pan card : pdf
+        }
+}
+
+
+Org Hierarchy page : {
+        Manager : varchar,
+        Manager of manager : varchar
+        [ tree like hierarchy with images as shown in figma wireframe]
+}

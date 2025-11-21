@@ -155,11 +155,12 @@ const CalendarViewTrigger = forwardRef<
   React.HTMLAttributes<HTMLButtonElement> & {
     view: View;
   }
->(({ children, view, ...props }) => {
+>(({ children, view, ...props }, ref) => {
   const { view: currentView, setView, onChangeView } = useCalendar();
 
   return (
     <Button
+      ref={ref}
       aria-current={currentView === view}
       size="sm"
       variant="ghost"
@@ -493,10 +494,6 @@ const CalendarPrevTrigger = forwardRef<
 >(({ children, onClick, ...props }, ref) => {
   const { date, setDate, view, enableHotkeys } = useCalendar();
 
-  useHotkeys("ArrowLeft", () => prev(), {
-    enabled: enableHotkeys,
-  });
-
   const prev = useCallback(() => {
     if (view === "day") {
       setDate(subDays(date, 1));
@@ -508,6 +505,10 @@ const CalendarPrevTrigger = forwardRef<
       setDate(subYears(date, 1));
     }
   }, [date, view, setDate]);
+
+  useHotkeys("ArrowLeft", () => prev(), {
+    enabled: enableHotkeys,
+  });
 
   return (
     <Button

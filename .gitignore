@@ -1,1 +1,39 @@
 .vite
+venv/
+env/
+ENV/
+.venv
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.coverage
+htmlcov/
+.tox/
+# Python virtual environment and caches
+backend/.venv/
+backend/venv/
+backend/env/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.tox/
+backend/.env
+
+# Node modules and Vite outputs
+frontend/node_modules/
+frontend/.vite
+
+# Environment files
+frontend/.env
+frontend/.env.*
+backend/.env
+backend/.env.*
+
+# VSCode project files
+.vscode/
+# OS generated files
+.DS_Store
+Thumbs.db
