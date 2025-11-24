@@ -218,15 +218,15 @@ After running `seed_data.py`, you can login with these credentials:
 
 ### HR Manager
 - **Email**: `hr.manager@company.com`
-- **Password**: `password123`
+- **Password**: `pass123`
 
 ### Team Manager
 - **Email**: `manager1@company.com`
-- **Password**: `password123`
+- **Password**: `pass123`
 
 ### Employee
 - **Email**: `john.doe@company.com`
-- **Password**: `password123`
+- **Password**: `pass123`
 
 ---
 
