@@ -109,21 +109,22 @@ All endpoints follow consistent error response format with proper HTTP status co
         {"name": "Profile", "description": "User profile management"},
         {"name": "Attendance", "description": "Attendance tracking and management"},
         {"name": "Leave Management", "description": "Leave requests and approvals - **User Story: Leave Notifications**"},
-        {"name": "Jobs", "description": "Job listings management - **User Story: Job Posting Management**"},
+        {"name": "Job Listings", "description": "Job listings management - **User Story: Job Posting Management**"},
         {"name": "Applications", "description": "Job applications management"},
         {"name": "Feedback", "description": "Performance feedback system - **User Stories: Performance Tracking, Employee Reviews**"},
         {"name": "Payslips", "description": "Payslip management and access - **User Story: Payslip Access**"},
-        {"name": "Goals", "description": "Goal setting and tracking - **User Story: Goal Setting**"},
-        {"name": "Skills", "description": "Skill development and modules - **User Story: Skill Development**"},
+        {"name": "Goals & Task Management", "description": "Goal setting and tracking - **User Story: Goal Setting**"},
+        {"name": "Skills/Modules Management", "description": "Skill development and modules - **User Story: Skill Development**"},
         {"name": "Policies", "description": "Company policy management"},
         {"name": "Announcements", "description": "Company announcements"},
         {"name": "Holidays", "description": "Holiday calendar management"},
         {"name": "Departments", "description": "Department management"},
-        {"name": "Organization", "description": "Organization structure"},
-        {"name": "Requests", "description": "Various employee requests (WFH, equipment, etc.)"},
+        {"name": "Organization/Hierarchy", "description": "Organization structure"},
+        {"name": "Team Requests", "description": "Various employee requests (WFH, equipment, etc.)"},
         {"name": "AI - Policy RAG", "description": "**[GenAI]** AI-powered policy Q&A chatbot - **User Stories: Policy Access, Policy Queries**"},
         {"name": "AI - Resume Screener", "description": "**[GenAI]** AI-powered resume screening - **User Story: Resume Screening**"},
-        {"name": "AI - Job Description Generator", "description": "**[GenAI]** AI-powered JD generation - **User Story: Job Description Management**"}
+        {"name": "AI - Job Description Generator", "description": "**[GenAI]** AI-powered JD generation - **User Story: Job Description Management**"},
+        {"name": "AI Performance Reports", "description": "**[GenAI]** AI-powered performance reports - Individual, team, and organization-wide analysis"}
     ]
 )
 
@@ -297,7 +298,8 @@ async def api_v1_root():
                 "organization": "/api/v1/organization",
                 "ai_policy_rag": "/api/v1/ai/policy-rag",
                 "ai_resume_screener": "/api/v1/ai/resume-screener",
-                "ai_job_description": "/api/v1/ai/job-description"
+                "ai_job_description": "/api/v1/ai/job-description",
+                "ai_performance_report": "/api/v1/ai/performance-report"
             },
             "documentation": {
                 "swagger_ui": "/api/docs",
@@ -333,6 +335,7 @@ try:
     from routes.ai_policy_rag import router as ai_policy_rag_router
     from routes.ai_resume_screener import router as ai_resume_screener_router
     from routes.ai_job_description import router as ai_job_description_router
+    from routes.ai_performance_report import router as ai_performance_report_router
     AI_ROUTES_AVAILABLE = True
     logger.info("AI services routes loaded successfully")
 except ImportError as e:
@@ -365,7 +368,8 @@ if AI_ROUTES_AVAILABLE:
     app.include_router(ai_policy_rag_router, prefix="/api/v1")
     app.include_router(ai_resume_screener_router, prefix="/api/v1")
     app.include_router(ai_job_description_router, prefix="/api/v1")
-    logger.info("AI routes registered: Policy RAG, Resume Screener, JD Generator")
+    app.include_router(ai_performance_report_router, prefix="/api/v1")
+    logger.info("AI routes registered: Policy RAG, Resume Screener, JD Generator, Performance Reports")
 
 # Mount static files for uploads (must be after routers)
 if os.path.exists(settings.UPLOAD_DIR):

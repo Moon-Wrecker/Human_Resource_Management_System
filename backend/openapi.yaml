@@ -22,7 +22,7 @@ info:
     All endpoints require JWT authentication unless specified otherwise.\nInclude the JWT token in the Authorization header:\
     \ `Bearer <token>`\n\n## Error Handling\nAll endpoints follow consistent error response format with proper HTTP status\
     \ codes.\n\n## Documentation\n- Interactive API Docs: /api/docs (Swagger UI)\n- Alternative Docs: /api/redoc (ReDoc)\n\
-    - OpenAPI Spec: /api/openapi.json\n- YAML Spec: /api/openapi.yaml (if available)\n    "
+    - OpenAPI JSON: /api/openapi.json\n- OpenAPI YAML: /api/openapi.yaml (downloadable)\n    "
   contact:
     name: PulseTrack HRMS Team 11
     email: support@pulsetrack-hrms.com
@@ -1832,7 +1832,7 @@ paths:
   /api/v1/applications/:
     post:
       tags:
-      - applications
+      - Applications
       summary: Apply for a job
       description: Create a new job application. Internal employees are automatically linked to their user account.
       operationId: create_application_api_v1_applications__post
@@ -1859,7 +1859,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - applications
+      - Applications
       summary: Get all applications
       description: Retrieve all applications with filtering and pagination (HR only)
       operationId: get_all_applications_api_v1_applications__get
@@ -1943,7 +1943,7 @@ paths:
   /api/v1/applications/me:
     get:
       tags:
-      - applications
+      - Applications
       summary: Get my applications
       description: Retrieve all applications submitted by the current user with pagination
       operationId: get_my_applications_api_v1_applications_me_get
@@ -1987,7 +1987,7 @@ paths:
   /api/v1/applications/statistics:
     get:
       tags:
-      - applications
+      - Applications
       summary: Get application statistics
       description: Retrieve overall application statistics for HR dashboard
       operationId: get_application_statistics_api_v1_applications_statistics_get
@@ -2003,7 +2003,7 @@ paths:
   /api/v1/applications/{application_id}:
     get:
       tags:
-      - applications
+      - Applications
       summary: Get application details
       description: Retrieve detailed information about a specific application
       operationId: get_application_api_v1_applications__application_id__get
@@ -2031,7 +2031,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       tags:
-      - applications
+      - Applications
       summary: Delete application
       description: Delete an application (HR only or applicant before review)
       operationId: delete_application_api_v1_applications__application_id__delete
@@ -2060,7 +2060,7 @@ paths:
   /api/v1/applications/{application_id}/status:
     put:
       tags:
-      - applications
+      - Applications
       summary: Update application status
       description: Update the status of an application with optional screening notes and score (HR only)
       operationId: update_application_status_api_v1_applications__application_id__status_put
@@ -2095,7 +2095,7 @@ paths:
   /api/v1/applications/{application_id}/resume:
     post:
       tags:
-      - applications
+      - Applications
       summary: Upload resume
       description: Upload resume file for an application (PDF, DOC, DOCX, max 5MB)
       operationId: upload_resume_api_v1_applications__application_id__resume_post
@@ -2129,7 +2129,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     get:
       tags:
-      - applications
+      - Applications
       summary: Download resume
       description: Download the resume file for an application
       operationId: download_resume_api_v1_applications__application_id__resume_get
@@ -7909,8 +7909,485 @@ paths:
           description: Internal Server Error - Generation failed
       security:
       - HTTPBearer: []
+  /api/v1/ai/performance-report/health:
+    get:
+      tags:
+      - AI Performance Reports
+      summary: Check AI Report Service Health
+      description: Check if AI performance report service and providers are available
+      operationId: health_check_api_v1_ai_performance_report_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+  /api/v1/ai/performance-report/individual:
+    post:
+      tags:
+      - AI Performance Reports
+      summary: Generate Individual Performance Report
+      description: Generate AI-powered performance report for a specific employee
+      operationId: generate_individual_report_api_v1_ai_performance_report_individual_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIReportGenerateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/ai/performance-report/individual/me:
+    get:
+      tags:
+      - AI Performance Reports
+      summary: Generate My Performance Report
+      description: Generate performance report for the currently authenticated user
+      operationId: generate_my_report_api_v1_ai_performance_report_individual_me_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: time_period
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TimePeriodEnum'
+          default: last_90_days
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      - name: template
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ReportTemplateEnum'
+          default: standard_review
+      - name: include_team_comparison
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Include Team Comparison
+      - name: include_period_comparison
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Include Period Comparison
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/ai/performance-report/team/summary:
+    post:
+      tags:
+      - AI Performance Reports
+      summary: Generate Team Summary Report
+      description: Generate summary report for entire team (Manager/HR only)
+      operationId: generate_team_summary_api_v1_ai_performance_report_team_summary_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamReportRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/ai/performance-report/team/comparative:
+    post:
+      tags:
+      - AI Performance Reports
+      summary: Generate Team Comparative Report
+      description: Generate comparative/leaderboard report for team (Manager/HR only)
+      operationId: generate_team_comparative_api_v1_ai_performance_report_team_comparative_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamReportRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/ai/performance-report/team/my-team:
+    get:
+      tags:
+      - AI Performance Reports
+      summary: Generate Report for My Team
+      description: Quick endpoint for managers to generate report for their team
+      operationId: generate_my_team_report_api_v1_ai_performance_report_team_my_team_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scope
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ReportScopeEnum'
+          default: team_summary
+      - name: time_period
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TimePeriodEnum'
+          default: last_90_days
+      - name: template
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ReportTemplateEnum'
+          default: standard_review
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/ai/performance-report/organization:
+    post:
+      tags:
+      - AI Performance Reports
+      summary: Generate Organization/Department Report
+      description: Generate organization-wide or department-level report (HR only)
+      operationId: generate_organization_report_api_v1_ai_performance_report_organization_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationReportRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/ai/performance-report/organization/company-wide:
+    get:
+      tags:
+      - AI Performance Reports
+      summary: Generate Company-Wide Report
+      description: Quick endpoint for company-wide performance analysis (HR only)
+      operationId: generate_company_wide_report_api_v1_ai_performance_report_organization_company_wide_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: time_period
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/TimePeriodEnum'
+          default: current_quarter
+      - name: template
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ReportTemplateEnum'
+          default: comprehensive_review
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/ai/performance-report/templates:
+    get:
+      tags:
+      - AI Performance Reports
+      summary: Get Available Report Templates
+      description: List all available report templates with descriptions
+      operationId: get_templates_api_v1_ai_performance_report_templates_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Templates Api V1 Ai Performance Report Templates Get
+      security:
+      - HTTPBearer: []
+  /api/v1/ai/performance-report/metrics:
+    get:
+      tags:
+      - AI Performance Reports
+      summary: Get Available Metrics
+      description: List all available metrics for custom reports (HR only)
+      operationId: get_metrics_api_v1_ai_performance_report_metrics_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Metrics Api V1 Ai Performance Report Metrics Get
+      security:
+      - HTTPBearer: []
 components:
   schemas:
+    AIReportGenerateRequest:
+      properties:
+        employee_id:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Employee Id
+          description: Employee ID for report generation
+        time_period:
+          $ref: '#/components/schemas/TimePeriodEnum'
+          description: Predefined time period or custom
+          default: last_90_days
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+          description: Start date for custom period
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+          description: End date for custom period
+        template:
+          $ref: '#/components/schemas/ReportTemplateEnum'
+          description: Report template to use
+          default: standard_review
+        custom_metrics:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/MetricEnum'
+            type: array
+          - type: 'null'
+          title: Custom Metrics
+          description: Custom metrics (only for HR with custom template)
+        include_team_comparison:
+          type: boolean
+          title: Include Team Comparison
+          description: Include comparison with team average
+          default: false
+        include_period_comparison:
+          type: boolean
+          title: Include Period Comparison
+          description: Include comparison with previous period
+          default: false
+      type: object
+      required:
+      - employee_id
+      title: AIReportGenerateRequest
+      description: Request schema for generating AI performance report
+      example:
+        employee_id: 5
+        include_period_comparison: true
+        include_team_comparison: true
+        template: standard_review
+        time_period: last_90_days
+    AIReportResponse:
+      properties:
+        report_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Report Id
+          description: Unique report identifier
+        employee_id:
+          type: integer
+          title: Employee Id
+        employee_name:
+          type: string
+          title: Employee Name
+        employee_email:
+          type: string
+          title: Employee Email
+        report_type:
+          type: string
+          title: Report Type
+          description: individual, team_summary, etc.
+        generated_at:
+          type: string
+          format: date-time
+          title: Generated At
+        time_period_start:
+          type: string
+          format: date
+          title: Time Period Start
+        time_period_end:
+          type: string
+          format: date
+          title: Time Period End
+        time_period_label:
+          type: string
+          title: Time Period Label
+        template_used:
+          type: string
+          title: Template Used
+        metrics_used:
+          items:
+            type: string
+          type: array
+          title: Metrics Used
+        report_markdown:
+          type: string
+          title: Report Markdown
+          description: AI-generated report in markdown format
+        data_summary:
+          $ref: '#/components/schemas/DataSummary'
+        ai_model:
+          type: string
+          title: Ai Model
+          default: gemini-2.0-flash-exp
+        generation_time_seconds:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Generation Time Seconds
+        is_saved:
+          type: boolean
+          title: Is Saved
+          default: false
+        saved_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Saved Path
+        saved_on:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Saved On
+      type: object
+      required:
+      - employee_id
+      - employee_name
+      - employee_email
+      - report_type
+      - generated_at
+      - time_period_start
+      - time_period_end
+      - time_period_label
+      - template_used
+      - metrics_used
+      - report_markdown
+      - data_summary
+      title: AIReportResponse
+      description: Response schema for generated AI report
+      example:
+        data_summary:
+          completed_goals: 7
+          data_sufficiency: sufficient
+          total_goals: 10
+        employee_email: john.doe@company.com
+        employee_id: 5
+        employee_name: John Doe
+        generated_at: '2025-01-16T10:30:00'
+        is_saved: false
+        metrics_used:
+        - goal_completion
+        - attendance_rate
+        - feedback_ratings
+        report_id: RPT-20250116-001
+        report_markdown: '# Performance Report
+
+
+          ## Strengths...'
+        report_type: individual
+        template_used: standard_review
+        time_period_end: '2025-01-16'
+        time_period_label: Last 90 Days
+        time_period_start: '2024-10-16'
     ActiveApplicationInfo:
       properties:
         application_id:
@@ -8975,6 +9452,66 @@ components:
       - department_id
       title: CreateJobRequest
       description: Request to create a new job listing
+    DataSummary:
+      properties:
+        total_goals:
+          type: integer
+          title: Total Goals
+          default: 0
+        completed_goals:
+          type: integer
+          title: Completed Goals
+          default: 0
+        in_progress_goals:
+          type: integer
+          title: In Progress Goals
+          default: 0
+        overdue_goals:
+          type: integer
+          title: Overdue Goals
+          default: 0
+        total_feedback:
+          type: integer
+          title: Total Feedback
+          default: 0
+        average_feedback_rating:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Average Feedback Rating
+        attendance_rate:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Attendance Rate
+        training_completion_rate:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Training Completion Rate
+        total_checkpoints:
+          type: integer
+          title: Total Checkpoints
+          default: 0
+        completed_checkpoints:
+          type: integer
+          title: Completed Checkpoints
+          default: 0
+        data_sufficiency:
+          type: string
+          title: Data Sufficiency
+          description: sufficient, limited, insufficient
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+          default: []
+      type: object
+      required:
+      - data_sufficiency
+      title: DataSummary
+      description: Summary of data used in report generation
     DepartmentAttendance:
       properties:
         department_id:
@@ -11052,6 +11589,30 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    HealthCheckResponse:
+      properties:
+        service:
+          type: string
+          title: Service
+          default: AI Performance Report
+        status:
+          type: string
+          title: Status
+        ai_provider_status:
+          additionalProperties: true
+          type: object
+          title: Ai Provider Status
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - status
+      - ai_provider_status
+      - timestamp
+      title: HealthCheckResponse
+      description: AI service health check response
     HolidayCreate:
       properties:
         name:
@@ -12191,6 +12752,24 @@ components:
       - marked_by
       title: MarkAttendanceResponse
       description: Response after marking attendance
+    MetricEnum:
+      type: string
+      enum:
+      - goal_completion
+      - attendance_rate
+      - training_completion
+      - feedback_ratings
+      - overdue_goals
+      - checkpoint_progress
+      - feedback_sentiment
+      - skills_development
+      - peer_collaboration
+      - category_goal_success
+      - priority_goal_handling
+      - team_comparison
+      - period_comparison
+      title: MetricEnum
+      description: Available metrics for custom reports
     ModuleStatusEnum:
       type: string
       enum:
@@ -12345,6 +12924,113 @@ components:
       - departments
       title: OrganizationHierarchyResponse
       description: Schema for complete organization hierarchy
+    OrganizationReportRequest:
+      properties:
+        scope:
+          $ref: '#/components/schemas/ReportScopeEnum'
+          description: Organization or department scope
+        department_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Department Id
+          description: Specific department ID
+        time_period:
+          $ref: '#/components/schemas/TimePeriodEnum'
+          default: last_90_days
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+        template:
+          $ref: '#/components/schemas/ReportTemplateEnum'
+          default: standard_review
+        custom_metrics:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/MetricEnum'
+            type: array
+          - type: 'null'
+          title: Custom Metrics
+      type: object
+      required:
+      - scope
+      title: OrganizationReportRequest
+      description: Request schema for organization-wide reports (HR only)
+      example:
+        department_id: 1
+        scope: department
+        template: comprehensive_review
+        time_period: current_quarter
+    OrganizationReportResponse:
+      properties:
+        report_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Report Id
+        scope:
+          type: string
+          title: Scope
+        department_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Department Id
+        department_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Department Name
+        generated_at:
+          type: string
+          format: date-time
+          title: Generated At
+        time_period_start:
+          type: string
+          format: date
+          title: Time Period Start
+        time_period_end:
+          type: string
+          format: date
+          title: Time Period End
+        report_markdown:
+          type: string
+          title: Report Markdown
+        organization_data_summary:
+          additionalProperties: true
+          type: object
+          title: Organization Data Summary
+        department_summaries:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Department Summaries
+          default: []
+        generation_time_seconds:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Generation Time Seconds
+      type: object
+      required:
+      - scope
+      - generated_at
+      - time_period_start
+      - time_period_end
+      - report_markdown
+      - organization_data_summary
+      title: OrganizationReportResponse
+      description: Response schema for organization-wide reports
     PayslipCreate:
       properties:
         employee_id:
@@ -13504,6 +14190,28 @@ components:
       description: Refresh token request schema
       example:
         refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    ReportScopeEnum:
+      type: string
+      enum:
+      - individual
+      - team_individual
+      - team_summary
+      - team_comparative
+      - department
+      - organization
+      title: ReportScopeEnum
+      description: Scope of report generation
+    ReportTemplateEnum:
+      type: string
+      enum:
+      - quick_summary
+      - standard_review
+      - comprehensive_review
+      - leadership_focus
+      - technical_focus
+      - custom
+      title: ReportTemplateEnum
+      description: Report templates with different detail levels
     ReportingStructureResponse:
       properties:
         employee:
@@ -14469,6 +15177,35 @@ components:
       - modules_completed
       title: TeamMemberModules
       description: Team member skill modules completion
+    TeamMemberReport:
+      properties:
+        employee_id:
+          type: integer
+          title: Employee Id
+        employee_name:
+          type: string
+          title: Employee Name
+        report_summary:
+          type: string
+          title: Report Summary
+          description: Brief summary for team view
+        key_metrics:
+          additionalProperties: true
+          type: object
+          title: Key Metrics
+        overall_status:
+          type: string
+          title: Overall Status
+          description: excellent, good, needs_attention, critical
+      type: object
+      required:
+      - employee_id
+      - employee_name
+      - report_summary
+      - key_metrics
+      - overall_status
+      title: TeamMemberReport
+      description: Individual team member's report summary
     TeamMemberResponse:
       properties:
         id:
@@ -14516,6 +15253,111 @@ components:
       - email
       title: TeamMemberResponse
       description: Team member basic info
+    TeamReportRequest:
+      properties:
+        team_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Team Id
+          description: Team ID (optional, defaults to manager's team)
+        scope:
+          $ref: '#/components/schemas/ReportScopeEnum'
+          description: Type of team report
+          default: team_summary
+        time_period:
+          $ref: '#/components/schemas/TimePeriodEnum'
+          default: last_90_days
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+        template:
+          $ref: '#/components/schemas/ReportTemplateEnum'
+          default: standard_review
+      type: object
+      title: TeamReportRequest
+      description: Request schema for team-wide report generation
+      example:
+        scope: team_summary
+        template: standard_review
+        time_period: last_90_days
+    TeamReportResponse:
+      properties:
+        report_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Report Id
+        team_id:
+          type: integer
+          title: Team Id
+        team_name:
+          type: string
+          title: Team Name
+        report_type:
+          type: string
+          title: Report Type
+        generated_at:
+          type: string
+          format: date-time
+          title: Generated At
+        time_period_start:
+          type: string
+          format: date
+          title: Time Period Start
+        time_period_end:
+          type: string
+          format: date
+          title: Time Period End
+        template_used:
+          type: string
+          title: Template Used
+        team_summary_markdown:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Team Summary Markdown
+        team_comparative_markdown:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Team Comparative Markdown
+        member_reports:
+          items:
+            $ref: '#/components/schemas/TeamMemberReport'
+          type: array
+          title: Member Reports
+          default: []
+        team_data_summary:
+          additionalProperties: true
+          type: object
+          title: Team Data Summary
+        generation_time_seconds:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Generation Time Seconds
+      type: object
+      required:
+      - team_id
+      - team_name
+      - report_type
+      - generated_at
+      - time_period_start
+      - time_period_end
+      - template_used
+      - team_data_summary
+      title: TeamReportResponse
+      description: Response schema for team-wide reports
     TeamResponse:
       properties:
         team_id:
@@ -14572,6 +15414,19 @@ components:
       - team_performance_score
       title: TeamStats
       description: Team statistics
+    TimePeriodEnum:
+      type: string
+      enum:
+      - last_30_days
+      - last_90_days
+      - last_180_days
+      - last_365_days
+      - current_quarter
+      - last_quarter
+      - current_year
+      - custom
+      title: TimePeriodEnum
+      description: Predefined time periods
     TokenResponse:
       properties:
         access_token:
@@ -15036,7 +15891,7 @@ tags:
   description: Attendance tracking and management
 - name: Leave Management
   description: 'Leave requests and approvals - **User Story: Leave Notifications**'
-- name: Jobs
+- name: Job Listings
   description: 'Job listings management - **User Story: Job Posting Management**'
 - name: Applications
   description: Job applications management
@@ -15044,9 +15899,9 @@ tags:
   description: 'Performance feedback system - **User Stories: Performance Tracking, Employee Reviews**'
 - name: Payslips
   description: 'Payslip management and access - **User Story: Payslip Access**'
-- name: Goals
+- name: Goals & Task Management
   description: 'Goal setting and tracking - **User Story: Goal Setting**'
-- name: Skills
+- name: Skills/Modules Management
   description: 'Skill development and modules - **User Story: Skill Development**'
 - name: Policies
   description: Company policy management
@@ -15056,9 +15911,9 @@ tags:
   description: Holiday calendar management
 - name: Departments
   description: Department management
-- name: Organization
+- name: Organization/Hierarchy
   description: Organization structure
-- name: Requests
+- name: Team Requests
   description: Various employee requests (WFH, equipment, etc.)
 - name: AI - Policy RAG
   description: '**[GenAI]** AI-powered policy Q&A chatbot - **User Stories: Policy Access, Policy Queries**'
@@ -15066,3 +15921,5 @@ tags:
   description: '**[GenAI]** AI-powered resume screening - **User Story: Resume Screening**'
 - name: AI - Job Description Generator
   description: '**[GenAI]** AI-powered JD generation - **User Story: Job Description Management**'
+- name: AI Performance Reports
+  description: '**[GenAI]** AI-powered performance reports - Individual, team, and organization-wide analysis'

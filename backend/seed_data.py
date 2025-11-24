@@ -686,9 +686,9 @@ def main():
         print("Database seeded successfully!")
         print("="*60)
         print("\nTest Credentials:")
-        print("  HR: sarah.johnson@company.com / password123")
-        print("  Manager: michael.chen@company.com / password123")
-        print("  Employee: john.doe@company.com / password123")
+        print("  HR: sarah.johnson@company.com / pass123")
+        print("  Manager: michael.chen@company.com / pass123")
+        print("  Employee: john.doe@company.com / pass123")
         print("="*60)
         
     except Exception as e:
