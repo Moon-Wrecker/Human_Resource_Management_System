@@ -19,7 +19,7 @@ class TestAnnouncementsAPI:
             return
         
         # Create announcement
-        expiry_date = (datetime.now() + timedelta(days=30)).date().isoformat()
+        expiry_date = (datetime.now() + timedelta(days=30)).replace(microsecond=0).isoformat()
         announcement_data = {
             "title": "Test Announcement - API Test",
             "message": "This is a test announcement created by the API test suite.",
@@ -52,7 +52,7 @@ class TestAnnouncementsAPI:
         if not hr_token:
             pytest.skip("HR token not available (database not seeded)")
         
-        expiry_date = (datetime.now() + timedelta(days=30)).date().isoformat()
+        expiry_date = (datetime.now() + timedelta(days=30)).replace(microsecond=0).isoformat()
         announcement_data = {
             "title": "Test Announcement - Create Test",
             "message": "This is a test announcement.",
