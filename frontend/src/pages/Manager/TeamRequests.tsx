@@ -14,7 +14,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -135,7 +134,7 @@ const ViewRequestDialog = ({
 };
 
 const TeamRequests = () => {
-  const [requests, setRequests] = useState<TeamRequest[]>(initialTeamRequests);
+  const [requests] = useState<TeamRequest[]>(initialTeamRequests);
   const [selectedReq, setSelectedReq] = useState<TeamRequest | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 

@@ -2,9 +2,7 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
   User,
 } from "lucide-react"
 
@@ -52,7 +50,7 @@ export function NavUser({
     return '/employee/profile'
   }
 
-  const handleLogout = async (e?: Event) => {
+  const handleLogout = async () => {
     console.log('Logout button clicked') // Debug log
     try {
       await logout()

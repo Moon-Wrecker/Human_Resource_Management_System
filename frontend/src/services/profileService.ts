@@ -275,15 +275,3 @@ class ProfileService {
 
 export default new ProfileService();
 
-// Explicit type exports for better TypeScript support
-export type {
-  ProfileData,
-  UpdateProfileData,
-  DocumentUploadResponse,
-  UserDocuments,
-  ManagerInfo,
-  TeamMember,
-  TeamData,
-  ProfileStats
-};
-

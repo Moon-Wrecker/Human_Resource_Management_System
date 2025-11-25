@@ -1,0 +1,12 @@
+# AI Performance Report System Requirements
+# Install with: pip install -r requirements_ai_performance.txt
+
+# Google Generative AI (Gemini) for report generation
+google-generativeai>=0.3.0
+
+# Already included in main requirements.txt but listed here for reference:
+# fastapi>=0.104.0
+# sqlalchemy>=2.0.0
+# pydantic>=2.0.0
+# python-dateutil>=2.8.2
+

@@ -25,7 +25,7 @@ from pydantic_models import (
     ResumeUploadResponse
 )
 
-router = APIRouter(prefix="/applications", tags=["applications"])
+router = APIRouter(prefix="/applications", tags=["Applications"])
 
 security = HTTPBearer(auto_error=False)  # auto_error=False makes authentication optional
 

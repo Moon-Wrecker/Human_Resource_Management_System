@@ -3,7 +3,6 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import RootLayout from "@/layouts/RootLayout";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { UserRole } from "@/types/auth";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
@@ -71,7 +70,7 @@ const router = createBrowserRouter([
   {
     path: "/employee",
     element: (
-      <ProtectedRoute allowedRoles={[UserRole.EMPLOYEE, UserRole.MANAGER]}>
+      <ProtectedRoute allowedRoles={['employee', 'manager']}>
         <Employee />
       </ProtectedRoute>
     ),
@@ -133,7 +132,7 @@ const router = createBrowserRouter([
   {
     path: "/hr",
     element: (
-      <ProtectedRoute allowedRoles={[UserRole.HR, UserRole.ADMIN]}>
+      <ProtectedRoute allowedRoles={['hr', 'admin']}>
         <HR />
       </ProtectedRoute>
     ),
@@ -203,7 +202,7 @@ const router = createBrowserRouter([
   {
     path: "/manager",
     element: (
-      <ProtectedRoute allowedRoles={[UserRole.MANAGER]}>
+      <ProtectedRoute allowedRoles={['manager']}>
         <Manager />
       </ProtectedRoute>
     ),

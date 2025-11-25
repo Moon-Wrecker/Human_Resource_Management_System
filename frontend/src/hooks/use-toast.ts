@@ -6,6 +6,8 @@ type ToasterToast = {
   description?: string
   action?: React.ReactNode
   variant?: "default" | "destructive"
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 const TOAST_LIMIT = 3
@@ -141,12 +143,6 @@ function dispatch(action: Action) {
   listeners.forEach((listener) => {
     listener(memoryState)
   })
-}
-
-type ToastFunc = (props: Omit<Toast, "id">) => {
-  id: string
-  dismiss: () => void
-  update: (props: Partial<Toast>) => void
 }
 
 function toast(props: Omit<Toast, "id">) {

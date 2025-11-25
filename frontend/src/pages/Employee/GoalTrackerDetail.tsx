@@ -3,7 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 
-const checkpoints = {
+const checkpoints: Record<string, {
+  title: string;
+  description: string;
+  resources: Array<{ name: string; url: string }>;
+}> = {
   "module-x": {
     title: "Module X Reading",
     description:
@@ -42,7 +46,7 @@ export default function VisitPage() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const checkpoint = checkpoints[id as unknown] || {
+  const checkpoint = checkpoints[id as string] || {
     title: "Checkpoint Not Found",
     description: "Sorry, we couldn't find the requested checkpoint.",
     resources: [],

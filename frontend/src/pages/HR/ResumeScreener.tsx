@@ -12,12 +12,7 @@ const roles = [
 
 const ResumeScreenerUpload = () => {
   const [selectedRole, setSelectedRole] = useState("");
-  const [jobDescFile, setJobDescFile] = useState<File | null>(null);
   const [resumeFiles, setResumeFiles] = useState<File[]>([]);
-  const [uploadingIdx, setUploadingIdx] = useState<number | null>(0);
-
-  // Simulate upload progress on first file
-  const [progress, setProgress] = useState(70); // Hardcode for demo
 
   // Handle resume file uploads
   const handleResumeFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +58,7 @@ const ResumeScreenerUpload = () => {
               id="jd-upload"
               type="file"
               className="hidden"
-              onChange={e => setJobDescFile(e.target.files?.[0] ?? null)}
+              onChange={_e => {}}
             />
           </label>
         </div>
@@ -89,14 +84,6 @@ const ResumeScreenerUpload = () => {
           {resumeFiles.map((file, idx) => (
             <div key={file.name + idx} className="flex items-center border rounded px-2 py-1 bg-white">
               <span className="font-medium">{file.name}</span>
-              {idx === uploadingIdx ? (
-                <span className="ml-3 text-xs text-gray-500">Uploading</span>) : null
-              }
-              {idx === uploadingIdx ? (
-                <div className="h-2 w-48 bg-gray-200 rounded mx-2">
-                  <div style={{ width: `${progress}%` }} className="bg-green-500 h-2 rounded"></div>
-                </div>
-              ) : null}
               <button
                 type="button"
                 className="ml-auto px-2 text-lg text-gray-500 hover:text-red-700"

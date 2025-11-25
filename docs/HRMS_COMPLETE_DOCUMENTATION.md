@@ -1,8 +1,10 @@
 # GenAI HRMS - Complete Documentation
 
-**Last Updated**: November 14, 2025 (Milestone 4 Update)  
+**Last Updated**: November 16, 2025 (Swagger UI Fix)  
 **Version**: 1.0.0  
-**Status**: ✅ **MILESTONE 4 COMPLETE** - 🎉 Production Ready! | 137 APIs | Full OpenAPI Documentation
+**Status**: ✅ **MILESTONE 4 COMPLETE** - 🎉 Production Ready! | 165 APIs | Full OpenAPI Documentation
+
+> **📢 Latest Update (Nov 16, 2025)**: Swagger UI tag synchronization fix applied. All 25 API categories now properly visible in documentation. See [`backend/API_DOCUMENTATION_FIX.md`](../backend/API_DOCUMENTATION_FIX.md) for details.
 
 ---
 
@@ -3145,7 +3147,484 @@ ai_data/
 
 ---
 
+---
+
+## 🔧 OpenAPI YAML Generation & Access
+
+### How to Generate OpenAPI YAML
+
+The system provides multiple ways to access the OpenAPI specification:
+
+#### Method 1: Auto-Generate from FastAPI App (Recommended)
+
+```bash
+cd backend
+python generate_openapi_yaml.py
+```
+
+**Output**: `backend/openapi.yaml` with complete API specification
+
+**Features**:
+- Auto-generated from FastAPI (ensures accuracy)
+- Complete request/response schemas
+- 147 endpoints fully documented
+- All tags and descriptions included
+
+#### Method 2: Download via Live API Endpoint
+
+While server is running:
+```
+http://localhost:8000/api/openapi.yaml
+```
+
+File will automatically download to your Downloads folder.
+
+#### Method 3: View JSON Format
+
+```
+http://localhost:8000/api/openapi.json
+```
+
+#### Method 4: Use cURL
+
+```bash
+curl http://localhost:8000/api/openapi.yaml -o openapi.yaml
+```
+
+### Available Documentation Endpoints
+
+| Endpoint | Format | Description |
+|----------|--------|-------------|
+| `/api/docs` | HTML | Interactive Swagger UI (best for testing) |
+| `/api/redoc` | HTML | ReDoc documentation (best for reading) |
+| `/api/openapi.json` | JSON | OpenAPI specification in JSON format |
+| `/api/openapi.yaml` | YAML | OpenAPI specification in YAML format (downloadable) |
+
+---
+
+## ⚙️ Swagger UI Tag Synchronization
+
+### Background
+
+FastAPI requires exact tag matches (case-sensitive, character-for-character) between:
+1. **Router definitions** (`routes/*.py`) - Where tags are defined
+2. **OpenAPI schema** (`main.py`) - Where openapi_tags are registered
+
+### Tag Fixes Applied (November 16, 2025)
+
+| Issue | Before | After | Status |
+|-------|--------|-------|--------|
+| Goals Tag | "Goals" | "Goals & Task Management" | ✅ Fixed |
+| Skills Tag | "Skills" | "Skills/Modules Management" | ✅ Fixed |
+| Organization Tag | "Organization" | "Organization/Hierarchy" | ✅ Fixed |
+| Requests Tag | "Requests" | "Team Requests" | ✅ Fixed |
+| Jobs Tag | "Jobs" | "Job Listings" | ✅ Fixed |
+| Applications Tag | "applications" (lowercase) | "Applications" | ✅ Fixed |
+| AI Perf Reports | Missing | "AI Performance Reports" | ✅ Added |
+
+### Validation Tool
+
+Run this script to verify tag synchronization:
+
+```bash
+python backend/test_swagger_tags.py
+```
+
+**Expected Output**:
+```
+✅ All router tags match openapi_tags correctly!
+```
+
+### Best Practices for Future Routes
+
+1. **Define tag in main.py first:**
+```python
+openapi_tags=[
+    {"name": "Your Tag", "description": "Description - **User Story: ...**"}
+]
+```
+
+2. **Use exact same tag in router:**
+```python
+router = APIRouter(tags=["Your Tag"])  # Must match exactly!
+```
+
+3. **Validate immediately:**
+```bash
+python test_swagger_tags.py
+```
+
+4. **Verify in Swagger UI:**
+```
+http://localhost:8000/api/docs
+```
+
+---
+
+## 🤖 AI Performance Report System - Complete Implementation
+
+### Overview
+
+**Status**: ✅ Backend Complete | ⏳ Frontend Pending  
+**Implementation Date**: November 16, 2025  
+**AI Provider**: Google Gemini Flash 2.5
+
+The AI Performance Report System generates comprehensive, data-driven performance reports for employees, teams, and organizations using Google's Gemini AI.
+
+### Features Implemented
+
+#### Core Capabilities
+- ✅ **Individual Reports**: Detailed performance analysis for employees
+- ✅ **Team Reports**: Summary and comparative team performance analysis
+- ✅ **Organization Reports**: Strategic HR insights at department/organization level
+- ✅ **Custom Metrics**: HR can select specific metrics for tailored reports
+- ✅ **Multiple Templates**: 6 templates (Quick, Standard, Comprehensive, Leadership, Technical, Custom)
+- ✅ **Weekly Auto-Save**: Reports saved on Tuesdays in txt format
+- ✅ **Multi-Provider Fallback**: Primary + backup API keys for high availability
+
+### Setup Instructions
+
+#### 1. Install Dependencies
+
+```bash
+cd backend
+pip install google-generativeai
+```
+
+#### 2. Configure API Keys
+
+Add to `.env` file in project root:
+
+```bash
+# Get your API keys from: https://makersuite.google.com/app/apikey
+
+# Primary API key (Required)
+GOOGLE_API_KEY="your-primary-google-api-key-here"
+
+# Backup API key (Recommended for high availability)
+GOOGLE_API_KEY_1="your-backup-google-api-key-here"
+```
+
+#### 3. Create Storage Directory
+
+Auto-created on first use, or manually:
+
+```bash
+mkdir -p storage/ai_reports
+```
+
+#### 4. Restart Backend Server
+
+```bash
+cd backend
+python main.py
+```
+
+Look for: `AI routes registered: Policy RAG, Resume Screener, JD Generator, Performance Reports`
+
+### API Endpoints (10 total)
+
+| Endpoint | Method | Access | Purpose |
+|----------|--------|--------|---------|
+| `/health` | GET | All | Service health check |
+| `/individual` | POST | Employee/Manager/HR | Generate individual report |
+| `/individual/me` | GET | All | Generate my report (shortcut) |
+| `/team/summary` | POST | Manager/HR | Team summary report |
+| `/team/comparative` | POST | Manager/HR | Team leaderboard |
+| `/team/my-team` | GET | Manager | My team report (shortcut) |
+| `/organization` | POST | HR | Org/dept report |
+| `/organization/company-wide` | GET | HR | Company-wide report |
+| `/templates` | GET | All | List available templates |
+| `/metrics` | GET | HR | List available metrics |
+
+All endpoints are under `/api/v1/ai/performance-report/`
+
+### Report Templates
+
+| Template | Metrics | Use Case | Access |
+|----------|---------|----------|--------|
+| **Quick Summary** | 3 | Weekly check-ins | All |
+| **Standard Review** | 5 | Monthly 1-on-1s | All |
+| **Comprehensive** | 11 | Quarterly/Annual reviews | All |
+| **Leadership Focus** | 5 | Manager evaluations | Manager/HR |
+| **Technical Focus** | 5 | Technical role evaluations | Manager/HR |
+| **Custom** | Variable | Tailored analysis | HR only |
+
+### Time Periods
+
+- `last_30_days` - Last 30 days
+- `last_90_days` - Last 90 days (default)
+- `last_180_days` - Last 6 months
+- `last_365_days` - Last year
+- `current_quarter` - Current quarter (Q1-Q4)
+- `last_quarter` - Previous quarter
+- `current_year` - Year to date
+- `custom` - Custom date range (provide start_date and end_date)
+
+### Metrics Analyzed
+
+1. **goal_completion** - Goal completion rate %
+2. **attendance_rate** - Attendance %
+3. **training_completion** - Training modules completed
+4. **feedback_ratings** - Average feedback rating (1-5)
+5. **overdue_goals** - Overdue goals analysis
+6. **checkpoint_progress** - Sub-task completion tracking
+7. **feedback_sentiment** - Positive vs constructive feedback
+8. **skills_development** - Skills acquired over time
+9. **peer_collaboration** - Comments, interactions, collaboration
+10. **category_goal_success** - Goal success by category
+11. **priority_goal_handling** - Goal handling by priority
+12. **team_comparison** - Comparison with team average
+13. **period_comparison** - Comparison with previous period
+
+### Report Structure
+
+All individual reports include:
+
+1. **Executive Summary**: High-level overview
+2. **🎯 Strengths & Continue Doing**: 3-5 key strengths with data
+3. **⚠️ Areas for Development**: 2-4 growth opportunities
+4. **💡 Actionable Recommendations**: 3-5 SMART action items
+5. **🚨 Immediate Actions**: Critical issues (only if needed)
+6. **📊 Performance Snapshot**: Key metrics summary
+7. **Looking Ahead**: Future focus areas
+
+Team reports additionally include:
+- Top performers identification
+- Team members needing support
+- Team trends and patterns
+- Manager action items
+- Performance leaderboard (comparative mode)
+
+Organization reports additionally include:
+- Department comparison matrix
+- High-performing departments
+- Departments needing support
+- Strategic HR recommendations
+- Talent management insights
+- Critical organizational risks
+
+### Weekly Auto-Save Feature
+
+- **When**: Every Tuesday
+- **Format**: `.txt` file
+- **Location**: `storage/ai_reports/`
+- **Filename**: `report_{employee_id}_{YYYYMMDD}.txt`
+- **Response Indicator**: `is_saved: true` in API response
+- **Note**: Saved reports include full markdown content with metadata header
+
+### Access Control Matrix
+
+| Resource | Employee | Manager | HR |
+|----------|----------|---------|-----|
+| Own report | ✅ | ✅ | ✅ |
+| Direct report | ❌ | ✅ | ✅ |
+| Any employee | ❌ | ❌ | ✅ |
+| Own team summary | ❌ | ✅ | ✅ |
+| Any team summary | ❌ | ❌ | ✅ |
+| Team comparative | ❌ | ✅ (own) | ✅ (all) |
+| Department report | ❌ | ❌ | ✅ |
+| Organization report | ❌ | ❌ | ✅ |
+| Custom metrics | ❌ | ❌ | ✅ |
+
+### Fallback Mechanism
+
+The system uses automatic API key fallback:
+
+```
+Primary Key (GOOGLE_API_KEY) 
+    ↓ (if fails)
+Backup Key (GOOGLE_API_KEY_1)
+    ↓ (if fails)
+503 Service Unavailable Error
+```
+
+**Recommendation**: Configure both keys for production use.
+
+### Data Sources
+
+System aggregates data from 9 database tables:
+
+1. **users** - Employee information
+2. **goals** - Goal tracking
+3. **goal_checkpoints** - Sub-task tracking
+4. **goal_comments** - Collaboration metrics
+5. **feedback** - Feedback ratings & content
+6. **attendance** - Attendance records
+7. **skill_module_enrollments** - Training completion
+8. **teams** - Team structure
+9. **departments** - Department structure
+
+### Example API Calls
+
+#### Employee Generating Own Report
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/ai/performance-report/individual" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "employee_id": 5,
+    "time_period": "last_90_days",
+    "template": "standard_review",
+    "include_team_comparison": true,
+    "include_period_comparison": true
+  }'
+```
+
+#### Manager Generating Team Summary
+
+```bash
+curl -X GET "http://localhost:8000/api/v1/ai/performance-report/team/my-team?scope=team_summary" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+#### HR Generating Custom Report
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/ai/performance-report/individual" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "employee_id": 7,
+    "time_period": "custom",
+    "start_date": "2024-10-01",
+    "end_date": "2024-12-31",
+    "template": "custom",
+    "custom_metrics": [
+      "goal_completion", 
+      "feedback_ratings", 
+      "skills_development", 
+      "team_comparison"
+    ]
+  }'
+```
+
+### Troubleshooting
+
+#### Service Unavailable (503)
+**Cause**: Both API keys failed  
+**Solution**: 
+1. Check API key validity at https://makersuite.google.com/
+2. Verify keys have quota/credits
+3. Check Gemini API status
+
+#### Insufficient Data Warning
+**Cause**: Employee has limited data in period  
+**Solution**: Use longer time period or wait for more data accumulation
+
+#### Custom Template Error
+**Cause**: Non-HR user trying custom metrics  
+**Solution**: Use predefined templates or request HR to generate
+
+### Implementation Statistics
+
+| Category | Count |
+|----------|-------|
+| **Total Files Created/Modified** | 7 |
+| **New Files** | 6 |
+| **Total Lines of Code** | ~4,000+ |
+| **API Endpoints** | 10 |
+| **Schemas** | 15+ |
+| **Services** | 2 |
+| **Prompt Templates** | 4 |
+| **Enums** | 7 |
+| **Report Templates** | 6 |
+| **Time Periods** | 8 |
+| **Metrics** | 13 |
+
+---
+
+## 🧪 Validation & Testing
+
+### Swagger Tag Validation
+
+**Script**: `backend/test_swagger_tags.py`
+
+```bash
+python backend/test_swagger_tags.py
+```
+
+**Purpose**: Validates all router tags match openapi_tags in main.py
+
+**Expected Output**:
+```
+✅ routes.auth                    → Authentication
+✅ routes.dashboard               → Dashboard
+✅ routes.profile                 → Profile
+... (all 22 routes)
+✅ All router tags match openapi_tags correctly!
+```
+
+### Health Check Endpoints
+
+#### Backend Health
+```bash
+curl http://localhost:8000/health
+```
+
+**Expected**:
+```json
+{
+  "success": true,
+  "data": {
+    "status": "healthy",
+    "environment": "development",
+    "version": "1.0.0"
+  }
+}
+```
+
+#### AI Performance Report Health
+```bash
+curl http://localhost:8000/api/v1/ai/performance-report/health
+```
+
+**Expected**:
+```json
+{
+  "service": "AI Performance Report",
+  "status": "healthy",
+  "ai_provider_status": {
+    "total_providers": 2,
+    "available_providers": 2
+  }
+}
+```
+
+### API Endpoint Verification
+
+Check total endpoint count:
+
+```bash
+cd backend
+python generate_openapi_yaml.py
+```
+
+**Expected Output**:
+```
+Total Endpoints: 147
+```
+
+### Testing Checklist
+
+- [ ] Backend server starts without errors
+- [ ] Health endpoint responds (200 OK)
+- [ ] OpenAPI JSON validates
+- [ ] Swagger UI loads correctly at `/api/docs`
+- [ ] All 25 tags visible in Swagger
+- [ ] All endpoints accessible
+- [ ] Descriptions display properly
+- [ ] No uncategorized routes
+- [ ] Try-it-out functionality works
+- [ ] Authentication flows work
+- [ ] AI routes visible (if dependencies installed)
+- [ ] Validation script passes with 0 errors
+
+---
+
 **Document maintained by**: Development Team  
-**Last reviewed**: November 14, 2025
+**Last reviewed**: November 16, 2025  
+**Last updated**: November 16, 2025 (Added OpenAPI, Swagger, AI Performance sections)  
 **Next review**: After frontend AI integration complete
 

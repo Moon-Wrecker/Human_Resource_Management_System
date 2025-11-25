@@ -1,13 +1,10 @@
 import {
   LayoutDashboard,
-  BarChart,
   FileText,
   Megaphone,
   Briefcase,
   CalendarCheck,
   BookOpen,
-  Target,
-  Lightbulb,
   Users,
 } from "lucide-react";
 

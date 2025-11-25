@@ -9,7 +9,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useState, FormEvent } from "react"
+import { useState, type FormEvent } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 
 export function LoginForm({
@@ -103,9 +103,9 @@ export function LoginForm({
               {/* Test credentials hint */}
               <div className="rounded-md bg-blue-50 p-4 text-xs text-blue-800 border border-blue-200">
                 <p className="font-semibold mb-1">Test Credentials:</p>
-                <p>HR: sarah.johnson@company.com / password123</p>
-                <p>Manager: michael.chen@company.com / password123</p>
-                <p>Employee: john.doe@company.com / password123</p>
+                <p>HR: sarah.johnson@company.com / pass123</p>
+                <p>Manager: michael.chen@company.com / pass123</p>
+                <p>Employee: john.doe@company.com / pass123</p>
               </div>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with

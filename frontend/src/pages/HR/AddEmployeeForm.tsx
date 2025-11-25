@@ -12,8 +12,6 @@ const AddEmployeeForm = () => {
   const [role, setRole] = useState("");
   const [team, setTeam] = useState("");
   const [manager, setManager] = useState("");
-  const [aadhar, setAadhar] = useState<File | null>(null);
-  const [pan, setPan] = useState<File | null>(null);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-12">
@@ -91,7 +89,7 @@ const AddEmployeeForm = () => {
             <input
               type="file"
               className="hidden"
-              onChange={e => setAadhar(e.target.files?.[0] ?? null)}
+              onChange={_e => {}}
               accept=".pdf,.jpg,.jpeg,.png"
             />
           </label>
@@ -100,7 +98,7 @@ const AddEmployeeForm = () => {
             <input
               type="file"
               className="hidden"
-              onChange={e => setPan(e.target.files?.[0] ?? null)}
+              onChange={_e => {}}
               accept=".pdf,.jpg,.jpeg,.png"
             />
           </label>

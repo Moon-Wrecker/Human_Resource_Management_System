@@ -159,7 +159,7 @@ const ViewApplicationDialog = ({
 };
 
 const Applications = () => {
-  const [applications, setApplications] = useState<Application[]>(initialApplications);
+  const [applications] = useState<Application[]>(initialApplications);
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
