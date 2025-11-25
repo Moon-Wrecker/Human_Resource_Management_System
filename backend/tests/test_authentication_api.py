@@ -14,7 +14,7 @@ class TestAuthenticationAPI:
         """Test HR can login successfully"""
         response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "sarah.johnson@company.com", "password": "password123"}
+            json={"email": "sarah.johnson@company.com", "password": "pass123"}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
@@ -31,7 +31,7 @@ class TestAuthenticationAPI:
         """Test Manager can login successfully"""
         response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "michael.chen@company.com", "password": "password123"}
+            json={"email": "michael.chen@company.com", "password": "pass123"}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
@@ -44,7 +44,7 @@ class TestAuthenticationAPI:
         """Test Employee can login successfully"""
         response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "password123"}
+            json={"email": "john.anderson@company.com", "password": "pass123"}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
@@ -59,7 +59,7 @@ class TestAuthenticationAPI:
         """Test invalid email returns 401"""
         response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "nonexistent@company.com", "password": "password123"}
+            json={"email": "nonexistent@company.com", "password": "pass123"}
         )
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
@@ -69,7 +69,7 @@ class TestAuthenticationAPI:
         """Test wrong password returns 401"""
         response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "wrongpassword"}
+            json={"email": "john.anderson@company.com", "password": "wrongpassword"}
         )
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
@@ -78,7 +78,7 @@ class TestAuthenticationAPI:
         """Test missing password field returns 422"""
         response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com"}
+            json={"email": "john.anderson@company.com"}
         )
         
         assert response.status_code == 422, f"Expected 422, got {response.status_code}"
@@ -99,7 +99,7 @@ class TestAuthenticationAPI:
         assert "name" in data
         assert "email" in data
         assert "role" in data
-        assert data["email"] == "john.doe@company.com"
+        assert data["email"] == "john.anderson@company.com"
     
     @pytest.mark.permissions
     def test_get_current_user_no_token(self, api_base_url):
@@ -123,7 +123,7 @@ class TestAuthenticationAPI:
         # First login to get refresh token
         login_response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "password123"}
+            json={"email": "john.anderson@company.com", "password": "pass123"}
         )
         
         if login_response.status_code != 200:
@@ -158,7 +158,7 @@ class TestAuthenticationAPI:
         # Login first
         login_response = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "password123"}
+            json={"email": "john.anderson@company.com", "password": "pass123"}
         )
         
         if login_response.status_code != 200:
@@ -171,7 +171,7 @@ class TestAuthenticationAPI:
             f"{api_base_url}/auth/change-password",
             headers={"Authorization": f"Bearer {token}"},
             json={
-                "current_password": "password123",
+                "current_password": "pass123",
                 "new_password": "newpassword456"
             }
         )
@@ -181,7 +181,7 @@ class TestAuthenticationAPI:
         # Verify can login with new password
         new_login = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "newpassword456"}
+            json={"email": "john.anderson@company.com", "password": "newpassword456"}
         )
         assert new_login.status_code == 200, "Cannot login with new password"
         
@@ -192,7 +192,7 @@ class TestAuthenticationAPI:
             headers={"Authorization": f"Bearer {new_token}"},
             json={
                 "current_password": "newpassword456",
-                "new_password": "password123"
+                "new_password": "pass123"
             }
         )
     
@@ -222,7 +222,7 @@ class TestAuthenticationAPI:
         # Get employee ID
         employee_login = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "password123"}
+            json={"email": "john.anderson@company.com", "password": "pass123"}
         )
         
         if employee_login.status_code != 200:
@@ -245,7 +245,7 @@ class TestAuthenticationAPI:
         # Verify and revert
         reset_login = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "resetpassword123"}
+            json={"email": "john.anderson@company.com", "password": "resetpassword123"}
         )
         assert reset_login.status_code == 200, "Cannot login with reset password"
         
@@ -256,7 +256,7 @@ class TestAuthenticationAPI:
             headers={"Authorization": f"Bearer {reset_token}"},
             json={
                 "current_password": "resetpassword123",
-                "new_password": "password123"
+                "new_password": "pass123"
             }
         )
     
@@ -269,7 +269,7 @@ class TestAuthenticationAPI:
         # Get employee ID
         employee_login = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "password123"}
+            json={"email": "john.anderson@company.com", "password": "pass123"}
         )
         
         if employee_login.status_code != 200:
@@ -292,7 +292,7 @@ class TestAuthenticationAPI:
         # Revert
         reset_login = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "john.doe@company.com", "password": "managerreset123"}
+            json={"email": "john.anderson@company.com", "password": "managerreset123"}
         )
         
         if reset_login.status_code == 200:
@@ -302,7 +302,7 @@ class TestAuthenticationAPI:
                 headers={"Authorization": f"Bearer {reset_token}"},
                 json={
                     "current_password": "managerreset123",
-                    "new_password": "password123"
+                    "new_password": "pass123"
                 }
             )
     
@@ -318,7 +318,7 @@ class TestAuthenticationAPI:
         # Get HR ID
         hr_login = requests.post(
             f"{api_base_url}/auth/login",
-            json={"email": "sarah.johnson@company.com", "password": "password123"}
+            json={"email": "sarah.johnson@company.com", "password": "pass123"}
         )
         
         if hr_login.status_code != 200:

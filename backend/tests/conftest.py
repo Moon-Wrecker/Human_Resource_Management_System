@@ -12,8 +12,8 @@ API_BASE_URL = f"{BASE_URL}/api/v1"
 # Test credentials
 HR_EMAIL = "sarah.johnson@company.com"
 MANAGER_EMAIL = "michael.chen@company.com"
-EMPLOYEE_EMAIL = "john.doe@company.com"
-PASSWORD = "password123"
+EMPLOYEE_EMAIL = "john.anderson@company.com"
+PASSWORD = "pass123"
 
 
 @pytest.fixture(scope="session")
