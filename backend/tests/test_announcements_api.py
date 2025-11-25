@@ -12,339 +12,559 @@ HR_EMAIL = "sarah.johnson@company.com"
 EMPLOYEE_EMAIL = "john.doe@company.com"
 PASSWORD = "password123"
 
+# ANSI Color codes
+GREEN = '\033[92m'
+RED = '\033[91m'
+RESET = '\033[0m'
+
+# Test counters
+tests_passed = 0
+tests_failed = 0
+
+# Store tokens and IDs
+hr_token = None
+employee_token = None
+announcement_id = None
+
 
 def print_section(title):
     """Print a formatted section header"""
-    print("\n" + "="*60)
+    print("\n" + "="*70)
     print(f"  {title}")
-    print("="*60)
+    print("="*70)
 
 
-def print_response(response, show_full=False):
-    """Print formatted response"""
-    print(f"Status Code: {response.status_code}")
-    if show_full:
-        print(f"Response: {json.dumps(response.json(), indent=2)}")
-    else:
-        print(f"Response: {json.dumps(response.json(), indent=2)[:500]}...")
+def test_hr_login():
+    """Test 1: HR can login"""
+    global tests_passed, tests_failed, hr_token
+    test_name = "Test 1: HR Login"
+    
+    try:
+        response = requests.post(
+            f"{BASE_URL}/auth/login",
+            json={"email": HR_EMAIL, "password": PASSWORD}
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        data = response.json()
+        assert "access_token" in data
+        
+        hr_token = data["access_token"]
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   User: {data['user']['name']}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
 
 
-def login(email, password):
-    """Login and get access token"""
-    response = requests.post(
-        f"{BASE_URL}/auth/login",
-        json={"email": email, "password": password}
-    )
-    if response.status_code == 200:
-        return response.json()["access_token"]
-    else:
-        print(f"Login failed: {response.json()}")
-        return None
+def test_employee_login():
+    """Test 2: Employee can login"""
+    global tests_passed, tests_failed, employee_token
+    test_name = "Test 2: Employee Login"
+    
+    try:
+        response = requests.post(
+            f"{BASE_URL}/auth/login",
+            json={"email": EMPLOYEE_EMAIL, "password": PASSWORD}
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        data = response.json()
+        assert "access_token" in data
+        
+        employee_token = data["access_token"]
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   User: {data['user']['name']}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
 
 
-def test_announcements_api():
-    """Test all announcements API endpoints"""
+def test_create_announcement():
+    """Test 3: HR can create announcement"""
+    global tests_passed, tests_failed, announcement_id
+    test_name = "Test 3: Create Announcement (HR)"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        
+        expiry_date = (datetime.now() + timedelta(days=30)).isoformat()
+        
+        announcement_data = {
+            "title": "Test Announcement - API Test",
+            "message": "This is a test announcement created by the API test suite.",
+            "link": "https://test.company.com/announcements",
+            "is_urgent": False,
+            "expiry_date": expiry_date
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/announcements",
+            headers={"Authorization": f"Bearer {hr_token}"},
+            json=announcement_data
+        )
+        
+        assert response.status_code == 201, f"Expected 201, got {response.status_code}"
+        data = response.json()
+        assert "id" in data
+        assert data["title"] == announcement_data["title"]
+        
+        announcement_id = data["id"]
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Announcement ID: {announcement_id}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_create_announcement_employee_forbidden():
+    """Test 4: Employee cannot create announcement"""
+    global tests_passed, tests_failed
+    test_name = "Test 4: Create Announcement - Employee Forbidden"
+    
+    try:
+        assert employee_token is not None, "Employee token not available"
+        
+        announcement_data = {
+            "title": "Unauthorized Announcement",
+            "message": "This should fail"
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/announcements",
+            headers={"Authorization": f"Bearer {employee_token}"},
+            json=announcement_data
+        )
+        
+        assert response.status_code == 403, f"Expected 403, got {response.status_code}"
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Correctly blocked employee from creating announcement")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_get_all_announcements():
+    """Test 5: Get all announcements"""
+    global tests_passed, tests_failed
+    test_name = "Test 5: Get All Announcements"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        
+        response = requests.get(
+            f"{BASE_URL}/announcements?limit=10",
+            headers={"Authorization": f"Bearer {hr_token}"}
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        data = response.json()
+        assert "announcements" in data
+        assert "total" in data
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Total: {data['total']}, Active: {data.get('active', 0)}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_get_announcement_by_id():
+    """Test 6: Get announcement by ID"""
+    global tests_passed, tests_failed
+    test_name = "Test 6: Get Announcement by ID"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        assert announcement_id is not None, "Announcement ID not available"
+        
+        response = requests.get(
+            f"{BASE_URL}/announcements/{announcement_id}",
+            headers={"Authorization": f"Bearer {hr_token}"}
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        data = response.json()
+        assert data["id"] == announcement_id
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Title: {data['title']}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_get_nonexistent_announcement():
+    """Test 7: Get non-existent announcement returns 404"""
+    global tests_passed, tests_failed
+    test_name = "Test 7: Get Non-Existent Announcement"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        
+        response = requests.get(
+            f"{BASE_URL}/announcements/99999",
+            headers={"Authorization": f"Bearer {hr_token}"}
+        )
+        
+        assert response.status_code == 404, f"Expected 404, got {response.status_code}"
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Correctly returns 404 for non-existent announcement")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_update_announcement():
+    """Test 8: HR can update announcement"""
+    global tests_passed, tests_failed
+    test_name = "Test 8: Update Announcement (HR)"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        assert announcement_id is not None, "Announcement ID not available"
+        
+        update_data = {
+            "title": "Updated Test Announcement - Modified",
+            "is_urgent": True
+        }
+        
+        response = requests.put(
+            f"{BASE_URL}/announcements/{announcement_id}",
+            headers={"Authorization": f"Bearer {hr_token}"},
+            json=update_data
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        data = response.json()
+        assert data["title"] == update_data["title"]
+        assert data["is_urgent"] == update_data["is_urgent"]
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Updated title: {data['title']}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_update_announcement_employee_forbidden():
+    """Test 9: Employee cannot update announcement"""
+    global tests_passed, tests_failed
+    test_name = "Test 9: Update Announcement - Employee Forbidden"
+    
+    try:
+        assert employee_token is not None, "Employee token not available"
+        assert announcement_id is not None, "Announcement ID not available"
+        
+        update_data = {"title": "Unauthorized Update"}
+        
+        response = requests.put(
+            f"{BASE_URL}/announcements/{announcement_id}",
+            headers={"Authorization": f"Bearer {employee_token}"},
+            json=update_data
+        )
+        
+        assert response.status_code == 403, f"Expected 403, got {response.status_code}"
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Correctly blocked employee from updating")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_get_statistics():
+    """Test 10: Get announcement statistics"""
+    global tests_passed, tests_failed
+    test_name = "Test 10: Get Announcement Statistics"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        
+        response = requests.get(
+            f"{BASE_URL}/announcements/stats/summary",
+            headers={"Authorization": f"Bearer {hr_token}"}
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        data = response.json()
+        assert "total" in data
+        assert "active" in data
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Total: {data['total']}, Active: {data['active']}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_employee_can_view_announcements():
+    """Test 11: Employee can view announcements"""
+    global tests_passed, tests_failed
+    test_name = "Test 11: Employee Can View Announcements"
+    
+    try:
+        assert employee_token is not None, "Employee token not available"
+        
+        response = requests.get(
+            f"{BASE_URL}/announcements?limit=5",
+            headers={"Authorization": f"Bearer {employee_token}"}
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        data = response.json()
+        assert "announcements" in data
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Employee can view {len(data['announcements'])} announcements")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_create_urgent_announcement():
+    """Test 12: Create urgent announcement"""
+    global tests_passed, tests_failed
+    test_name = "Test 12: Create Urgent Announcement"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        
+        urgent_data = {
+            "title": "URGENT: System Maintenance",
+            "message": "Critical system maintenance tonight.",
+            "is_urgent": True,
+            "expiry_date": (datetime.now() + timedelta(days=1)).isoformat()
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/announcements",
+            headers={"Authorization": f"Bearer {hr_token}"},
+            json=urgent_data
+        )
+        
+        assert response.status_code == 201, f"Expected 201, got {response.status_code}"
+        data = response.json()
+        assert data["is_urgent"] == True
+        
+        # Clean up
+        urgent_id = data["id"]
+        requests.delete(
+            f"{BASE_URL}/announcements/{urgent_id}",
+            headers={"Authorization": f"Bearer {hr_token}"}
+        )
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Urgent announcement created successfully")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_soft_delete_announcement():
+    """Test 13: Soft delete announcement"""
+    global tests_passed, tests_failed
+    test_name = "Test 13: Soft Delete Announcement"
+    
+    try:
+        assert hr_token is not None, "HR token not available"
+        assert announcement_id is not None, "Announcement ID not available"
+        
+        response = requests.delete(
+            f"{BASE_URL}/announcements/{announcement_id}",
+            headers={"Authorization": f"Bearer {hr_token}"}
+        )
+        
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        # Verify it's not in active list
+        list_response = requests.get(
+            f"{BASE_URL}/announcements?limit=100",
+            headers={"Authorization": f"Bearer {hr_token}"}
+        )
+        
+        if list_response.status_code == 200:
+            data = list_response.json()
+            announcement_ids = [a["id"] for a in data["announcements"]]
+            assert announcement_id not in announcement_ids, "Deleted announcement still in active list"
+        
+        print(f"{GREEN}PASS{RESET} {test_name}")
+        print(f"   Announcement soft deleted (deactivated)")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def test_delete_announcement_employee_forbidden():
+    """Test 14: Employee cannot delete announcement"""
+    global tests_passed, tests_failed
+    test_name = "Test 14: Delete Announcement - Employee Forbidden"
+    
+    try:
+        assert employee_token is not None, "Employee token not available"
+        
+        # Create a test announcement first
+        if hr_token:
+            create_response = requests.post(
+                f"{BASE_URL}/announcements",
+                headers={"Authorization": f"Bearer {hr_token}"},
+                json={
+                    "title": "Test for Delete",
+                    "message": "Test",
+                    "expiry_date": (datetime.now() + timedelta(days=1)).isoformat()
+                }
+            )
+            if create_response.status_code == 201:
+                test_id = create_response.json()["id"]
+                
+                # Try to delete as employee
+                response = requests.delete(
+                    f"{BASE_URL}/announcements/{test_id}",
+                    headers={"Authorization": f"Bearer {employee_token}"}
+                )
+                
+                assert response.status_code == 403, f"Expected 403, got {response.status_code}"
+                
+                # Cleanup
+                requests.delete(
+                    f"{BASE_URL}/announcements/{test_id}",
+                    headers={"Authorization": f"Bearer {hr_token}"}
+                )
+                
+                print(f"{GREEN}PASS{RESET} {test_name}")
+                print(f"   Correctly blocked employee from deleting")
+                tests_passed += 1
+                return
+        
+        print(f"{RED}FAIL{RESET} {test_name}: Could not set up test")
+        tests_failed += 1
+        
+    except AssertionError as e:
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
+        tests_failed += 1
+
+
+def run_all_tests():
+    """Run all announcements API tests"""
+    global tests_passed, tests_failed
     
     print_section("ANNOUNCEMENTS API TEST SUITE")
     print(f"Testing at: {BASE_URL}")
     print(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print()
     
-    # =================================================================
-    # 1. LOGIN AS HR
-    # =================================================================
-    print_section("1. Login as HR")
-    hr_token = login(HR_EMAIL, PASSWORD)
-    if not hr_token:
-        print("❌ HR login failed. Stopping tests.")
-        return
-    print(f"✅ HR logged in successfully")
-    print(f"Token: {hr_token[:20]}...")
+    # Run all tests
+    test_hr_login()
+    test_employee_login()
+    test_create_announcement()
+    test_create_announcement_employee_forbidden()
+    test_get_all_announcements()
+    test_get_announcement_by_id()
+    test_get_nonexistent_announcement()
+    test_update_announcement()
+    test_update_announcement_employee_forbidden()
+    test_get_statistics()
+    test_employee_can_view_announcements()
+    test_create_urgent_announcement()
+    test_soft_delete_announcement()
+    test_delete_announcement_employee_forbidden()
     
-    headers_hr = {
-        "Authorization": f"Bearer {hr_token}",
-        "Content-Type": "application/json"
-    }
-    
-    # =================================================================
-    # 2. CREATE ANNOUNCEMENT (HR)
-    # =================================================================
-    print_section("2. Create Announcement (HR)")
-    
-    # Calculate expiry date (30 days from now)
-    expiry_date = (datetime.now() + timedelta(days=30)).isoformat()
-    
-    announcement_data = {
-        "title": "Test Announcement - API Test",
-        "message": "This is a test announcement created by the API test suite. It demonstrates the announcements functionality.",
-        "link": "https://test.company.com/announcements",
-        "is_urgent": False,
-        "expiry_date": expiry_date
-    }
-    
-    response = requests.post(
-        f"{BASE_URL}/announcements",
-        headers=headers_hr,
-        json=announcement_data
-    )
-    print_response(response, show_full=True)
-    
-    if response.status_code == 201:
-        print("✅ Announcement created successfully")
-        created_announcement = response.json()
-        announcement_id = created_announcement["id"]
-    else:
-        print("❌ Failed to create announcement")
-        return
-    
-    # =================================================================
-    # 3. GET ALL ANNOUNCEMENTS (HR)
-    # =================================================================
-    print_section("3. Get All Announcements (HR)")
-    
-    response = requests.get(
-        f"{BASE_URL}/announcements?limit=10",
-        headers=headers_hr
-    )
-    print_response(response)
-    
-    if response.status_code == 200:
-        data = response.json()
-        print(f"✅ Retrieved {len(data['announcements'])} announcements")
-        print(f"   Total: {data['total']}, Active: {data['active']}, Urgent: {data['urgent']}")
-    else:
-        print("❌ Failed to get announcements")
-    
-    # =================================================================
-    # 4. GET ANNOUNCEMENT BY ID
-    # =================================================================
-    print_section("4. Get Announcement by ID")
-    
-    response = requests.get(
-        f"{BASE_URL}/announcements/{announcement_id}",
-        headers=headers_hr
-    )
-    print_response(response, show_full=True)
-    
-    if response.status_code == 200:
-        print(f"✅ Retrieved announcement #{announcement_id}")
-    else:
-        print(f"❌ Failed to get announcement #{announcement_id}")
-    
-    # =================================================================
-    # 5. UPDATE ANNOUNCEMENT (HR)
-    # =================================================================
-    print_section("5. Update Announcement (HR)")
-    
-    update_data = {
-        "title": "Updated Test Announcement - Modified",
-        "is_urgent": True
-    }
-    
-    response = requests.put(
-        f"{BASE_URL}/announcements/{announcement_id}",
-        headers=headers_hr,
-        json=update_data
-    )
-    print_response(response, show_full=True)
-    
-    if response.status_code == 200:
-        print(f"✅ Announcement #{announcement_id} updated successfully")
-        updated = response.json()
-        print(f"   New title: {updated['title']}")
-        print(f"   Is urgent: {updated['is_urgent']}")
-    else:
-        print(f"❌ Failed to update announcement #{announcement_id}")
-    
-    # =================================================================
-    # 6. GET STATISTICS (HR)
-    # =================================================================
-    print_section("6. Get Announcement Statistics (HR)")
-    
-    response = requests.get(
-        f"{BASE_URL}/announcements/stats/summary",
-        headers=headers_hr
-    )
-    print_response(response, show_full=True)
-    
-    if response.status_code == 200:
-        stats = response.json()
-        print("✅ Statistics retrieved successfully")
-        print(f"   Total: {stats['total']}")
-        print(f"   Active: {stats['active']}")
-        print(f"   Urgent: {stats['urgent']}")
-        print(f"   Expired: {stats['expired']}")
-        print(f"   Inactive: {stats['inactive']}")
-    else:
-        print("❌ Failed to get statistics")
-    
-    # =================================================================
-    # 7. LOGIN AS EMPLOYEE
-    # =================================================================
-    print_section("7. Login as Employee")
-    employee_token = login(EMPLOYEE_EMAIL, PASSWORD)
-    if not employee_token:
-        print("❌ Employee login failed")
-        return
-    print(f"✅ Employee logged in successfully")
-    
-    headers_employee = {
-        "Authorization": f"Bearer {employee_token}",
-        "Content-Type": "application/json"
-    }
-    
-    # =================================================================
-    # 8. GET ANNOUNCEMENTS (EMPLOYEE)
-    # =================================================================
-    print_section("8. Get Announcements (Employee)")
-    
-    response = requests.get(
-        f"{BASE_URL}/announcements?limit=5",
-        headers=headers_employee
-    )
-    print_response(response)
-    
-    if response.status_code == 200:
-        data = response.json()
-        print(f"✅ Employee can view {len(data['announcements'])} announcements")
-    else:
-        print("❌ Employee failed to get announcements")
-    
-    # =================================================================
-    # 9. TRY CREATE AS EMPLOYEE (Should Fail)
-    # =================================================================
-    print_section("9. Try Create Announcement as Employee (Should Fail)")
-    
-    response = requests.post(
-        f"{BASE_URL}/announcements",
-        headers=headers_employee,
-        json={
-            "title": "Unauthorized Test",
-            "message": "This should fail"
-        }
-    )
-    print_response(response, show_full=True)
-    
-    if response.status_code == 403:
-        print("✅ Correctly blocked employee from creating announcement")
-    else:
-        print("❌ Security issue: Employee was able to create announcement!")
-    
-    # =================================================================
-    # 10. SOFT DELETE ANNOUNCEMENT (HR)
-    # =================================================================
-    print_section("10. Soft Delete Announcement (HR)")
-    
-    response = requests.delete(
-        f"{BASE_URL}/announcements/{announcement_id}",
-        headers=headers_hr
-    )
-    print_response(response, show_full=True)
-    
-    if response.status_code == 200:
-        print(f"✅ Announcement #{announcement_id} soft deleted (deactivated)")
-    else:
-        print(f"❌ Failed to delete announcement #{announcement_id}")
-    
-    # =================================================================
-    # 11. VERIFY SOFT DELETE
-    # =================================================================
-    print_section("11. Verify Soft Delete")
-    
-    # Try to get active announcements (should not include deleted)
-    response = requests.get(
-        f"{BASE_URL}/announcements?limit=100",
-        headers=headers_hr
-    )
-    
-    if response.status_code == 200:
-        data = response.json()
-        announcement_ids = [a["id"] for a in data["announcements"]]
-        
-        if announcement_id not in announcement_ids:
-            print(f"✅ Soft deleted announcement #{announcement_id} not in active list")
-        else:
-            print(f"❌ Soft deleted announcement #{announcement_id} still appears in active list")
-    
-    # Try to get with include_inactive flag
-    response = requests.get(
-        f"{BASE_URL}/announcements?include_inactive=true",
-        headers=headers_hr
-    )
-    
-    if response.status_code == 200:
-        data = response.json()
-        announcement_ids = [a["id"] for a in data["announcements"]]
-        
-        if announcement_id in announcement_ids:
-            print(f"✅ Soft deleted announcement #{announcement_id} visible with include_inactive=true")
-        else:
-            print(f"⚠️  Soft deleted announcement #{announcement_id} not found even with include_inactive")
-    
-    # =================================================================
-    # 12. CREATE URGENT ANNOUNCEMENT
-    # =================================================================
-    print_section("12. Create Urgent Announcement")
-    
-    urgent_data = {
-        "title": "URGENT: System Maintenance Tonight",
-        "message": "Critical system maintenance scheduled for tonight from 11 PM to 2 AM. Please save all work.",
-        "link": "https://status.company.com/maintenance",
-        "is_urgent": True,
-        "expiry_date": (datetime.now() + timedelta(days=1)).isoformat()
-    }
-    
-    response = requests.post(
-        f"{BASE_URL}/announcements",
-        headers=headers_hr,
-        json=urgent_data
-    )
-    
-    if response.status_code == 201:
-        urgent_announcement = response.json()
-        print(f"✅ Urgent announcement created: ID #{urgent_announcement['id']}")
-        print(f"   Is Urgent: {urgent_announcement['is_urgent']}")
-        
-        # Clean up - delete the urgent announcement
-        requests.delete(
-            f"{BASE_URL}/announcements/{urgent_announcement['id']}",
-            headers=headers_hr
-        )
-    else:
-        print("❌ Failed to create urgent announcement")
-    
-    # =================================================================
-    # SUMMARY
-    # =================================================================
+    # Print summary
     print_section("TEST SUMMARY")
-    print("✅ All announcements API endpoints tested successfully!")
-    print("\nTested Endpoints:")
-    print("  ✅ POST   /api/v1/announcements          (Create)")
-    print("  ✅ GET    /api/v1/announcements          (List All)")
-    print("  ✅ GET    /api/v1/announcements/{id}     (Get by ID)")
-    print("  ✅ PUT    /api/v1/announcements/{id}     (Update)")
-    print("  ✅ DELETE /api/v1/announcements/{id}     (Delete)")
-    print("  ✅ GET    /api/v1/announcements/stats/summary (Statistics)")
-    print("\nPermissions Tested:")
-    print("  ✅ HR can create, update, delete announcements")
-    print("  ✅ Employee can view announcements")
-    print("  ✅ Employee cannot create announcements (403 Forbidden)")
-    print("\nFeatures Verified:")
-    print("  ✅ Soft delete (audit trail maintained)")
-    print("  ✅ Urgent announcements")
-    print("  ✅ Expiry date support")
-    print("  ✅ Pagination")
-    print("  ✅ Statistics endpoint")
-    print("\n" + "="*60)
+    total_tests = tests_passed + tests_failed
+    print(f"Total Tests: {total_tests}")
+    print(f"{GREEN}PASSED{RESET}: {tests_passed}")
+    print(f"{RED}FAILED{RESET}: {tests_failed}")
+    print(f"Success Rate: {(tests_passed/total_tests)*100:.1f}%")
+    
+    if tests_failed == 0:
+        print(f"\n{GREEN}All tests passed successfully!{RESET}")
+    else:
+        print(f"\n{RED}WARNING{RESET}: {tests_failed} test(s) failed. Please review the output above.")
+    
+    print("="*70)
 
 
 if __name__ == "__main__":
     try:
-        test_announcements_api()
+        run_all_tests()
     except requests.exceptions.ConnectionError:
-        print("\n❌ Error: Could not connect to backend server")
+        print(f"\n{RED}ERROR{RESET}: Could not connect to backend server")
         print("Make sure the backend is running at http://localhost:8000")
     except Exception as e:
-        print(f"\n❌ Error during testing: {str(e)}")
+        print(f"\n{RED}ERROR{RESET} during testing: {str(e)}")
         import traceback
         traceback.print_exc()
-

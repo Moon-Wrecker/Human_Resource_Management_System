@@ -5,6 +5,7 @@ Runs all API tests from individual test modules
 Test Modules:
 - test_health_api.py (7 tests)
 - test_authentication_api.py (17 tests)
+- test_announcements_api.py (14 tests)
 
 Run: python3 backend/tests/test_suite.py
 """
@@ -49,6 +50,25 @@ from test_authentication_api import (
     test_logout,
     tests_passed as auth_passed,
     tests_failed as auth_failed
+)
+
+from test_announcements_api import (
+    test_hr_login as test_announcements_hr_login,
+    test_employee_login as test_announcements_employee_login,
+    test_create_announcement,
+    test_create_announcement_employee_forbidden,
+    test_get_all_announcements,
+    test_get_announcement_by_id,
+    test_get_nonexistent_announcement,
+    test_update_announcement,
+    test_update_announcement_employee_forbidden,
+    test_get_statistics,
+    test_employee_can_view_announcements,
+    test_create_urgent_announcement,
+    test_soft_delete_announcement,
+    test_delete_announcement_employee_forbidden,
+    tests_passed as announcements_passed,
+    tests_failed as announcements_failed
 )
 
 
@@ -119,12 +139,37 @@ def run_comprehensive_test_suite():
     auth_tests_failed = test_authentication_api.tests_failed
     
     # ========================================================================
+    # ANNOUNCEMENTS TESTS
+    # ========================================================================
+    print_subsection("ANNOUNCEMENTS API TESTS (14 Tests)")
+    
+    test_announcements_hr_login()
+    test_announcements_employee_login()
+    test_create_announcement()
+    test_create_announcement_employee_forbidden()
+    test_get_all_announcements()
+    test_get_announcement_by_id()
+    test_get_nonexistent_announcement()
+    test_update_announcement()
+    test_update_announcement_employee_forbidden()
+    test_get_statistics()
+    test_employee_can_view_announcements()
+    test_create_urgent_announcement()
+    test_soft_delete_announcement()
+    test_delete_announcement_employee_forbidden()
+    
+    # Get announcements test results
+    import test_announcements_api
+    announcements_tests_passed = test_announcements_api.tests_passed
+    announcements_tests_failed = test_announcements_api.tests_failed
+    
+    # ========================================================================
     # FINAL SUMMARY
     # ========================================================================
     print_section("FINAL TEST SUMMARY")
     
-    total_passed = health_tests_passed + auth_tests_passed
-    total_failed = health_tests_failed + auth_tests_failed
+    total_passed = health_tests_passed + auth_tests_passed + announcements_tests_passed
+    total_failed = health_tests_failed + auth_tests_failed + announcements_tests_failed
     total_tests = total_passed + total_failed
     
     print(f"\nOverall Results:")
@@ -141,6 +186,10 @@ def run_comprehensive_test_suite():
     print(f"  Authentication API:")
     print(f"    {GREEN}PASSED{RESET}: {auth_tests_passed}/17")
     print(f"    {RED}FAILED{RESET}: {auth_tests_failed}/17")
+    
+    print(f"  Announcements API:")
+    print(f"    {GREEN}PASSED{RESET}: {announcements_tests_passed}/14")
+    print(f"    {RED}FAILED{RESET}: {announcements_tests_failed}/14")
     
     if total_failed == 0:
         print(f"\n{GREEN}All tests passed successfully!{RESET}")
