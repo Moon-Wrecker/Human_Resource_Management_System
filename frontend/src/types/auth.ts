@@ -14,12 +14,7 @@ export interface User {
   hierarchy_level: number | null;
 }
 
-export enum UserRole {
-  EMPLOYEE = 'employee',
-  HR = 'hr',
-  MANAGER = 'manager',
-  ADMIN = 'admin',
-}
+export type UserRole = 'employee' | 'hr' | 'manager' | 'admin';
 
 export interface LoginRequest {
   email: string;

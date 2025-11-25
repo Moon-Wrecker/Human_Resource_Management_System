@@ -219,24 +219,3 @@ class DashboardService {
 export const dashboardService = new DashboardService();
 export default dashboardService;
 
-// Re-export all types for convenience
-export type {
-  HolidayInfo,
-  AttendanceInfo,
-  LeaveBalanceInfo,
-  DepartmentEmployeeCount,
-  DepartmentAttendance,
-  DepartmentModulesCompleted,
-  ActiveApplicationInfo,
-  HRDashboardData,
-  TeamMemberAttendance,
-  TeamMemberModules,
-  TeamGoalsStats,
-  TeamStats,
-  ManagerDashboardData,
-  GoalStats,
-  EmployeeDashboardData,
-  MonthlyModulesCompleted,
-  PerformanceMetrics,
-};
-

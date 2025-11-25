@@ -11,7 +11,6 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableCaption,
 } from "@/components/ui/table";
 
 import { dashboardService } from '@/services/dashboardService';

@@ -9,7 +9,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useState, FormEvent } from "react"
+import { useState, type FormEvent } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 
 export function LoginForm({

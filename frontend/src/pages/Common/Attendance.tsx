@@ -42,7 +42,6 @@ const Attendance = () => {
   const [todayAttendance, setTodayAttendance] = useState<AttendanceRecord | null>(null);
   const [summary, setSummary] = useState<AttendanceSummary | null>(null);
   const [attendanceHistory, setAttendanceHistory] = useState<AttendanceRecord[]>([]);
-  const [loading, setLoading] = useState(false);
   const [punchingIn, setPunchingIn] = useState(false);
   const [punchingOut, setPunchingOut] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<'present' | 'wfh'>('present');
@@ -60,7 +59,6 @@ const Attendance = () => {
   }, []);
 
   const fetchAttendanceData = async () => {
-    setLoading(true);
     try {
       // Fetch today's status
       const todayData = await attendanceService.getTodayAttendance();
@@ -81,8 +79,6 @@ const Attendance = () => {
         title: "Error",
         description: errorMessage,
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -181,10 +177,10 @@ const Attendance = () => {
     start: new Date(`${record.date}T09:00:00`),
     end: new Date(`${record.date}T17:00:00`),
     title: attendanceService.getStatusLabel(record.status),
-    color: record.status === 'present' ? 'green' : 
+    color: (record.status === 'present' ? 'green' : 
            record.status === 'wfh' ? 'blue' :
-           record.status === 'leave' ? 'yellow' :
-           record.status === 'absent' ? 'red' : 'purple',
+           record.status === 'leave' ? 'pink' :
+           record.status === 'absent' ? 'purple' : 'default') as "default" | "blue" | "green" | "pink" | "purple",
   }));
 
   return (

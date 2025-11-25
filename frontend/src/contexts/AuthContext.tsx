@@ -3,7 +3,7 @@
  * Provides authentication state and methods throughout the app
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '@/services/authService';
 import type { User, AuthContextType } from '@/types/auth';

@@ -11,7 +11,6 @@ import {
 import { PieChart, Pie, Cell } from "recharts";
 import { ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { dashboardService } from "@/services/dashboardService";
 import type { ManagerDashboardData } from "@/services/dashboardService";
