@@ -154,5 +154,8 @@ def pytest_configure(config):
         "markers", "team_requests: Team Requests API tests"
     )
     config.addinivalue_line(
+        "markers", "skills: Skills/Modules API tests"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )
