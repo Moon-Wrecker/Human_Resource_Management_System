@@ -32,7 +32,8 @@ def run_tests():
         "test_health_api.py",
         "test_authentication_api.py",
         "test_announcements_api.py",
-        "test_holidays_api.py",  # Added
+        "test_holidays_api.py",
+        "test_attendance_api.py",  # Added
         "-v",  # Verbose
         "--tb=short",  # Short traceback
         "--color=yes",  # Colored output
