@@ -118,5 +118,8 @@ def pytest_configure(config):
         "markers", "departments: Departments API tests"
     )
     config.addinivalue_line(
+        "markers", "dashboard: Dashboard API tests"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )
