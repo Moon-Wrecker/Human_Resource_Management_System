@@ -38,7 +38,7 @@ def run_tests():
         "test_dashboard_api.py",
         "test_employees_api.py",
         "test_feedback_api.py",
-        "test_job_listings_api.py",  # Renamed from test_jobs_api.py
+        "test_jobs_listings_api.py",  
         "test_goals_api.py",  # Added
         "-v",  # Verbose
         "--tb=short",  # Short traceback
