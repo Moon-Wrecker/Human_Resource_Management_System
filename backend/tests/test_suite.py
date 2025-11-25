@@ -29,9 +29,9 @@ def run_tests():
     # Default pytest arguments - only run *_api.py files
     pytest_args = [
         "pytest",
-        "test_health_api.py",  # Only converted files for now
+        "test_health_api.py",
+        "test_authentication_api.py",  # Added
         # Add more as we convert them:
-        # "test_authentication_api.py",
         # "test_announcements_api.py",
         # "test_holidays_api.py",
         "-v",  # Verbose

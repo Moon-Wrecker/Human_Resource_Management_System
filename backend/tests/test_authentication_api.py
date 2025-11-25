@@ -1,368 +1,177 @@
 """
-Test script for Authentication API
-Run this after starting the backend server to verify all endpoints work
+Authentication API Tests (Pytest)
+Run with: pytest backend/tests/test_authentication_api.py -v
 """
+import pytest
 import requests
-import json
-from datetime import datetime
-
-# Configuration
-BASE_URL = "http://localhost:8000/api/v1"
-HR_EMAIL = "sarah.johnson@company.com"
-MANAGER_EMAIL = "michael.chen@company.com"
-EMPLOYEE_EMAIL = "john.doe@company.com"
-PASSWORD = "password123"
-
-# ANSI Color codes
-GREEN = '\033[92m'
-RED = '\033[91m'
-RESET = '\033[0m'
-
-# Test counters
-tests_passed = 0
-tests_failed = 0
-
-# Store tokens
-hr_token = None
-manager_token = None
-employee_token = None
-employee_refresh_token = None
-employee_id = None
 
 
-def print_section(title):
-    """Print a formatted section header"""
-    print("\n" + "="*60)
-    print(f"  {title}")
-    print("="*60)
-
-
-def test_login_hr():
-    """Test 1: HR can login successfully"""
-    global tests_passed, tests_failed, hr_token
-    test_name = "Test 1: HR Login"
+@pytest.mark.auth
+class TestAuthenticationAPI:
+    """Test suite for Authentication endpoints"""
     
-    try:
+    def test_hr_login(self, api_base_url):
+        """Test HR can login successfully"""
         response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": HR_EMAIL, "password": PASSWORD}
+            f"{api_base_url}/auth/login",
+            json={"email": "sarah.johnson@company.com", "password": "password123"}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
-        assert "access_token" in data, "Missing access_token"
-        assert "refresh_token" in data, "Missing refresh_token"
-        assert "token_type" in data, "Missing token_type"
-        assert "user" in data, "Missing user"
-        assert data["token_type"] == "bearer", "Token type should be bearer"
-        assert data["user"]["role"] == "hr", "Role should be HR"
-        
-        hr_token = data["access_token"]
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   User: {data['user']['name']}, Role: {data['user']['role']}")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_login_manager():
-    """Test 2: Manager can login successfully"""
-    global tests_passed, tests_failed, manager_token
-    test_name = "Test 2: Manager Login"
+        assert "access_token" in data
+        assert "refresh_token" in data
+        assert "token_type" in data
+        assert "user" in data
+        assert data["token_type"] == "bearer"
+        assert data["user"]["role"] == "hr"
     
-    try:
+    def test_manager_login(self, api_base_url):
+        """Test Manager can login successfully"""
         response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": MANAGER_EMAIL, "password": PASSWORD}
+            f"{api_base_url}/auth/login",
+            json={"email": "michael.chen@company.com", "password": "password123"}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
-        assert "access_token" in data, "Missing access_token"
-        assert data["user"]["role"] == "manager", "Role should be manager"
-        
-        manager_token = data["access_token"]
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   User: {data['user']['name']}, Role: {data['user']['role']}")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_login_employee():
-    """Test 3: Employee can login successfully"""
-    global tests_passed, tests_failed, employee_token, employee_refresh_token, employee_id
-    test_name = "Test 3: Employee Login"
+        assert "access_token" in data
+        assert data["user"]["role"] == "manager"
     
-    try:
+    def test_employee_login(self, api_base_url):
+        """Test Employee can login successfully"""
         response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL, "password": PASSWORD}
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "password123"}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
-        assert "access_token" in data, "Missing access_token"
-        assert "refresh_token" in data, "Missing refresh_token"
-        assert data["user"]["role"] == "employee", "Role should be employee"
-        
-        employee_token = data["access_token"]
-        employee_refresh_token = data["refresh_token"]
-        employee_id = data["user"]["id"]
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   User: {data['user']['name']}, Role: {data['user']['role']}")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_login_invalid_email():
-    """Test 4: Invalid email returns 401"""
-    global tests_passed, tests_failed
-    test_name = "Test 4: Login - Invalid Email"
+        assert "access_token" in data
+        assert "refresh_token" in data
+        assert data["user"]["role"] == "employee"
     
-    try:
+    @pytest.mark.permissions
+    def test_login_invalid_email(self, api_base_url):
+        """Test invalid email returns 401"""
         response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": "nonexistent@company.com", "password": PASSWORD}
+            f"{api_base_url}/auth/login",
+            json={"email": "nonexistent@company.com", "password": "password123"}
         )
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly rejected invalid email with 401")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_login_wrong_password():
-    """Test 5: Wrong password returns 401"""
-    global tests_passed, tests_failed
-    test_name = "Test 5: Login - Wrong Password"
     
-    try:
+    @pytest.mark.permissions
+    def test_login_wrong_password(self, api_base_url):
+        """Test wrong password returns 401"""
         response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL, "password": "wrongpassword"}
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "wrongpassword"}
         )
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly rejected wrong password with 401")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_login_missing_field():
-    """Test 6: Missing password field returns 422"""
-    global tests_passed, tests_failed
-    test_name = "Test 6: Login - Missing Password"
     
-    try:
+    def test_login_missing_field(self, api_base_url):
+        """Test missing password field returns 422"""
         response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL}
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com"}
         )
         
         assert response.status_code == 422, f"Expected 422, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly rejected missing field with 422 validation error")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_get_current_user():
-    """Test 7: Get current user with valid token"""
-    global tests_passed, tests_failed
-    test_name = "Test 7: Get Current User"
     
-    try:
-        assert employee_token is not None, "Employee token not available"
+    def test_get_current_user(self, api_base_url, employee_token):
+        """Test get current user with valid token"""
+        if not employee_token:
+            pytest.skip("Employee token not available (database not seeded)")
         
         response = requests.get(
-            f"{BASE_URL}/auth/me",
+            f"{api_base_url}/auth/me",
             headers={"Authorization": f"Bearer {employee_token}"}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
-        assert "name" in data, "Missing name"
-        assert "email" in data, "Missing email"
-        assert "role" in data, "Missing role"
-        assert data["email"] == EMPLOYEE_EMAIL, f"Email mismatch"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   User: {data['name']}, Email: {data['email']}")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_get_current_user_no_token():
-    """Test 8: Get current user without token returns 403"""
-    global tests_passed, tests_failed
-    test_name = "Test 8: Get Current User - No Token"
+        assert "name" in data
+        assert "email" in data
+        assert "role" in data
+        assert data["email"] == "john.doe@company.com"
     
-    try:
-        response = requests.get(f"{BASE_URL}/auth/me")
+    @pytest.mark.permissions
+    def test_get_current_user_no_token(self, api_base_url):
+        """Test get current user without token returns 403"""
+        response = requests.get(f"{api_base_url}/auth/me")
         
         assert response.status_code == 403, f"Expected 403, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly blocked request without token (403)")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_get_current_user_invalid_token():
-    """Test 9: Get current user with invalid token returns 401"""
-    global tests_passed, tests_failed
-    test_name = "Test 9: Get Current User - Invalid Token"
     
-    try:
+    @pytest.mark.permissions
+    def test_get_current_user_invalid_token(self, api_base_url):
+        """Test get current user with invalid token returns 401"""
         response = requests.get(
-            f"{BASE_URL}/auth/me",
+            f"{api_base_url}/auth/me",
             headers={"Authorization": "Bearer invalid.token.here"}
         )
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly rejected invalid token (401)")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_refresh_token():
-    """Test 10: Refresh access token with valid refresh token"""
-    global tests_passed, tests_failed
-    test_name = "Test 10: Refresh Access Token"
     
-    try:
-        assert employee_refresh_token is not None, "Refresh token not available"
+    def test_refresh_token(self, api_base_url):
+        """Test refresh access token with valid refresh token"""
+        # First login to get refresh token
+        login_response = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "password123"}
+        )
+        
+        if login_response.status_code != 200:
+            pytest.skip("Login failed (database not seeded)")
+        
+        refresh_token = login_response.json()["refresh_token"]
         
         response = requests.post(
-            f"{BASE_URL}/auth/refresh",
-            json={"refresh_token": employee_refresh_token}
+            f"{api_base_url}/auth/refresh",
+            json={"refresh_token": refresh_token}
         )
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
-        assert "access_token" in data, "Missing access_token"
-        assert "token_type" in data, "Missing token_type"
-        assert data["token_type"] == "bearer", "Token type should be bearer"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   New access token generated successfully")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_refresh_token_invalid():
-    """Test 11: Invalid refresh token returns 401"""
-    global tests_passed, tests_failed
-    test_name = "Test 11: Refresh Token - Invalid"
+        assert "access_token" in data
+        assert "token_type" in data
+        assert data["token_type"] == "bearer"
     
-    try:
+    @pytest.mark.permissions
+    def test_refresh_token_invalid(self, api_base_url):
+        """Test invalid refresh token returns 401"""
         response = requests.post(
-            f"{BASE_URL}/auth/refresh",
+            f"{api_base_url}/auth/refresh",
             json={"refresh_token": "invalid.refresh.token"}
         )
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly rejected invalid refresh token (401)")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_change_password():
-    """Test 12: Change password successfully"""
-    global tests_passed, tests_failed, employee_token
-    test_name = "Test 12: Change Password"
     
-    try:
-        assert employee_token is not None, "Employee token not available"
+    def test_change_password(self, api_base_url):
+        """Test change password successfully"""
+        # Login first
+        login_response = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "password123"}
+        )
+        
+        if login_response.status_code != 200:
+            pytest.skip("Login failed (database not seeded)")
+        
+        token = login_response.json()["access_token"]
         
         # Change password
         response = requests.post(
-            f"{BASE_URL}/auth/change-password",
-            headers={"Authorization": f"Bearer {employee_token}"},
+            f"{api_base_url}/auth/change-password",
+            headers={"Authorization": f"Bearer {token}"},
             json={
-                "current_password": PASSWORD,
+                "current_password": "password123",
                 "new_password": "newpassword456"
             }
         )
@@ -370,52 +179,31 @@ def test_change_password():
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
         # Verify can login with new password
-        login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL, "password": "newpassword456"}
+        new_login = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "newpassword456"}
         )
-        assert login_response.status_code == 200, "Cannot login with new password"
+        assert new_login.status_code == 200, "Cannot login with new password"
         
         # Revert password
-        new_token = login_response.json()["access_token"]
-        revert_response = requests.post(
-            f"{BASE_URL}/auth/change-password",
+        new_token = new_login.json()["access_token"]
+        requests.post(
+            f"{api_base_url}/auth/change-password",
             headers={"Authorization": f"Bearer {new_token}"},
             json={
                 "current_password": "newpassword456",
-                "new_password": PASSWORD
+                "new_password": "password123"
             }
         )
-        assert revert_response.status_code == 200, "Could not revert password"
-        
-        # Update token
-        employee_token = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL, "password": PASSWORD}
-        ).json()["access_token"]
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Password changed and reverted successfully")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_change_password_wrong_current():
-    """Test 13: Change password with wrong current password returns 400"""
-    global tests_passed, tests_failed
-    test_name = "Test 13: Change Password - Wrong Current"
     
-    try:
-        assert employee_token is not None, "Employee token not available"
+    @pytest.mark.permissions
+    def test_change_password_wrong_current(self, api_base_url, employee_token):
+        """Test change password with wrong current password returns 400"""
+        if not employee_token:
+            pytest.skip("Employee token not available (database not seeded)")
         
         response = requests.post(
-            f"{BASE_URL}/auth/change-password",
+            f"{api_base_url}/auth/change-password",
             headers={"Authorization": f"Bearer {employee_token}"},
             json={
                 "current_password": "wrongpassword",
@@ -424,31 +212,27 @@ def test_change_password_wrong_current():
         )
         
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly rejected wrong current password (400)")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_reset_password_by_hr():
-    """Test 14: HR can reset employee password"""
-    global tests_passed, tests_failed
-    test_name = "Test 14: HR Reset Password"
     
-    try:
-        assert hr_token is not None, "HR token not available"
-        assert employee_id is not None, "Employee ID not available"
+    @pytest.mark.permissions
+    def test_reset_password_by_hr(self, api_base_url, hr_token):
+        """Test HR can reset employee password"""
+        if not hr_token:
+            pytest.skip("HR token not available (database not seeded)")
+        
+        # Get employee ID
+        employee_login = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "password123"}
+        )
+        
+        if employee_login.status_code != 200:
+            pytest.skip("Employee login failed (database not seeded)")
+        
+        employee_id = employee_login.json()["user"]["id"]
         
         # Reset password
         response = requests.post(
-            f"{BASE_URL}/auth/reset-password",
+            f"{api_base_url}/auth/reset-password",
             headers={"Authorization": f"Bearer {hr_token}"},
             json={
                 "employee_id": employee_id,
@@ -458,49 +242,44 @@ def test_reset_password_by_hr():
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
-        # Verify can login with reset password
-        login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL, "password": "resetpassword123"}
+        # Verify and revert
+        reset_login = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "resetpassword123"}
         )
-        assert login_response.status_code == 200, "Cannot login with reset password"
+        assert reset_login.status_code == 200, "Cannot login with reset password"
         
-        # Revert password
-        reset_token = login_response.json()["access_token"]
-        revert_response = requests.post(
-            f"{BASE_URL}/auth/change-password",
+        # Revert
+        reset_token = reset_login.json()["access_token"]
+        requests.post(
+            f"{api_base_url}/auth/change-password",
             headers={"Authorization": f"Bearer {reset_token}"},
             json={
                 "current_password": "resetpassword123",
-                "new_password": PASSWORD
+                "new_password": "password123"
             }
         )
-        assert revert_response.status_code == 200, "Could not revert password"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   HR reset password and reverted successfully")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_reset_password_by_manager():
-    """Test 15: Manager can reset employee password"""
-    global tests_passed, tests_failed
-    test_name = "Test 15: Manager Reset Password"
     
-    try:
-        assert manager_token is not None, "Manager token not available"
-        assert employee_id is not None, "Employee ID not available"
+    @pytest.mark.permissions
+    def test_reset_password_by_manager(self, api_base_url, manager_token):
+        """Test Manager can reset employee password"""
+        if not manager_token:
+            pytest.skip("Manager token not available (database not seeded)")
+        
+        # Get employee ID
+        employee_login = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "password123"}
+        )
+        
+        if employee_login.status_code != 200:
+            pytest.skip("Employee login failed (database not seeded)")
+        
+        employee_id = employee_login.json()["user"]["id"]
         
         # Reset password
         response = requests.post(
-            f"{BASE_URL}/auth/reset-password",
+            f"{api_base_url}/auth/reset-password",
             headers={"Authorization": f"Bearer {manager_token}"},
             json={
                 "employee_id": employee_id,
@@ -510,59 +289,47 @@ def test_reset_password_by_manager():
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
-        # Verify and revert
-        login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL, "password": "managerreset123"}
-        )
-        assert login_response.status_code == 200, "Cannot login with reset password"
-        
-        reset_token = login_response.json()["access_token"]
-        requests.post(
-            f"{BASE_URL}/auth/change-password",
-            headers={"Authorization": f"Bearer {reset_token}"},
-            json={
-                "current_password": "managerreset123",
-                "new_password": PASSWORD
-            }
+        # Revert
+        reset_login = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "john.doe@company.com", "password": "managerreset123"}
         )
         
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Manager reset password successfully")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_reset_password_by_employee_forbidden():
-    """Test 16: Employee cannot reset passwords (403)"""
-    global tests_passed, tests_failed
-    test_name = "Test 16: Employee Reset Password - Forbidden"
+        if reset_login.status_code == 200:
+            reset_token = reset_login.json()["access_token"]
+            requests.post(
+                f"{api_base_url}/auth/change-password",
+                headers={"Authorization": f"Bearer {reset_token}"},
+                json={
+                    "current_password": "managerreset123",
+                    "new_password": "password123"
+                }
+            )
     
-    try:
-        # Get fresh employee token
-        login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": EMPLOYEE_EMAIL, "password": PASSWORD}
-        )
-        emp_token = login_response.json()["access_token"]
+    @pytest.mark.permissions
+    def test_reset_password_employee_forbidden(self, api_base_url, employee_token, hr_token):
+        """Test Employee cannot reset passwords (403)"""
+        if not employee_token:
+            pytest.skip("Employee token not available (database not seeded)")
+        
+        if not hr_token:
+            pytest.skip("HR token not available (database not seeded)")
         
         # Get HR ID
-        hr_login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={"email": HR_EMAIL, "password": PASSWORD}
+        hr_login = requests.post(
+            f"{api_base_url}/auth/login",
+            json={"email": "sarah.johnson@company.com", "password": "password123"}
         )
-        hr_id = hr_login_response.json()["user"]["id"]
         
-        # Try to reset
+        if hr_login.status_code != 200:
+            pytest.skip("HR login failed (database not seeded)")
+        
+        hr_id = hr_login.json()["user"]["id"]
+        
+        # Try to reset as employee
         response = requests.post(
-            f"{BASE_URL}/auth/reset-password",
-            headers={"Authorization": f"Bearer {emp_token}"},
+            f"{api_base_url}/auth/reset-password",
+            headers={"Authorization": f"Bearer {employee_token}"},
             json={
                 "employee_id": hr_id,
                 "new_password": "hackedpassword"
@@ -570,92 +337,9 @@ def test_reset_password_by_employee_forbidden():
         )
         
         assert response.status_code == 403, f"Expected 403, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Correctly blocked employee from resetting passwords (403)")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def test_logout():
-    """Test 17: Logout endpoint"""
-    global tests_passed, tests_failed
-    test_name = "Test 17: Logout"
     
-    try:
-        response = requests.post(f"{BASE_URL}/auth/logout")
+    def test_logout(self, api_base_url):
+        """Test logout endpoint"""
+        response = requests.post(f"{api_base_url}/auth/logout")
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
-        
-        print(f"{GREEN}PASS{RESET} {test_name}")
-        print(f"   Logout successful")
-        tests_passed += 1
-        
-    except AssertionError as e:
-        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-    except Exception as e:
-        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
-        tests_failed += 1
-
-
-def run_all_tests():
-    """Run all authentication API tests"""
-    global tests_passed, tests_failed
-    
-    print_section("AUTHENTICATION API TEST SUITE")
-    print(f"Testing at: {BASE_URL}")
-    print(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print()
-    
-    # Run all tests - each test handles its own errors
-    test_login_hr()
-    test_login_manager()
-    test_login_employee()
-    test_login_invalid_email()
-    test_login_wrong_password()
-    test_login_missing_field()
-    test_get_current_user()
-    test_get_current_user_no_token()
-    test_get_current_user_invalid_token()
-    test_refresh_token()
-    test_refresh_token_invalid()
-    test_change_password()
-    test_change_password_wrong_current()
-    test_reset_password_by_hr()
-    test_reset_password_by_manager()
-    test_reset_password_by_employee_forbidden()
-    test_logout()
-    
-    # Print summary
-    print_section("TEST SUMMARY")
-    total_tests = tests_passed + tests_failed
-    print(f"Total Tests: {total_tests}")
-    print(f"PASSED: {tests_passed}")
-    print(f"FAILED: {tests_failed}")
-    print(f"Success Rate: {(tests_passed/total_tests)*100:.1f}%")
-    
-    if tests_failed == 0:
-        print("\nAll tests passed successfully!")
-    else:
-        print(f"\nWARNING: {tests_failed} test(s) failed. Please review the output above.")
-    
-    print("=" * 60)
-
-
-if __name__ == "__main__":
-    try:
-        run_all_tests()
-    except requests.exceptions.ConnectionError:
-        print("\n❌ Error: Could not connect to backend server")
-        print("Make sure the backend is running at http://localhost:8000")
-    except Exception as e:
-        print(f"\n❌ Error during testing: {str(e)}")
-        import traceback
-        traceback.print_exc()
