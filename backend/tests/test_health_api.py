@@ -9,6 +9,10 @@ from datetime import datetime
 # Configuration
 BASE_URL = "http://localhost:8000"
 
+# Test counters
+tests_passed = 0
+tests_failed = 0
+
 
 def print_section(title):
     """Print a formatted section header"""
@@ -17,208 +21,284 @@ def print_section(title):
     print("="*60)
 
 
-def print_response(response, show_full=True):
-    """Print formatted response"""
-    print(f"Status Code: {response.status_code}")
+def test_root_endpoint():
+    """Test 1: Root endpoint returns correct structure"""
+    global tests_passed, tests_failed
+    test_name = "Test 1: Root Endpoint"
+    
     try:
-        print(f"Response: {json.dumps(response.json(), indent=2)}")
-    except:
-        print(f"Response: {response.text}")
+        response = requests.get(f"{BASE_URL}/")
+        
+        # Assert status code
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        data = response.json()
+        
+        # Assert response structure
+        assert "success" in data, "Missing 'success' field"
+        assert data["success"] == True, "'success' should be True"
+        assert "data" in data, "Missing 'data' field"
+        
+        # Assert data fields
+        endpoint_data = data["data"]
+        assert "name" in endpoint_data, "Missing 'name' field"
+        assert "version" in endpoint_data, "Missing 'version' field"
+        assert "environment" in endpoint_data, "Missing 'environment' field"
+        assert "status" in endpoint_data, "Missing 'status' field"
+        assert endpoint_data["status"] == "running", "Status should be 'running'"
+        
+        print(f"✅ {test_name} PASSED")
+        print(f"   App: {endpoint_data['name']} v{endpoint_data['version']}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"❌ {test_name} FAILED: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"❌ {test_name} ERROR: {str(e)}")
+        tests_failed += 1
 
 
-def test_health_api():
-    """Test health and root API endpoints"""
+def test_health_endpoint():
+    """Test 2: Health endpoint returns healthy status"""
+    global tests_passed, tests_failed
+    test_name = "Test 2: Health Endpoint"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/health")
+        
+        # Assert status code
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        data = response.json()
+        
+        # Assert response structure
+        assert "success" in data, "Missing 'success' field"
+        assert data["success"] == True, "'success' should be True"
+        assert "data" in data, "Missing 'data' field"
+        
+        # Assert health data
+        health_data = data["data"]
+        assert "status" in health_data, "Missing 'status' field"
+        assert health_data["status"] == "healthy", "Status should be 'healthy'"
+        assert "environment" in health_data, "Missing 'environment' field"
+        assert "version" in health_data, "Missing 'version' field"
+        
+        print(f"✅ {test_name} PASSED")
+        print(f"   Status: {health_data['status']}, Env: {health_data['environment']}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"❌ {test_name} FAILED: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"❌ {test_name} ERROR: {str(e)}")
+        tests_failed += 1
+
+
+def test_api_v1_root():
+    """Test 3: API v1 root returns endpoints and documentation"""
+    global tests_passed, tests_failed
+    test_name = "Test 3: API v1 Root"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/v1")
+        
+        # Assert status code
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        data = response.json()
+        
+        # Assert response structure
+        assert "success" in data, "Missing 'success' field"
+        assert data["success"] == True, "'success' should be True"
+        assert "data" in data, "Missing 'data' field"
+        
+        # Assert API data
+        api_data = data["data"]
+        assert "version" in api_data, "Missing 'version' field"
+        assert "message" in api_data, "Missing 'message' field"
+        assert "endpoints" in api_data, "Missing 'endpoints' field"
+        assert "documentation" in api_data, "Missing 'documentation' field"
+        
+        # Assert key endpoints exist
+        endpoints = api_data["endpoints"]
+        required_endpoints = ["auth", "profile", "dashboard", "employees"]
+        for endpoint in required_endpoints:
+            assert endpoint in endpoints, f"Missing '{endpoint}' endpoint"
+        
+        print(f"✅ {test_name} PASSED")
+        print(f"   Version: {api_data['version']}, Endpoints: {len(endpoints)}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"❌ {test_name} FAILED: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"❌ {test_name} ERROR: {str(e)}")
+        tests_failed += 1
+
+
+def test_swagger_ui():
+    """Test 4: Swagger UI is accessible"""
+    global tests_passed, tests_failed
+    test_name = "Test 4: Swagger UI"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/docs")
+        
+        # Assert status code
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        # Assert content type
+        content_type = response.headers.get('content-type', '')
+        assert 'html' in content_type.lower(), f"Expected HTML, got {content_type}"
+        
+        # Assert content exists
+        assert len(response.text) > 0, "Empty response"
+        
+        print(f"✅ {test_name} PASSED")
+        print(f"   Content-Type: {content_type}, Size: {len(response.text)} bytes")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"❌ {test_name} FAILED: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"❌ {test_name} ERROR: {str(e)}")
+        tests_failed += 1
+
+
+def test_redoc():
+    """Test 5: ReDoc is accessible"""
+    global tests_passed, tests_failed
+    test_name = "Test 5: ReDoc"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/redoc")
+        
+        # Assert status code
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        # Assert content type
+        content_type = response.headers.get('content-type', '')
+        assert 'html' in content_type.lower(), f"Expected HTML, got {content_type}"
+        
+        # Assert content exists
+        assert len(response.text) > 0, "Empty response"
+        
+        print(f"✅ {test_name} PASSED")
+        print(f"   Content-Type: {content_type}, Size: {len(response.text)} bytes")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"❌ {test_name} FAILED: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"❌ {test_name} ERROR: {str(e)}")
+        tests_failed += 1
+
+
+def test_openapi_json():
+    """Test 6: OpenAPI JSON specification is valid"""
+    global tests_passed, tests_failed
+    test_name = "Test 6: OpenAPI JSON"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/openapi.json")
+        
+        # Assert status code
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+        
+        # Assert can parse JSON
+        openapi_spec = response.json()
+        
+        # Assert OpenAPI structure
+        assert "openapi" in openapi_spec, "Missing 'openapi' field"
+        assert "info" in openapi_spec, "Missing 'info' field"
+        assert "paths" in openapi_spec, "Missing 'paths' field"
+        
+        # Assert info fields
+        info = openapi_spec["info"]
+        assert "title" in info, "Missing 'title' in info"
+        assert "version" in info, "Missing 'version' in info"
+        
+        # Assert paths exist
+        paths_count = len(openapi_spec["paths"])
+        assert paths_count > 0, "No paths defined"
+        
+        print(f"✅ {test_name} PASSED")
+        print(f"   OpenAPI: {openapi_spec['openapi']}, Paths: {paths_count}")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"❌ {test_name} FAILED: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"❌ {test_name} ERROR: {str(e)}")
+        tests_failed += 1
+
+
+def test_404_handling():
+    """Test 7: Non-existent endpoints return 404"""
+    global tests_passed, tests_failed
+    test_name = "Test 7: 404 Handling"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/non-existent-endpoint")
+        
+        # Assert 404 status
+        assert response.status_code == 404, f"Expected 404, got {response.status_code}"
+        
+        print(f"✅ {test_name} PASSED")
+        print(f"   Non-existent endpoint correctly returns 404")
+        tests_passed += 1
+        
+    except AssertionError as e:
+        print(f"❌ {test_name} FAILED: {str(e)}")
+        tests_failed += 1
+    except Exception as e:
+        print(f"❌ {test_name} ERROR: {str(e)}")
+        tests_failed += 1
+
+
+def run_all_tests():
+    """Run all health and root API tests"""
+    global tests_passed, tests_failed
     
     print_section("HEALTH & ROOT API TEST SUITE")
     print(f"Testing at: {BASE_URL}")
     print(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print()
     
-    # =================================================================
-    # 1. ROOT ENDPOINT
-    # =================================================================
-    print_section("1. Root Endpoint - GET /")
+    # Run all tests
+    test_root_endpoint()
+    test_health_endpoint()
+    test_api_v1_root()
+    test_swagger_ui()
+    test_redoc()
+    test_openapi_json()
+    test_404_handling()
     
-    response = requests.get(f"{BASE_URL}/")
-    print_response(response, show_full=True)
-    
-    if response.status_code == 200:
-        data = response.json()
-        print("✅ Root endpoint working")
-        if "success" in data and data["success"]:
-            print("   Response structure correct")
-            if "data" in data:
-                endpoint_data = data["data"]
-                print(f"   App Name: {endpoint_data.get('name', 'N/A')}")
-                print(f"   Version: {endpoint_data.get('version', 'N/A')}")
-                print(f"   Environment: {endpoint_data.get('environment', 'N/A')}")
-                print(f"   Status: {endpoint_data.get('status', 'N/A')}")
-                print(f"   Docs: {endpoint_data.get('docs', 'N/A')}")
-        else:
-            print("   ⚠️  Response structure unexpected")
-    else:
-        print("❌ Root endpoint failed")
-    
-    # =================================================================
-    # 2. HEALTH CHECK ENDPOINT
-    # =================================================================
-    print_section("2. Health Check - GET /health")
-    
-    response = requests.get(f"{BASE_URL}/health")
-    print_response(response, show_full=True)
-    
-    if response.status_code == 200:
-        data = response.json()
-        print("✅ Health endpoint working")
-        if "success" in data and data["success"]:
-            print("   Response structure correct")
-            if "data" in data:
-                health_data = data["data"]
-                status = health_data.get('status', 'N/A')
-                print(f"   Status: {status}")
-                print(f"   Environment: {health_data.get('environment', 'N/A')}")
-                print(f"   Version: {health_data.get('version', 'N/A')}")
-                
-                if status == "healthy":
-                    print("   ✅ System is healthy")
-                else:
-                    print(f"   ⚠️  System status is: {status}")
-        else:
-            print("   ⚠️  Response structure unexpected")
-    else:
-        print("❌ Health endpoint failed")
-    
-    # =================================================================
-    # 3. API V1 ROOT ENDPOINT
-    # =================================================================
-    print_section("3. API V1 Root - GET /api/v1")
-    
-    response = requests.get(f"{BASE_URL}/api/v1")
-    print_response(response, show_full=True)
-    
-    if response.status_code == 200:
-        data = response.json()
-        print("✅ API v1 root endpoint working")
-        if "success" in data and data["success"]:
-            if "data" in data:
-                api_data = data["data"]
-                print(f"   Version: {api_data.get('version', 'N/A')}")
-                print(f"   Message: {api_data.get('message', 'N/A')}")
-                
-                # Check if endpoints list is present
-                if "endpoints" in api_data:
-                    endpoints = api_data["endpoints"]
-                    print(f"   Available endpoints: {len(endpoints)}")
-                    print("   Key endpoints:")
-                    for key in ["auth", "profile", "dashboard", "employees", "jobs"]:
-                        if key in endpoints:
-                            print(f"     - {key}: {endpoints[key]}")
-                
-                # Check if documentation links are present
-                if "documentation" in api_data:
-                    docs = api_data["documentation"]
-                    print("   Documentation:")
-                    print(f"     - Swagger UI: {docs.get('swagger_ui', 'N/A')}")
-                    print(f"     - ReDoc: {docs.get('redoc', 'N/A')}")
-                    print(f"     - OpenAPI JSON: {docs.get('openapi_json', 'N/A')}")
-        else:
-            print("   ⚠️  Response structure unexpected")
-    else:
-        print("❌ API v1 root endpoint failed")
-    
-    # =================================================================
-    # 4. SWAGGER DOCS ENDPOINT
-    # =================================================================
-    print_section("4. Swagger UI - GET /api/docs")
-    
-    response = requests.get(f"{BASE_URL}/api/docs")
-    
-    print(f"Status Code: {response.status_code}")
-    if response.status_code == 200:
-        print("✅ Swagger UI is accessible")
-        print(f"   Content Type: {response.headers.get('content-type', 'N/A')}")
-        print(f"   Content Length: {len(response.text)} bytes")
-    else:
-        print("❌ Swagger UI not accessible")
-    
-    # =================================================================
-    # 5. REDOC ENDPOINT
-    # =================================================================
-    print_section("5. ReDoc - GET /api/redoc")
-    
-    response = requests.get(f"{BASE_URL}/api/redoc")
-    
-    print(f"Status Code: {response.status_code}")
-    if response.status_code == 200:
-        print("✅ ReDoc is accessible")
-        print(f"   Content Type: {response.headers.get('content-type', 'N/A')}")
-        print(f"   Content Length: {len(response.text)} bytes")
-    else:
-        print("❌ ReDoc not accessible")
-    
-    # =================================================================
-    # 6. OPENAPI JSON ENDPOINT
-    # =================================================================
-    print_section("6. OpenAPI JSON - GET /api/openapi.json")
-    
-    response = requests.get(f"{BASE_URL}/api/openapi.json")
-    
-    print(f"Status Code: {response.status_code}")
-    if response.status_code == 200:
-        try:
-            openapi_spec = response.json()
-            print("✅ OpenAPI JSON is accessible")
-            print(f"   OpenAPI Version: {openapi_spec.get('openapi', 'N/A')}")
-            
-            if "info" in openapi_spec:
-                info = openapi_spec["info"]
-                print(f"   API Title: {info.get('title', 'N/A')}")
-                print(f"   API Version: {info.get('version', 'N/A')}")
-            
-            if "paths" in openapi_spec:
-                print(f"   Total Paths: {len(openapi_spec['paths'])}")
-        except:
-            print("   ⚠️  Could not parse OpenAPI JSON")
-    else:
-        print("❌ OpenAPI JSON not accessible")
-    
-    # =================================================================
-    # 7. NON-EXISTENT ENDPOINT (404 TEST)
-    # =================================================================
-    print_section("7. Non-Existent Endpoint - GET /non-existent")
-    
-    response = requests.get(f"{BASE_URL}/non-existent")
-    
-    print(f"Status Code: {response.status_code}")
-    if response.status_code == 404:
-        print("✅ Correctly returns 404 for non-existent endpoint")
-    else:
-        print("❌ Should return 404 for non-existent endpoint")
-    
-    # =================================================================
-    # SUMMARY
-    # =================================================================
+    # Print summary
     print_section("TEST SUMMARY")
-    print("✅ All health and root API endpoints tested successfully!")
-    print("\nTested Endpoints:")
-    print("  ✅ GET    /                     (Root)")
-    print("  ✅ GET    /health               (Health Check)")
-    print("  ✅ GET    /api/v1               (API v1 Root)")
-    print("  ✅ GET    /api/docs             (Swagger UI)")
-    print("  ✅ GET    /api/redoc            (ReDoc)")
-    print("  ✅ GET    /api/openapi.json     (OpenAPI Spec)")
-    print("  ✅ GET    /non-existent         (404 Test)")
-    print("\nFeatures Verified:")
-    print("  ✅ Server is running and responsive")
-    print("  ✅ Health check returns healthy status")
-    print("  ✅ API documentation is accessible")
-    print("  ✅ OpenAPI specification is valid")
-    print("  ✅ Proper 404 handling for non-existent routes")
-    print("\n" + "="*60)
+    total_tests = tests_passed + tests_failed
+    print(f"Total Tests: {total_tests}")
+    print(f"✅ Passed: {tests_passed}")
+    print(f"❌ Failed: {tests_failed}")
+    print(f"Success Rate: {(tests_passed/total_tests)*100:.1f}%")
+    
+    if tests_failed == 0:
+        print("\n🎉 All tests passed successfully!")
+    else:
+        print(f"\n⚠️  {tests_failed} test(s) failed. Please review the output above.")
+    
+    print("=" * 60)
 
 
 if __name__ == "__main__":
     try:
-        test_health_api()
+        run_all_tests()
     except requests.exceptions.ConnectionError:
         print("\n❌ Error: Could not connect to backend server")
         print("Make sure the backend is running at http://localhost:8000")
