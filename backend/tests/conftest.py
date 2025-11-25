@@ -145,5 +145,8 @@ def pytest_configure(config):
         "markers", "payslips: Payslips API tests"
     )
     config.addinivalue_line(
+        "markers", "policies: Policies API tests"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )
