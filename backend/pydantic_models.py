@@ -342,6 +342,10 @@ class ProfileResponse(BaseModel):
     annual_leave_balance: int = 0
     wfh_balance: int = 0
     
+    # Personal Information
+    date_of_birth: Optional[date] = None
+    emergency_contact: Optional[str] = None
+    
     # Documents
     profile_image_path: Optional[str] = None
     profile_image_url: Optional[str] = None

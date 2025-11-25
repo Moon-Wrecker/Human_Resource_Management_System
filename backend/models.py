@@ -117,6 +117,10 @@ class User(Base):
     hire_date = Column(Date)
     salary = Column(Float)
     
+    # New fields
+    date_of_birth = Column(Date)
+    emergency_contact = Column(String(255))
+    
     # Leave balances (shown in frontend dashboards)
     casual_leave_balance = Column(Integer, default=12)
     sick_leave_balance = Column(Integer, default=12)

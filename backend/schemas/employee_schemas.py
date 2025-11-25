@@ -17,7 +17,7 @@ class EmployeeCreate(BaseModel):
     
     # Work Info
     employee_id: Optional[str] = Field(None, description="Employee ID (auto-generated if not provided)")
-    position: Optional[str] = Field(None, max_length=100, description="Job position/title")
+    job_role: Optional[str] = Field(None, max_length=100, description="Job position/title")
     department_id: Optional[int] = Field(None, gt=0, description="Department ID")
     team_id: Optional[int] = Field(None, gt=0, description="Team ID")
     manager_id: Optional[int] = Field(None, gt=0, description="Manager user ID")
@@ -28,7 +28,7 @@ class EmployeeCreate(BaseModel):
     
     # Dates
     date_of_birth: Optional[date] = None
-    join_date: Optional[date] = None
+    hire_date: Optional[date] = None
     
     # Compensation
     salary: Optional[float] = Field(None, ge=0, description="Monthly salary")
@@ -37,10 +37,10 @@ class EmployeeCreate(BaseModel):
     emergency_contact: Optional[str] = Field(None, description="Emergency contact details")
     
     # Leave Balances
-    casual_leave_balance: float = Field(12.0, ge=0, description="Casual leave balance")
-    sick_leave_balance: float = Field(10.0, ge=0, description="Sick leave balance")
-    annual_leave_balance: float = Field(15.0, ge=0, description="Annual leave balance")
-    wfh_balance: float = Field(52.0, ge=0, description="Work from home balance")
+    casual_leave_balance: int = Field(12, ge=0, description="Casual leave balance")
+    sick_leave_balance: int = Field(12, ge=0, description="Sick leave balance")
+    annual_leave_balance: int = Field(15, ge=0, description="Annual leave balance")
+    wfh_balance: int = Field(24, ge=0, description="Work from home balance")
     
     @validator('role')
     def validate_role(cls, v):
@@ -59,7 +59,7 @@ class EmployeeUpdate(BaseModel):
     
     # Work Info
     employee_id: Optional[str] = None
-    position: Optional[str] = Field(None, max_length=100)
+    job_role: Optional[str] = Field(None, max_length=100)
     department_id: Optional[int] = Field(None, gt=0)
     team_id: Optional[int] = Field(None, gt=0)
     manager_id: Optional[int] = Field(None, gt=0)
@@ -70,7 +70,7 @@ class EmployeeUpdate(BaseModel):
     
     # Dates
     date_of_birth: Optional[date] = None
-    join_date: Optional[date] = None
+    hire_date: Optional[date] = None
     
     # Compensation
     salary: Optional[float] = Field(None, ge=0)
@@ -82,10 +82,10 @@ class EmployeeUpdate(BaseModel):
     emergency_contact: Optional[str] = None
     
     # Leave Balances
-    casual_leave_balance: Optional[float] = Field(None, ge=0)
-    sick_leave_balance: Optional[float] = Field(None, ge=0)
-    annual_leave_balance: Optional[float] = Field(None, ge=0)
-    wfh_balance: Optional[float] = Field(None, ge=0)
+    casual_leave_balance: Optional[int] = Field(None, ge=0)
+    sick_leave_balance: Optional[int] = Field(None, ge=0)
+    annual_leave_balance: Optional[int] = Field(None, ge=0)
+    wfh_balance: Optional[int] = Field(None, ge=0)
     
     @validator('role')
     def validate_role(cls, v):
@@ -107,7 +107,7 @@ class EmployeeResponse(BaseModel):
     phone: Optional[str]
     
     # Work Info
-    position: Optional[str]
+    job_role: Optional[str]
     department: Optional[str]  # Department name
     department_id: Optional[int]
     team: Optional[str]  # Team name
@@ -122,7 +122,7 @@ class EmployeeResponse(BaseModel):
     
     # Dates
     date_of_birth: Optional[date]
-    join_date: Optional[date]
+    hire_date: Optional[date]
     created_at: datetime
     
     # Compensation (only for HR view)
@@ -133,11 +133,14 @@ class EmployeeResponse(BaseModel):
     pan_document_path: Optional[str]
     profile_image_path: Optional[str]
     
+    # Emergency Contact
+    emergency_contact: Optional[str]
+    
     # Leave Balances
-    casual_leave_balance: float
-    sick_leave_balance: float
-    annual_leave_balance: float
-    wfh_balance: float
+    casual_leave_balance: int
+    sick_leave_balance: int
+    annual_leave_balance: int
+    wfh_balance: int
     
     class Config:
         from_attributes = True
@@ -150,13 +153,13 @@ class EmployeeListItem(BaseModel):
     name: str
     email: str
     phone: Optional[str]
-    position: Optional[str]
+    job_role: Optional[str]
     department: Optional[str]
     team: Optional[str]
     manager: Optional[str]
     role: str
     is_active: bool
-    join_date: Optional[date]
+    hire_date: Optional[date]
     
     class Config:
         from_attributes = True
