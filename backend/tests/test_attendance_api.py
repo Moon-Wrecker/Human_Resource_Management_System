@@ -291,14 +291,14 @@ class TestAttendanceAPI:
         employee_id = employee_response.json()["id"]
         
         # Mark attendance for yesterday to avoid conflicts
-        mark_date = (datetime.now() - timedelta(days=1)).date().isoformat()
+        mark_date = (datetime.now()).replace(microsecond=0, second=0, hour=0, minute=0).isoformat()
         
         mark_data = {
             "employee_id": employee_id,
             "attendance_date": mark_date,
             "status": "present",
-            "check_in_time": "09:00:00",
-            "check_out_time": "18:00:00",
+            "check_in_time": "2025-11-25T06:40:41.290Z",
+            "check_out_time": "2025-11-25T18:00:00.290Z",
             "location": "office",
             "notes": "Manually marked by test"
         }
