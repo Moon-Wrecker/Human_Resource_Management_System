@@ -124,5 +124,8 @@ def pytest_configure(config):
         "markers", "employees: Employees API tests"
     )
     config.addinivalue_line(
+        "markers", "feedback: Feedback API tests"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )
