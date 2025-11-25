@@ -148,5 +148,8 @@ def pytest_configure(config):
         "markers", "policies: Policies API tests"
     )
     config.addinivalue_line(
+        "markers", "profile: Profile API tests"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )
