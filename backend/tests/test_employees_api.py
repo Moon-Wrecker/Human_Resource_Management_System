@@ -4,6 +4,8 @@ Run with: pytest backend/tests/test_employees_api.py -v
 """
 import pytest
 import requests
+import uuid
+from datetime import datetime
 
 
 @pytest.mark.employees
@@ -45,39 +47,63 @@ class TestEmployeesAPI:
                 f"{api_base_url}/employees/{employee_id}",
                 headers={"Authorization": f"Bearer {hr_token}"}
             )
-    
+
     def test_create_employee(self, api_base_url, hr_token):
-        """Test HR can create employee"""
+        """Test HR can create a full employee record with all fields"""
         if not hr_token:
             pytest.skip("HR token not available (database not seeded)")
-        
+
+        # Generate unique email to avoid conflicts
+        unique_email = f"test.create.{uuid.uuid4().hex[:8]}@company.com"
+
+        today = datetime.now().date().isoformat()
+
         employee_data = {
             "name": "Test Employee - Create Test",
-            "email": "test.create.emp@company.com",
+            "email": unique_email,
             "password": "testpass123",
-            "employee_id": "TST-CREATE-001",
+            "phone": "9876543210",
+            "employee_id": "EMP016",
             "position": "Software Engineer",
-            "role": "employee"
+            "department_id": 1,         
+            "team_id": 1,                
+            "manager_id": 3,             
+            "role": "employee",
+            "hierarchy_level": 10,
+            "date_of_birth": today,
+            "join_date": today,
+            "salary": 50000,
+            "emergency_contact": "9999999999",
+            "casual_leave_balance": 12,
+            "sick_leave_balance": 10,
+            "annual_leave_balance": 15,
+            "wfh_balance": 52
         }
-        
+
+        # Create employee
         response = requests.post(
             f"{api_base_url}/employees",
             headers={"Authorization": f"Bearer {hr_token}"},
             json=employee_data
         )
-        
+
         assert response.status_code == 201, f"Expected 201, got {response.status_code}"
         data = response.json()
+
+        # Assertions
         assert "id" in data
         assert data["name"] == employee_data["name"]
         assert data["email"] == employee_data["email"]
-        
-        # Cleanup
+        assert data["employee_id"] == employee_data["employee_id"]
+        assert data["position"] == employee_data["position"]
+        assert data["role"] == "employee"
+
+        # Cleanup (delete created employee)
         requests.delete(
             f"{api_base_url}/employees/{data['id']}",
             headers={"Authorization": f"Bearer {hr_token}"}
         )
-    
+
     @pytest.mark.permissions
     def test_create_employee_manager_forbidden(self, api_base_url, manager_token):
         """Test Manager cannot create employee"""
