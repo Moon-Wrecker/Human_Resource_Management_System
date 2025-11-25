@@ -41,7 +41,8 @@ def run_tests():
         "test_jobs_listings_api.py",  
         "test_goals_api.py",
         "test_leaves_api.py",
-        "test_applications_api.py",  # Added
+        "test_applications_api.py",
+        "test_organization_api.py",  # Added
         "-v",  # Verbose
         "--tb=short",  # Short traceback
         "--color=yes",  # Colored output
