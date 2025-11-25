@@ -13,6 +13,11 @@ MANAGER_EMAIL = "michael.chen@company.com"
 EMPLOYEE_EMAIL = "john.doe@company.com"
 PASSWORD = "password123"
 
+# ANSI Color codes
+GREEN = '\033[92m'
+RED = '\033[91m'
+RESET = '\033[0m'
+
 # Test counters
 tests_passed = 0
 tests_failed = 0
@@ -55,15 +60,15 @@ def test_login_hr():
         
         hr_token = data["access_token"]
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   User: {data['user']['name']}, Role: {data['user']['role']}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -86,15 +91,15 @@ def test_login_manager():
         
         manager_token = data["access_token"]
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   User: {data['user']['name']}, Role: {data['user']['role']}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -120,15 +125,15 @@ def test_login_employee():
         employee_refresh_token = data["refresh_token"]
         employee_id = data["user"]["id"]
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   User: {data['user']['name']}, Role: {data['user']['role']}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -145,15 +150,15 @@ def test_login_invalid_email():
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly rejected invalid email with 401")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -170,15 +175,15 @@ def test_login_wrong_password():
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly rejected wrong password with 401")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -195,15 +200,15 @@ def test_login_missing_field():
         
         assert response.status_code == 422, f"Expected 422, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly rejected missing field with 422 validation error")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -228,15 +233,15 @@ def test_get_current_user():
         assert "role" in data, "Missing role"
         assert data["email"] == EMPLOYEE_EMAIL, f"Email mismatch"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   User: {data['name']}, Email: {data['email']}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -250,15 +255,15 @@ def test_get_current_user_no_token():
         
         assert response.status_code == 403, f"Expected 403, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly blocked request without token (403)")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -275,15 +280,15 @@ def test_get_current_user_invalid_token():
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly rejected invalid token (401)")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -307,15 +312,15 @@ def test_refresh_token():
         assert "token_type" in data, "Missing token_type"
         assert data["token_type"] == "bearer", "Token type should be bearer"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   New access token generated successfully")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -332,15 +337,15 @@ def test_refresh_token_invalid():
         
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly rejected invalid refresh token (401)")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -389,15 +394,15 @@ def test_change_password():
             json={"email": EMPLOYEE_EMAIL, "password": PASSWORD}
         ).json()["access_token"]
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Password changed and reverted successfully")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -420,15 +425,15 @@ def test_change_password_wrong_current():
         
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly rejected wrong current password (400)")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -472,15 +477,15 @@ def test_reset_password_by_hr():
         )
         assert revert_response.status_code == 200, "Could not revert password"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   HR reset password and reverted successfully")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -522,15 +527,15 @@ def test_reset_password_by_manager():
             }
         )
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Manager reset password successfully")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -566,15 +571,15 @@ def test_reset_password_by_employee_forbidden():
         
         assert response.status_code == 403, f"Expected 403, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Correctly blocked employee from resetting passwords (403)")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -588,15 +593,15 @@ def test_logout():
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Logout successful")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -632,14 +637,14 @@ def run_all_tests():
     print_section("TEST SUMMARY")
     total_tests = tests_passed + tests_failed
     print(f"Total Tests: {total_tests}")
-    print(f"✅ Passed: {tests_passed}")
-    print(f"❌ Failed: {tests_failed}")
+    print(f"PASSED: {tests_passed}")
+    print(f"FAILED: {tests_failed}")
     print(f"Success Rate: {(tests_passed/total_tests)*100:.1f}%")
     
     if tests_failed == 0:
-        print("\n🎉 All tests passed successfully!")
+        print("\nAll tests passed successfully!")
     else:
-        print(f"\n⚠️  {tests_failed} test(s) failed. Please review the output above.")
+        print(f"\nWARNING: {tests_failed} test(s) failed. Please review the output above.")
     
     print("=" * 60)
 

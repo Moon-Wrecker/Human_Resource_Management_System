@@ -9,6 +9,11 @@ from datetime import datetime
 # Configuration
 BASE_URL = "http://localhost:8000"
 
+# ANSI Color codes
+GREEN = '\033[92m'
+RED = '\033[91m'
+RESET = '\033[0m'
+
 # Test counters
 tests_passed = 0
 tests_failed = 0
@@ -47,15 +52,15 @@ def test_root_endpoint():
         assert "status" in endpoint_data, "Missing 'status' field"
         assert endpoint_data["status"] == "running", "Status should be 'running'"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   App: {endpoint_data['name']} v{endpoint_data['version']}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -84,15 +89,15 @@ def test_health_endpoint():
         assert "environment" in health_data, "Missing 'environment' field"
         assert "version" in health_data, "Missing 'version' field"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Status: {health_data['status']}, Env: {health_data['environment']}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -127,15 +132,15 @@ def test_api_v1_root():
         for endpoint in required_endpoints:
             assert endpoint in endpoints, f"Missing '{endpoint}' endpoint"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Version: {api_data['version']}, Endpoints: {len(endpoints)}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -157,15 +162,15 @@ def test_swagger_ui():
         # Assert content exists
         assert len(response.text) > 0, "Empty response"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Content-Type: {content_type}, Size: {len(response.text)} bytes")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -187,15 +192,15 @@ def test_redoc():
         # Assert content exists
         assert len(response.text) > 0, "Empty response"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Content-Type: {content_type}, Size: {len(response.text)} bytes")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -227,15 +232,15 @@ def test_openapi_json():
         paths_count = len(openapi_spec["paths"])
         assert paths_count > 0, "No paths defined"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   OpenAPI: {openapi_spec['openapi']}, Paths: {paths_count}")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -250,15 +255,15 @@ def test_404_handling():
         # Assert 404 status
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
         
-        print(f"✅ {test_name} PASSED")
+        print(f"{GREEN}PASS{RESET} {test_name}")
         print(f"   Non-existent endpoint correctly returns 404")
         tests_passed += 1
         
     except AssertionError as e:
-        print(f"❌ {test_name} FAILED: {str(e)}")
+        print(f"{RED}FAIL{RESET} {test_name}: {str(e)}")
         tests_failed += 1
     except Exception as e:
-        print(f"❌ {test_name} ERROR: {str(e)}")
+        print(f"{RED}ERROR{RESET} {test_name}: {str(e)}")
         tests_failed += 1
 
 
@@ -284,14 +289,14 @@ def run_all_tests():
     print_section("TEST SUMMARY")
     total_tests = tests_passed + tests_failed
     print(f"Total Tests: {total_tests}")
-    print(f"✅ Passed: {tests_passed}")
-    print(f"❌ Failed: {tests_failed}")
+    print(f"PASSED: {tests_passed}")
+    print(f"FAILED: {tests_failed}")
     print(f"Success Rate: {(tests_passed/total_tests)*100:.1f}%")
     
     if tests_failed == 0:
-        print("\n🎉 All tests passed successfully!")
+        print("\nAll tests passed successfully!")
     else:
-        print(f"\n⚠️  {tests_failed} test(s) failed. Please review the output above.")
+        print(f"\nWARNING: {tests_failed} test(s) failed. Please review the output above.")
     
     print("=" * 60)
 
