@@ -30,9 +30,9 @@ def run_tests():
     pytest_args = [
         "pytest",
         "test_health_api.py",
-        "test_authentication_api.py",  # Added
+        "test_authentication_api.py",
+        "test_announcements_api.py",  # Added
         # Add more as we convert them:
-        # "test_announcements_api.py",
         # "test_holidays_api.py",
         "-v",  # Verbose
         "--tb=short",  # Short traceback
