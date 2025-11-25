@@ -157,5 +157,11 @@ def pytest_configure(config):
         "markers", "skills: Skills/Modules API tests"
     )
     config.addinivalue_line(
+        "markers", "ai_jd: AI Job Description API tests"
+    )
+    config.addinivalue_line(
+        "markers", "integration: Integration tests (may require external services)"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )
