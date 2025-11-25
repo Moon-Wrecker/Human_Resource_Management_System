@@ -133,5 +133,8 @@ def pytest_configure(config):
         "markers", "goals: Goals API tests"
     )
     config.addinivalue_line(
+        "markers", "leaves: Leaves API tests"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )
