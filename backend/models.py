@@ -149,7 +149,7 @@ class User(Base):
     attendance_records = relationship("Attendance", back_populates="employee")
     leave_requests = relationship("LeaveRequest", foreign_keys="LeaveRequest.employee_id", back_populates="employee")
     requests = relationship("Request", foreign_keys="Request.employee_id", back_populates="employee")
-    payslips = relationship("Payslip", back_populates="employee")
+    payslips = relationship("Payslip", back_populates="employee", foreign_keys="Payslip.employee_id")
     goals = relationship("Goal", foreign_keys="Goal.employee_id", back_populates="employee")
     skill_developments = relationship("SkillDevelopment", back_populates="employee")
     skill_enrollments = relationship("SkillModuleEnrollment", back_populates="employee")
