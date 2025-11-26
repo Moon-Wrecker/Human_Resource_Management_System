@@ -1,0 +1,69 @@
+======================================================================
+  COMPREHENSIVE API TEST SUITE (Pytest)
+======================================================================
+Running: pytest test_health_api.py test_authentication_api.py test_announcements_api.py test_holidays_api.py test_attendance_api.py test_departments_api.py test_dashboard_api.py test_employees_api.py test_feedback_api.py test_jobs_listings_api.py test_goals_api.py test_leaves_api.py test_applications_api.py test_organization_api.py test_payslips_api.py test_policies_api.py test_profile_api.py test_team_requests_api.py test_skills_api.py -v --tb=short --color=yes -ra
+Timestamp: 2025-11-26T10:12:32
+======================================================================
+
+[1m============================= test session starts ==============================[0m
+platform darwin -- Python 3.11.0, pytest-7.4.3, pluggy-1.6.0 -- /Users/harshrohitshah/WebstormProjects/soft-engg-project-sep-2025-se-SEP-11/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/harshrohitshah/WebstormProjects/soft-engg-project-sep-2025-se-SEP-11
+configfile: pytest.ini
+plugins: asyncio-0.21.1, anyio-3.7.1
+asyncio: mode=Mode.STRICT
+[1mcollecting ... [0mcollected 302 items
+
+test_health_api.py::TestHealthAPI::test_root_endpoint [32mPASSED[0m[32m             [  0%][0m
+test_health_api.py::TestHealthAPI::test_health_endpoint [32mPASSED[0m[32m           [  0%][0m
+test_health_api.py::TestHealthAPI::test_api_v1_root [32mPASSED[0m[32m               [  0%][0m
+test_health_api.py::TestHealthAPI::test_swagger_ui [32mPASSED[0m[32m                [  1%][0m
+test_health_api.py::TestHealthAPI::test_redoc [32mPASSED[0m[32m                     [  1%][0m
+test_health_api.py::TestHealthAPI::test_openapi_json [32mPASSED[0m[32m              [  1%][0m
+test_health_api.py::TestHealthAPI::test_404_handling [32mPASSED[0m[32m              [  2%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_hr_login [32mPASSED[0m[32m  [  2%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_manager_login [32mPASSED[0m[32m [  2%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_employee_login [32mPASSED[0m[32m [  3%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_login_invalid_email [32mPASSED[0m[32m [  3%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_login_wrong_password [32mPASSED[0m[32m [  3%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_login_missing_field [32mPASSED[0m[32m [  4%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_get_current_user [32mPASSED[0m[32m [  4%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_get_current_user_no_token [32mPASSED[0m[32m [  4%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_get_current_user_invalid_token [32mPASSED[0m[32m [  5%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_refresh_token [32mPASSED[0m[32m [  5%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_refresh_token_invalid [32mPASSED[0m[32m [  5%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_change_password [32mPASSED[0m[32m [  6%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_change_password_wrong_current [32mPASSED[0m[32m [  6%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_reset_password_by_hr [32mPASSED[0m[32m [  6%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_reset_password_by_manager [32mPASSED[0m[32m [  7%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_reset_password_employee_forbidden [32mPASSED[0m[32m [  7%][0m
+test_authentication_api.py::TestAuthenticationAPI::test_logout [32mPASSED[0m[32m    [  7%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_create_announcement [32mPASSED[0m[32m [  8%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_create_announcement_employee_forbidden [32mPASSED[0m[32m [  8%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_get_all_announcements [32mPASSED[0m[32m [  8%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_get_announcement_by_id [32mPASSED[0m[32m [  9%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_get_nonexistent_announcement [32mPASSED[0m[32m [  9%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_update_announcement [32mPASSED[0m[32m [  9%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_update_announcement_employee_forbidden [32mPASSED[0m[32m [ 10%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_get_statistics [32mPASSED[0m[32m [ 10%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_employee_can_view_announcements [32mPASSED[0m[32m [ 10%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_create_urgent_announcement [32mPASSED[0m[32m [ 11%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_soft_delete_announcement [32mPASSED[0m[32m [ 11%][0m
+test_announcements_api.py::TestAnnouncementsAPI::test_delete_announcement_employee_forbidden [32mPASSED[0m[32m [ 11%][0m
+test_holidays_api.py::TestHolidaysAPI::test_create_holiday [32mPASSED[0m[32m        [ 12%][0m
+test_holidays_api.py::TestHolidaysAPI::test_create_holiday_employee_forbidden [32mPASSED[0m[32m [ 12%][0m
+test_holidays_api.py::TestHolidaysAPI::test_get_all_holidays [32mPASSED[0m[32m      [ 12%][0m
+test_holidays_api.py::TestHolidaysAPI::test_get_holiday_by_id [32mPASSED[0m[32m     [ 13%][0m
+test_holidays_api.py::TestHolidaysAPI::test_get_nonexistent_holiday [32mPASSED[0m[32m [ 13%][0m
+test_holidays_api.py::TestHolidaysAPI::test_get_upcoming_holidays [32mPASSED[0m[32m [ 13%][0m
+test_holidays_api.py::TestHolidaysAPI::test_get_holiday_stats [32mPASSED[0m[32m     [ 14%][0m
+test_holidays_api.py::TestHolidaysAPI::test_get_stats_employee_forbidden [32mPASSED[0m[32m [ 14%][0m
+test_holidays_api.py::TestHolidaysAPI::test_update_holiday [32mPASSED[0m[32m        [ 14%][0m
+test_holidays_api.py::TestHolidaysAPI::test_update_holiday_employee_forbidden [32mPASSED[0m[32m [ 15%][0m
+test_holidays_api.py::TestHolidaysAPI::test_filter_by_type [32mPASSED[0m[32m        [ 15%][0m
+test_holidays_api.py::TestHolidaysAPI::test_filter_by_year [32mPASSED[0m[32m        [ 15%][0m
+test_holidays_api.py::TestHolidaysAPI::test_delete_holiday [32mPASSED[0m[32m        [ 16%][0m
+test_holidays_api.py::TestHolidaysAPI::test_delete_holiday_employee_forbidden [32mPASSED[0m[32m [ 16%][0m
+test_attendance_api.py::TestAttendanceAPI::test_punch_in [32mPASSED[0m[32m          [ 16%][0m
+test_attendance_api.py::TestAttendanceAPI::test_punch_in_wfh [32mPASSED[0m[32m      [ 17%][0m
+test_attendance_api.py::TestAttendanceAPI::test_get_today_attendance [32mPASSED[0m[32m [ 17%][0m
