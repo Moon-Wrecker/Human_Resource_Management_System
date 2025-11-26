@@ -10,6 +10,7 @@ from models import (
     Department, Team, User, UserRole, JobListing, Application, ApplicationStatus,
     Announcement, Attendance, AttendanceStatus, LeaveRequest, LeaveType, LeaveStatus,
     Payslip, Goal, GoalStatus, GoalCheckpoint, SkillDevelopment, SkillModule, 
+    GoalCategory,
     SkillModuleEnrollment, ModuleStatus, Policy, ResumeScreeningResult, 
     PerformanceReport, Holiday, Request, RequestType, Feedback, Notification
 )
@@ -454,15 +455,37 @@ def seed_holidays(session, users):
     session.commit()
     print(f"Created {len(holidays)} holidays")
 
+def seed_goal_categories(session, users):
+    """Create default goal categories used by goals"""
+    print("\nCreating goal categories...")
+    categories = [
+        GoalCategory(name="learning", description="Learning and development goals", created_by=users[0].id),
+        GoalCategory(name="performance", description="Performance related goals", created_by=users[0].id),
+    ]
+    session.add_all(categories)
+    session.commit()
+    print(f"Created {len(categories)} goal categories")
+    return categories
+
 def seed_goals(session, users):
     """Create goals and checkpoints"""
     print("\nCreating goals...")
+    # Resolve category ids if GoalCategory entries exist, otherwise leave as None
+    try:
+        learning_cat = session.query(GoalCategory).filter(GoalCategory.name == 'learning').first()
+        performance_cat = session.query(GoalCategory).filter(GoalCategory.name == 'performance').first()
+        learning_id = learning_cat.id if learning_cat else None
+        performance_id = performance_cat.id if performance_cat else None
+    except Exception:
+        learning_id = None
+        performance_id = None
+
     goals = [
         Goal(
             employee_id=users[3].id,
             title="Complete React Advanced Course",
             description="Master advanced React patterns and hooks",
-            category="learning",
+            category_id=learning_id,
             start_date=date(2024, 10, 1),
             target_date=date(2024, 12, 31),
             status=GoalStatus.IN_PROGRESS,
@@ -473,7 +496,7 @@ def seed_goals(session, users):
             employee_id=users[4].id,
             title="Improve Code Quality",
             description="Reduce technical debt in legacy codebase",
-            category="performance",
+            category_id=performance_id,
             start_date=date(2024, 11, 1),
             target_date=date(2025, 1, 31),
             status=GoalStatus.NOT_STARTED,
@@ -673,6 +696,8 @@ def main():
         seed_attendance(session, users)
         seed_leave_requests(session, users)
         seed_holidays(session, users)
+        # Create goal categories first, then goals that reference them
+        seed_goal_categories(session, users)
         seed_goals(session, users)
         seed_skill_modules(session, users)
         seed_feedback(session, users)
