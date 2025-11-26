@@ -34,7 +34,8 @@ class TestFeedbackAPI:
         feedback_data = {
             "employee_id": employee_id,
             "feedback_type": "positive",
-            "content": "Great work on the recent project!",
+            "description": "Great work on the recent project!",
+            "subject": "Feedback for recent project",
             "rating": 5
         }
         
@@ -75,8 +76,9 @@ class TestFeedbackAPI:
         
         feedback_data = {
             "employee_id": employee_id,
+            "subject": "Feedback for recent project",
             "feedback_type": "constructive",
-            "content": "Consider improving time management skills",
+            "description": "Consider improving time management skills",
             "rating": 4
         }
         
@@ -89,7 +91,7 @@ class TestFeedbackAPI:
         assert response.status_code == 201, f"Expected 201, got {response.status_code}"
         data = response.json()
         assert "id" in data
-        assert data["content"] == feedback_data["content"]
+        assert data["description"] == feedback_data["description"]
         
         # Cleanup
         requests.delete(
@@ -106,7 +108,9 @@ class TestFeedbackAPI:
         feedback_data = {
             "employee_id": 1,
             "feedback_type": "positive",
-            "content": "Unauthorized feedback"
+            "description": "Unauthorized feedback",
+            "subject": "Feedback for recent project",
+            "rating": 4
         }
         
         response = requests.post(
@@ -274,7 +278,7 @@ class TestFeedbackAPI:
             pytest.skip("Manager token or feedback not available (database not seeded)")
         
         update_data = {
-            "content": "Updated feedback content",
+            "description": "Updated feedback description",
             "rating": 4
         }
         
@@ -286,7 +290,7 @@ class TestFeedbackAPI:
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
-        assert data["content"] == update_data["content"]
+        assert data["description"] == update_data["description"]
     
     @pytest.mark.permissions
     def test_update_feedback_employee_forbidden(self, api_base_url, employee_token, feedback_id):
@@ -294,7 +298,7 @@ class TestFeedbackAPI:
         if not employee_token or not feedback_id:
             pytest.skip("Employee token or feedback not available (database not seeded)")
         
-        update_data = {"content": "Unauthorized update"}
+        update_data = {"description": "Unauthorized update"}
         
         response = requests.put(
             f"{api_base_url}/feedback/{feedback_id}",
@@ -379,7 +383,9 @@ class TestFeedbackAPI:
             json={
                 "employee_id": employee_id,
                 "feedback_type": "general",
-                "content": "Test for deletion"
+                "description": "Test for deletion",
+                "subject": "Feedback for deletion",
+                "rating": 4
             }
         )
         
