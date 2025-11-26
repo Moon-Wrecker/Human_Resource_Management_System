@@ -108,6 +108,8 @@ class TestAttendanceAPI:
         
         if punch_in_response.status_code != 200:
             pytest.skip("Could not punch in for punch out test")
+
+        assert punch_in_response.json()["attendance"]["status"] == "present"
         
         # Now punch out
         punch_out_data = {}
