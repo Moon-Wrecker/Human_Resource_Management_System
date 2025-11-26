@@ -173,7 +173,7 @@ def seed_users(session, departments, teams):
             name=user_data["name"],
             email=user_data["email"],
             phone=user_data["phone"],
-            password_hash=hash_password("password123"),
+            password_hash=hash_password("pass123"),
             role=user_data["role"],
             employee_id=user_data["employee_id"],
             department_id=departments[dept_idx].id,
@@ -1011,9 +1011,9 @@ def main():
         print("  ✓ 15 Performance Reports")
         print("  ✓ 15 Resume Screening Results")
         print("\n🔑 Test Credentials:")
-        print("  HR:       sarah.johnson@company.com / password123")
-        print("  Manager:  michael.chen@company.com / password123")
-        print("  Employee: john.anderson@company.com / password123")
+        print("  HR:       sarah.johnson@company.com / pass123")
+        print("  Manager:  michael.chen@company.com / pass123")
+        print("  Employee: john.anderson@company.com / pass123")
         print("="*70)
         
     except Exception as e:

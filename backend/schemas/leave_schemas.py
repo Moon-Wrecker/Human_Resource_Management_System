@@ -103,10 +103,10 @@ class LeaveBalanceResponse(BaseModel):
     """Schema for leave balance response"""
     employee_id: int
     employee_name: str
-    casual_leave_balance: float
-    sick_leave_balance: float
-    annual_leave_balance: float
-    wfh_balance: float
+    casual_leave_balance: int
+    sick_leave_balance: int
+    annual_leave_balance: int
+    wfh_balance: int
     
     class Config:
         from_attributes = True

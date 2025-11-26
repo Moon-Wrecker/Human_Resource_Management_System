@@ -10,28 +10,28 @@ export interface EmployeeCreate {
   email: string;
   password: string;
   phone?: string;
-  
+
   // Work Info
   employee_id?: string;
-  position?: string;
+  job_role?: string;
   department_id?: number;
   team_id?: number;
   manager_id?: number;
-  
+
   // Role & Hierarchy
   role?: 'employee' | 'manager' | 'hr' | 'admin';
   hierarchy_level?: number;
-  
+
   // Dates
   date_of_birth?: string;  // Format: YYYY-MM-DD
-  join_date?: string;       // Format: YYYY-MM-DD
-  
+  hire_date?: string;       // Format: YYYY-MM-DD
+
   // Compensation
   salary?: number;
-  
+
   // Emergency Contact
   emergency_contact?: string;
-  
+
   // Leave Balances
   casual_leave_balance?: number;
   sick_leave_balance?: number;
@@ -44,31 +44,31 @@ export interface EmployeeUpdate {
   name?: string;
   email?: string;
   phone?: string;
-  
+
   // Work Info
   employee_id?: string;
-  position?: string;
+  job_role?: string;
   department_id?: number;
   team_id?: number;
   manager_id?: number;
-  
+
   // Role & Hierarchy
   role?: string;
   hierarchy_level?: number;
-  
+
   // Dates
   date_of_birth?: string;
-  join_date?: string;
-  
+  hire_date?: string;
+
   // Compensation
   salary?: number;
-  
+
   // Status
   is_active?: boolean;
-  
+
   // Emergency Contact
   emergency_contact?: string;
-  
+
   // Leave Balances
   casual_leave_balance?: number;
   sick_leave_balance?: number;
@@ -82,34 +82,37 @@ export interface EmployeeResponse {
   name: string;
   email: string;
   phone?: string;
-  
+
   // Work Info
-  position?: string;
+  job_role?: string;
   department?: string;
   department_id?: number;
   team?: string;
   team_id?: number;
   manager?: string;
   manager_id?: number;
-  
+
   // Role & Status
   role: string;
   hierarchy_level?: number;
   is_active: boolean;
-  
+
   // Dates
   date_of_birth?: string;
-  join_date?: string;
+  hire_date?: string;
   created_at: string;
-  
+
   // Compensation
   salary?: number;
-  
+
+  // Emergency Contact
+  emergency_contact?: string;
+
   // Documents
   aadhar_document_path?: string;
   pan_document_path?: string;
   profile_image_path?: string;
-  
+
   // Leave Balances
   casual_leave_balance: number;
   sick_leave_balance: number;
@@ -123,13 +126,13 @@ export interface EmployeeListItem {
   name: string;
   email: string;
   phone?: string;
-  position?: string;
+  job_role?: string;
   department?: string;
   team?: string;
   manager?: string;
   role: string;
   is_active: boolean;
-  join_date?: string;
+  hire_date?: string;
 }
 
 export interface EmployeeListResponse {

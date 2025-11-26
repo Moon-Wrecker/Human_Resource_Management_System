@@ -99,14 +99,14 @@ class EmployeeService:
                 email=employee_data.email,
                 password_hash=hashed_password,
                 phone=employee_data.phone,
-                position=employee_data.position,
+                job_role=employee_data.job_role,
                 department_id=employee_data.department_id,
                 team_id=employee_data.team_id,
                 manager_id=employee_data.manager_id,
                 role=user_role,
                 hierarchy_level=employee_data.hierarchy_level,
                 date_of_birth=employee_data.date_of_birth,
-                join_date=employee_data.join_date or datetime.utcnow().date(),
+                hire_date=employee_data.hire_date or datetime.utcnow().date(),
                 salary=employee_data.salary,
                 emergency_contact=employee_data.emergency_contact,
                 casual_leave_balance=employee_data.casual_leave_balance,
@@ -382,16 +382,16 @@ class EmployeeService:
         # Recent hires (last 30 days)
         thirty_days_ago = datetime.utcnow().date() - timedelta(days=30)
         recent_hires = db.query(User).filter(
-            User.join_date >= thirty_days_ago,
+            User.hire_date >= thirty_days_ago,
             User.is_active == True
         ).count()
         
         # Average tenure
         avg_tenure_query = db.query(
-            func.avg(func.julianday(datetime.utcnow().date()) - func.julianday(User.join_date))
+            func.avg(func.julianday(datetime.utcnow().date()) - func.julianday(User.hire_date))
         ).filter(
             User.is_active == True,
-            User.join_date.isnot(None)
+            User.hire_date.isnot(None)
         ).scalar()
         
         average_tenure_days = float(avg_tenure_query) if avg_tenure_query else 0.0
@@ -449,7 +449,7 @@ class EmployeeService:
             name=employee.name,
             email=employee.email,
             phone=employee.phone,
-            position=employee.position,
+            job_role=employee.job_role,
             department=department_name,
             department_id=employee.department_id,
             team=team_name,
@@ -460,7 +460,7 @@ class EmployeeService:
             hierarchy_level=employee.hierarchy_level,
             is_active=employee.is_active,
             date_of_birth=employee.date_of_birth,
-            join_date=employee.join_date,
+            hire_date=employee.hire_date,
             created_at=employee.created_at,
             salary=employee.salary,
             aadhar_document_path=employee.aadhar_document_path,
@@ -502,12 +502,12 @@ class EmployeeService:
             name=employee.name,
             email=employee.email,
             phone=employee.phone,
-            position=employee.position,
+            job_role=employee.job_role,
             department=department_name,
             team=team_name,
             manager=manager_name,
             role=employee.role.value if employee.role else 'employee',
             is_active=employee.is_active,
-            join_date=employee.join_date
+            hire_date=employee.hire_date
         )
 
