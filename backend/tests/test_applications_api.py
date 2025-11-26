@@ -5,7 +5,7 @@ Run with: pytest backend/tests/test_applications_api.py -v
 import pytest
 import requests
 from datetime import datetime
-
+import uuid
 
 @pytest.mark.applications
 class TestApplicationsAPI:
@@ -52,10 +52,15 @@ class TestApplicationsAPI:
         if not employee_token:
             pytest.skip("Employee token not available (database not seeded)")
         
+        # Generate unique but stable test data
+        unique_id = uuid.uuid4().hex[:8]
+        test_name = f"John Doe {unique_id}"
+        test_email = f"john.doe.{unique_id}@test.example.com"
+        
         application_data = {
             "job_id": 1,
-            "applicant_name": "John Doe",
-            "applicant_email": "john.doe.test@example.com",
+            "applicant_name": test_name,
+            "applicant_email": test_email,
             "applicant_phone": "9876543210",
             "cover_letter": "I am excited to apply for this position.",
             "source": "self-applied"
@@ -70,8 +75,8 @@ class TestApplicationsAPI:
         assert response.status_code == 201, f"Expected 201, got {response.status_code}"
         data = response.json()
         assert "id" in data
-        assert data["applicant_name"] == application_data["applicant_name"]
-        assert data["applicant_email"] == application_data["applicant_email"]
+        assert data["applicant_name"] == test_name
+        assert data["applicant_email"] == test_email
         
         # Cleanup
         requests.delete(
@@ -81,12 +86,12 @@ class TestApplicationsAPI:
     
     def test_create_application_public(self, api_base_url):
         """Test public can create application without authentication"""
+        unique_id = uuid.uuid4().hex[:8]
         application_data = {
             "job_id": 1,
-            "applicant_name": "External Applicant",
-            "applicant_email": "external.test@example.com",
+            "applicant_name": f"External {unique_id[:3]}",
+            "applicant_email": f"external.test.{unique_id}@example.com",
             "applicant_phone": "5555555555",
-            "source": "self-applied"
         }
         
         response = requests.post(
@@ -232,15 +237,15 @@ class TestApplicationsAPI:
             pytest.skip("Tokens not available (database not seeded)")
         
         # Create application to update
+        unique_id = uuid.uuid4().hex[:8]
         create_response = requests.post(
             f"{api_base_url}/applications",
-            headers={"Authorization": f"Bearer {employee_token}"},
             json={
                 "job_id": 1,
-                "applicant_name": "Status Test",
-                "applicant_email": "status.test@example.com",
-                "source": "self-applied"
-            }
+                "applicant_name": f"StatusTest{unique_id[:5]}",
+                "applicant_email": f"status.{unique_id}@example.com",
+                "applicant_phone": "1234567890"
+            },
         )
         
         if create_response.status_code != 201:
@@ -292,20 +297,27 @@ class TestApplicationsAPI:
         if not employee_token:
             pytest.skip("Employee token not available (database not seeded)")
         
-        # Create application to delete
+        # Create application to delete (use job_id=2 to avoid 'already applied' conflict)
+        unique_id = uuid.uuid4().hex[:8]
         create_response = requests.post(
             f"{api_base_url}/applications",
             headers={"Authorization": f"Bearer {employee_token}"},
             json={
-                "job_id": 1,
-                "applicant_name": "Delete Test",
-                "applicant_email": "delete.test@example.com",
-                "source": "self-applied"
+                "job_id": 2,
+                "applicant_name": f"DeleteTest{unique_id[:5]}",
+                "applicant_email": f"delete.{unique_id}@example.com",
+                "applicant_phone": "1234567890"
             }
         )
         
         if create_response.status_code != 201:
-            pytest.skip("Could not create application for delete test")
+            error_msg = f"Status {create_response.status_code}"
+            try:
+                error_detail = create_response.json()
+                error_msg += f": {error_detail}"
+            except:
+                pass
+            pytest.skip(f"Could not create application for delete test - {error_msg}")
         
         test_id = create_response.json()["id"]
         
@@ -325,20 +337,27 @@ class TestApplicationsAPI:
         if not hr_token or not employee_token:
             pytest.skip("Tokens not available (database not seeded)")
         
-        # Create and review application
+        # Create and review application (use job_id=2 to avoid 'already applied' conflict)
+        unique_id = uuid.uuid4().hex[:8]
         create_response = requests.post(
             f"{api_base_url}/applications",
             headers={"Authorization": f"Bearer {employee_token}"},
             json={
-                "job_id": 1,
-                "applicant_name": "Review Delete Test",
-                "applicant_email": "review.delete@example.com",
-                "source": "self-applied"
+                "job_id": 2,
+                "applicant_name": f"ReviewTest{unique_id[:5]}",
+                "applicant_email": f"review.{unique_id}@example.com",
+                "applicant_phone": "1234567890"
             }
         )
         
         if create_response.status_code != 201:
-            pytest.skip("Could not create application")
+            error_msg = f"Status {create_response.status_code}"
+            try:
+                error_detail = create_response.json()
+                error_msg += f": {error_detail}"
+            except:
+                pass
+            pytest.skip(f"Could not create application - {error_msg}")
         
         test_id = create_response.json()["id"]
         
