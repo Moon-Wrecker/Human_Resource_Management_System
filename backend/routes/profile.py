@@ -90,6 +90,37 @@ async def get_my_profile(
 
 
 @router.get(
+    "/documents",
+    response_model=UserDocumentsResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get My Documents",
+    description="Get all uploaded documents for current user",
+    responses={
+        200: {"description": "Documents retrieved successfully"},
+        401: {"description": "Not authenticated"}
+    }
+)
+async def get_my_documents(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db)
+):
+    """
+    ## Get My Documents
+    
+    Retrieve all uploaded documents for the current user including:
+    - Profile image
+    - Aadhar card
+    - PAN card
+    
+    **Access:** All authenticated users
+    
+    **Use Case:** Display uploaded documents on profile page
+    """
+    documents = ProfileService.get_user_documents(db, current_user.id)
+    return documents
+
+
+@router.get(
     "/{user_id}",
     response_model=ProfileResponse,
     status_code=status.HTTP_200_OK,
@@ -269,37 +300,6 @@ async def upload_document(
         db, current_user.id, document_type, file
     )
     return result
-
-
-@router.get(
-    "/documents",
-    response_model=UserDocumentsResponse,
-    status_code=status.HTTP_200_OK,
-    summary="Get My Documents",
-    description="Get all uploaded documents for current user",
-    responses={
-        200: {"description": "Documents retrieved successfully"},
-        401: {"description": "Not authenticated"}
-    }
-)
-async def get_my_documents(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db)
-):
-    """
-    ## Get My Documents
-    
-    Retrieve all uploaded documents for the current user including:
-    - Profile image
-    - Aadhar card
-    - PAN card
-    
-    **Access:** All authenticated users
-    
-    **Use Case:** Display uploaded documents on profile page
-    """
-    documents = ProfileService.get_user_documents(db, current_user.id)
-    return documents
 
 
 @router.delete(
