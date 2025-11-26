@@ -4,6 +4,7 @@ Run with: pytest backend/tests/test_skills_api.py -v
 """
 import pytest
 import requests
+import uuid
 from datetime import datetime, timedelta
 
 
@@ -11,16 +12,17 @@ from datetime import datetime, timedelta
 class TestSkillsAPI:
     """Test suite for Skills/Modules Management endpoints"""
     
-    @pytest.fixture(scope="class")
+    @pytest.fixture(scope="function")
     def skill_module_id(self, api_base_url, hr_token):
         """Create a test skill module and return its ID, cleanup after tests"""
         if not hr_token:
             yield None
             return
         
-        # Create skill module
+        # Create skill module with unique name
+        unique_id = uuid.uuid4().hex[:8]
         module_data = {
-            "name": "Test Python Programming Module",
+            "name": f"Test Python Programming Module {unique_id}",
             "description": "Learn Python programming fundamentals",
             "category": "Programming",
             "difficulty_level": "beginner",
@@ -156,9 +158,11 @@ class TestSkillsAPI:
     
     def test_get_module_by_id(self, api_base_url, employee_token, skill_module_id):
         """Test get module by ID"""
-        if not employee_token or not skill_module_id:
-            pytest.skip("Employee token or module not available (database not seeded)")
-        
+        if not employee_token:
+            pytest.skip("Employee token not available (database not seeded)")
+        if not skill_module_id:
+            pytest.skip("Module ID not available (database not seeded)")
+
         response = requests.get(
             f"{api_base_url}/skills/modules/{skill_module_id}",
             headers={"Authorization": f"Bearer {employee_token}"}
