@@ -83,7 +83,9 @@ class TestGoalsAPI:
             "employee_id": employee_id,
             "target_date": target_date,
             "priority": "high",
-            "is_personal": False
+            "is_personal": False,
+            "start_date": (datetime.now() - timedelta(days=1)).date().isoformat(),
+            "end_date": (datetime.now() + timedelta(days=30)).date().isoformat()
         }
         
         response = requests.post(
