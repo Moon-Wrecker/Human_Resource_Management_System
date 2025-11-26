@@ -5,7 +5,7 @@ Run with: pytest backend/tests/test_attendance_api.py -v
 import pytest
 import requests
 from datetime import datetime, time, timedelta
-
+import time as t
 
 @pytest.mark.attendance
 class TestAttendanceAPI:
@@ -111,7 +111,7 @@ class TestAttendanceAPI:
 
         assert punch_in_response.json()["attendance"]["status"] == "present"
 
-        time.sleep(10)
+        t.sleep(10)
         
         # Now punch out
         punch_out_data = {}
