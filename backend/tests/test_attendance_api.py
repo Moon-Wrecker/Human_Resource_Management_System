@@ -110,6 +110,8 @@ class TestAttendanceAPI:
             pytest.skip("Could not punch in for punch out test")
 
         assert punch_in_response.json()["attendance"]["status"] == "present"
+
+        time.sleep(10)
         
         # Now punch out
         punch_out_data = {}

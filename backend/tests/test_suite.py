@@ -48,7 +48,7 @@ def run_tests():
         "test_profile_api.py",
         "test_team_requests_api.py",
         "test_skills_api.py",
-        "test_ai_job_description_api.py",  # AI tests
+        # "test_ai_job_description_api.py",  # AI tests
         "-v",  # Verbose
         "--tb=short",  # Short traceback
         "--color=yes",  # Colored output

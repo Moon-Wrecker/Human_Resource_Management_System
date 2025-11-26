@@ -6,6 +6,7 @@ import pytest
 import requests
 import uuid
 from datetime import datetime
+import random
 
 
 @pytest.mark.employees
@@ -18,16 +19,34 @@ class TestEmployeesAPI:
         if not hr_token:
             yield None
             return
-        
+
+        unique_email = f"test.create.{uuid.uuid4().hex[:8]}@company.com"
+
+        today = datetime.now().date().isoformat()
+
         # Create employee
         employee_data = {
-            "name": "Test Employee - API Test",
-            "email": "test.employee.api@company.com",
+            "name": "Test Employee - Create Test",
+            "email": unique_email,
             "password": "testpass123",
-            "employee_id": "TST-EMP-001",
-            "position": "Test Engineer",
-            "role": "employee"
+            "phone": "9876543210",
+            "job_role": "Software Engineer",
+            "department_id": 1,         
+            "team_id": 1,                
+            "manager_id": 3,             
+            "role": "employee",
+            "hierarchy_level": 4,
+            "date_of_birth": today,
+            "join_date": today,
+            "salary": 50000,
+            "emergency_contact": "9876543210",
+            "casual_leave_balance": 12,
+            "sick_leave_balance": 10,
+            "annual_leave_balance": 15,
+            "wfh_balance": 52
         }
+
+
         
         response = requests.post(
             f"{api_base_url}/employees",
@@ -63,17 +82,16 @@ class TestEmployeesAPI:
             "email": unique_email,
             "password": "testpass123",
             "phone": "9876543210",
-            "employee_id": "EMP016",
-            "position": "Software Engineer",
+            "job_role": "Software Engineer",
             "department_id": 1,         
             "team_id": 1,                
             "manager_id": 3,             
             "role": "employee",
-            "hierarchy_level": 10,
+            "hierarchy_level": 4,
             "date_of_birth": today,
             "join_date": today,
             "salary": 50000,
-            "emergency_contact": "9999999999",
+            "emergency_contact": "9876543210",
             "casual_leave_balance": 12,
             "sick_leave_balance": 10,
             "annual_leave_balance": 15,
@@ -94,8 +112,7 @@ class TestEmployeesAPI:
         assert "id" in data
         assert data["name"] == employee_data["name"]
         assert data["email"] == employee_data["email"]
-        assert data["employee_id"] == employee_data["employee_id"]
-        assert data["position"] == employee_data["position"]
+        assert data["job_role"] == employee_data["job_role"]
         assert data["role"] == "employee"
 
         # Cleanup (delete created employee)
@@ -303,7 +320,7 @@ class TestEmployeesAPI:
         
         update_data = {
             "name": "Updated Test Employee",
-            "position": "Senior Test Engineer"
+            "job_role": "Senior Test Engineer"
         }
         
         response = requests.put(
@@ -315,7 +332,7 @@ class TestEmployeesAPI:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         assert data["name"] == update_data["name"]
-        assert data["position"] == update_data["position"]
+        assert data["job_role"] == update_data["job_role"]
     
     @pytest.mark.permissions
     def test_update_employee_manager_forbidden(self, api_base_url, manager_token, employee_id):
