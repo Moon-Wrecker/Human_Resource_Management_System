@@ -93,7 +93,7 @@ def get_team_requests(
     """
     # Get all employees reporting to this manager
     team_members = db.query(User.id).filter(User.manager_id == manager_id).all()
-    team_member_ids = [member.id for member in team_members]
+    team_member_ids = [member[0] for member in team_members]
     
     if not team_member_ids:
         return RequestListResponse(
@@ -118,10 +118,7 @@ def get_team_requests(
     
     # Order by status (pending first), then by date
     query = query.order_by(
-        func.case(
-            (Request.status == LeaveStatus.PENDING, 0),
-            else_=1
-        ),
+        Request.status.asc(),
         Request.submitted_date.desc()
     )
     
@@ -177,10 +174,7 @@ def get_all_requests(
     
     # Order by status (pending first), then by date
     query = query.order_by(
-        func.case(
-            (Request.status == LeaveStatus.PENDING, 0),
-            else_=1
-        ),
+        Request.status.asc(),
         Request.submitted_date.desc()
     )
     
@@ -356,7 +350,7 @@ def get_request_statistics(db: Session, user_id: Optional[int] = None, user_role
     elif user_role == "manager":
         # Get team member IDs
         team_members = db.query(User.id).filter(User.manager_id == user_id).all()
-        team_member_ids = [member.id for member in team_members]
+        team_member_ids = [member[0] for member in team_members]
         if team_member_ids:
             query = query.filter(Request.employee_id.in_(team_member_ids))
     # HR can see all (no filter)
@@ -377,7 +371,7 @@ def get_request_statistics(db: Session, user_id: Optional[int] = None, user_role
         by_type = by_type.filter(Request.employee_id == user_id)
     elif user_role == "manager":
         team_members = db.query(User.id).filter(User.manager_id == user_id).all()
-        team_member_ids = [member.id for member in team_members]
+        team_member_ids = [member[0] for member in team_members]
         if team_member_ids:
             by_type = by_type.filter(Request.employee_id.in_(team_member_ids))
     
@@ -393,7 +387,7 @@ def get_request_statistics(db: Session, user_id: Optional[int] = None, user_role
         by_stat = by_stat.filter(Request.employee_id == user_id)
     elif user_role == "manager":
         team_members = db.query(User.id).filter(User.manager_id == user_id).all()
-        team_member_ids = [member.id for member in team_members]
+        team_member_ids = [member[0] for member in team_members]
         if team_member_ids:
             by_stat = by_stat.filter(Request.employee_id.in_(team_member_ids))
     
@@ -409,7 +403,7 @@ def get_request_statistics(db: Session, user_id: Optional[int] = None, user_role
         by_month_query = by_month_query.filter(Request.employee_id == user_id)
     elif user_role == "manager":
         team_members = db.query(User.id).filter(User.manager_id == user_id).all()
-        team_member_ids = [member.id for member in team_members]
+        team_member_ids = [member[0] for member in team_members]
         if team_member_ids:
             by_month_query = by_month_query.filter(Request.employee_id.in_(team_member_ids))
     
@@ -432,13 +426,13 @@ def _request_to_response(db: Session, request: Request) -> RequestResponse:
     """
     # Get employee name
     employee = db.query(User).filter(User.id == request.employee_id).first()
-    employee_name = employee.full_name if employee else None
+    employee_name = employee.name if employee else None
     
     # Get approver name if approved
     approver_name = None
     if request.approved_by:
         approver = db.query(User).filter(User.id == request.approved_by).first()
-        approver_name = approver.full_name if approver else None
+        approver_name = approver.name if approver else None
     
     return RequestResponse(
         id=request.id,
