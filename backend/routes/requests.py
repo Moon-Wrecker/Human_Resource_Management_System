@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from database import get_db
+from models import User
 from schemas.request_schemas import (
     RequestCreate,
     RequestUpdate,
@@ -34,7 +35,7 @@ router = APIRouter(
 )
 async def submit_request(
     request_data: RequestCreate,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -52,7 +53,7 @@ async def submit_request(
     return request_service.create_request(
         db=db,
         request_data=request_data,
-        employee_id=current_user["user_id"]
+        employee_id=current_user.id
     )
 
 
@@ -67,7 +68,7 @@ async def get_my_requests(
     status: Optional[str] = Query(None, description="Filter by status (pending, approved, rejected)"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(10, ge=1, le=100, description="Items per page"),
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -77,7 +78,7 @@ async def get_my_requests(
     """
     return request_service.get_my_requests(
         db=db,
-        employee_id=current_user["user_id"],
+        employee_id=current_user.id,
         request_type=request_type,
         status=status,
         page=page,
@@ -97,7 +98,7 @@ async def get_team_requests(
     employee_id: Optional[int] = Query(None, description="Filter by specific employee"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(10, ge=1, le=100, description="Items per page"),
-    current_user: dict = Depends(require_hr_or_manager),
+    current_user: User = Depends(require_hr_or_manager),
     db: Session = Depends(get_db)
 ):
     """
@@ -109,7 +110,7 @@ async def get_team_requests(
     """
     return request_service.get_team_requests(
         db=db,
-        manager_id=current_user["user_id"],
+        manager_id=current_user.id,
         request_type=request_type,
         status=status,
         employee_id=employee_id,
@@ -131,7 +132,7 @@ async def get_all_requests(
     search: Optional[str] = Query(None, description="Search in employee name, subject, or description"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(10, ge=1, le=100, description="Items per page"),
-    current_user: dict = Depends(require_hr),
+    current_user: User = Depends(require_hr),
     db: Session = Depends(get_db)
 ):
     """
@@ -157,7 +158,7 @@ async def get_all_requests(
     description="Get request statistics (scoped by role)"
 )
 async def get_request_statistics(
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -170,8 +171,8 @@ async def get_request_statistics(
     """
     return request_service.get_request_statistics(
         db=db,
-        user_id=current_user["user_id"],
-        user_role=current_user["role"]
+        user_id=current_user.id,
+        user_role=current_user.role
     )
 
 
@@ -183,7 +184,7 @@ async def get_request_statistics(
 )
 async def get_request_by_id(
     request_id: int,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -197,7 +198,7 @@ async def get_request_by_id(
     return request_service.get_request_by_id(
         db=db,
         request_id=request_id,
-        user_id=current_user["user_id"],
+        user_id=current_user.id,
         user_role=current_user["role"]
     )
 
@@ -211,7 +212,7 @@ async def get_request_by_id(
 async def update_request(
     request_id: int,
     request_data: RequestUpdate,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -225,7 +226,7 @@ async def update_request(
         db=db,
         request_id=request_id,
         request_data=request_data,
-        employee_id=current_user["user_id"]
+        employee_id=current_user.id
     )
 
 
@@ -238,7 +239,7 @@ async def update_request(
 async def update_request_status(
     request_id: int,
     status_update: RequestStatusUpdate,
-    current_user: dict = Depends(require_hr_or_manager),
+    current_user: User = Depends(require_hr_or_manager),
     db: Session = Depends(get_db)
 ):
     """
@@ -254,8 +255,8 @@ async def update_request_status(
         db=db,
         request_id=request_id,
         status_update=status_update,
-        approver_id=current_user["user_id"],
-        approver_role=current_user["role"]
+        approver_id=current_user.id,
+        approver_role=current_user.role
     )
 
 
@@ -267,7 +268,7 @@ async def update_request_status(
 )
 async def delete_request(
     request_id: int,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -280,6 +281,6 @@ async def delete_request(
     return request_service.delete_request(
         db=db,
         request_id=request_id,
-        employee_id=current_user["user_id"]
+        employee_id=current_user.id
     )
 
