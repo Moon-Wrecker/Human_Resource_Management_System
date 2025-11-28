@@ -9,7 +9,7 @@ from utils.password_utils import hash_password
 from models import (
     Department, Team, User, UserRole, JobListing, Application, ApplicationStatus,
     Announcement, Attendance, AttendanceStatus, LeaveRequest, LeaveType, LeaveStatus,
-    Payslip, Goal, GoalStatus, GoalCheckpoint, SkillDevelopment, SkillModule, 
+    Payslip, Goal, GoalStatus, GoalCheckpoint, GoalCategory, SkillDevelopment, SkillModule, 
     SkillModuleEnrollment, ModuleStatus, Policy, ResumeScreeningResult, 
     PerformanceReport, Holiday, Request, RequestType, Feedback, Notification
 )
@@ -27,6 +27,7 @@ def clear_database(session):
     session.query(PerformanceReport).delete()
     session.query(GoalCheckpoint).delete()
     session.query(Goal).delete()
+    session.query(GoalCategory).delete()
     session.query(SkillDevelopment).delete()
     session.query(Payslip).delete()
     session.query(LeaveRequest).delete()
@@ -519,9 +520,40 @@ def seed_holidays(session, users):
     session.commit()
     print(f"Created {len(holidays)} holidays")
 
-def seed_goals(session, users):
+def seed_goal_categories(session, users):
+    """Create goal categories"""
+    print("\nCreating goal categories...")
+    
+    categories_data = [
+        {"name": "learning", "desc": "Learning and skill development goals", "color": "#3B82F6", "icon": "book"},
+        {"name": "performance", "desc": "Performance improvement goals", "color": "#10B981", "icon": "trending-up"},
+        {"name": "leadership", "desc": "Leadership and mentoring goals", "color": "#8B5CF6", "icon": "users"},
+        {"name": "project", "desc": "Project delivery goals", "color": "#F59E0B", "icon": "briefcase"},
+    ]
+    
+    categories = []
+    for cat_data in categories_data:
+        category = GoalCategory(
+            name=cat_data["name"],
+            description=cat_data["desc"],
+            color_code=cat_data["color"],
+            icon=cat_data["icon"],
+            is_active=True,
+            created_by=users[0].id  # HR creates categories
+        )
+        categories.append(category)
+    
+    session.add_all(categories)
+    session.commit()
+    print(f"Created {len(categories)} goal categories")
+    return categories
+
+def seed_goals(session, users, categories):
     """Create 15 goals"""
     print("\nCreating goals...")
+    
+    # Create a mapping of category names to IDs
+    cat_map = {cat.name: cat.id for cat in categories}
     
     goals_data = [
         {"title": "Complete React Advanced Course", "desc": "Master advanced React patterns and hooks", "cat": "learning", "status": GoalStatus.IN_PROGRESS, "progress": 60},
@@ -551,7 +583,7 @@ def seed_goals(session, users):
             employee_id=employee.id,
             title=goal_data["title"],
             description=goal_data["desc"],
-            category=goal_data["cat"],
+            category_id=cat_map.get(goal_data["cat"]),  # Use category_id instead of category
             start_date=start,
             target_date=target,
             completion_date=datetime.now().date() if goal_data["status"] == GoalStatus.COMPLETED else None,
@@ -581,6 +613,7 @@ def seed_goals(session, users):
     session.add_all(checkpoints)
     session.commit()
     print(f"Created {len(goals)} goals with {len(checkpoints)} checkpoints")
+
 
 def seed_skill_modules(session):
     """Create 15 skill modules"""
@@ -974,7 +1007,8 @@ def main():
         seed_attendance(session, users)
         seed_leave_requests(session, users)
         seed_holidays(session, users)
-        seed_goals(session, users)
+        categories = seed_goal_categories(session, users)
+        seed_goals(session, users, categories)
         modules = seed_skill_modules(session)
         seed_skill_enrollments(session, modules, users)
         seed_skill_developments(session, users)
@@ -999,6 +1033,7 @@ def main():
         print("  ✓ 150+ Attendance Records")
         print("  ✓ 15 Leave Requests")
         print("  ✓ 15 Holidays")
+        print("  ✓ 4 Goal Categories")
         print("  ✓ 15 Goals with 30 Checkpoints")
         print("  ✓ 15 Skill Modules")
         print("  ✓ 15 Skill Enrollments")
