@@ -4,6 +4,7 @@ Run with: pytest backend/tests/test_departments_api.py -v
 """
 import pytest
 import requests
+import uuid
 
 
 @pytest.mark.departments
@@ -17,13 +18,12 @@ class TestDepartmentsAPI:
             yield None
             return
         
-        # Create department
         department_data = {
-            "name": "Test Department - API Test",
-            "code": "TST-DEPT",
-            "description": "This is a test department created by API tests"
+            "name": "Test Department - Create Test" + str(uuid.uuid4().hex[:3]),
+            "code": "TSTCREATE" + str(uuid.uuid4().hex[:3]),
+            "description": "Test department for creation"
         }
-        
+              
         response = requests.post(
             f"{api_base_url}/departments",
             headers={"Authorization": f"Bearer {hr_token}"},
@@ -49,8 +49,8 @@ class TestDepartmentsAPI:
             pytest.skip("HR token not available (database not seeded)")
         
         department_data = {
-            "name": "Test Department - Create Test",
-            "code": "TST-CREATE",
+            "name": "Test Department - Create Test" + str(uuid.uuid4().hex[:3]),
+            "code": "TSTCREATE" + str(uuid.uuid4().hex[:3]),
             "description": "Test department for creation"
         }
         
@@ -241,8 +241,8 @@ class TestDepartmentsAPI:
             pytest.skip("HR token or department not available (database not seeded)")
         
         update_data = {
-            "name": "Updated Test Department",
-            "description": "Updated description"
+            "name": "Updated Test Department" + str(uuid.uuid4().hex[:3]),
+            "description": "Updated description"+ str(uuid.uuid4().hex[:3])
         }
         
         response = requests.put(
@@ -298,8 +298,8 @@ class TestDepartmentsAPI:
             f"{api_base_url}/departments",
             headers={"Authorization": f"Bearer {hr_token}"},
             json={
-                "name": "Test for Delete",
-                "code": "TST-DEL",
+                "name": "Test for Delete" + str(uuid.uuid4().hex[:3]),
+                "code": "TST-DEL" + str(uuid.uuid4().hex[:3]),
                 "description": "Will be deleted"
             }
         )
@@ -330,8 +330,8 @@ class TestDepartmentsAPI:
             f"{api_base_url}/departments",
             headers={"Authorization": f"Bearer {hr_token}"},
             json={
-                "name": "Test for Delete Permission",
-                "code": "TST-PERM",
+                "name": "Test for Delete Permission"+str(uuid.uuid4().hex[:3]),
+                "code": "TST-PERM"+str(uuid.uuid4().hex[:3]),
                 "description": "Test"
             }
         )

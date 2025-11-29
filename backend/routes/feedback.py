@@ -7,7 +7,7 @@ from typing import Annotated, Optional
 from datetime import datetime
 from database import get_db
 from models import User
-from utils.dependencies import get_current_active_user, require_hr_or_manager
+from utils.dependencies import get_current_active_user, require_hr_or_manager, require_hr
 from services.feedback_service import FeedbackService
 from schemas.feedback_schemas import (
     FeedbackCreate,
@@ -151,7 +151,7 @@ async def get_all_feedback(
     employee_id: Optional[int] = Query(None, description="Filter by employee"),
     given_by: Optional[int] = Query(None, description="Filter by giver"),
     feedback_type: Optional[str] = Query(None, description="Filter by type"),
-    current_user: User = Depends(require_hr_or_manager),
+    current_user: User = Depends(require_hr),
     db: Session = Depends(get_db)
 ):
     """
@@ -164,11 +164,6 @@ async def get_all_feedback(
     - `given_by`: Show feedback given by specific user
     - `feedback_type`: Filter by feedback type
     """
-    if current_user.role != "HR":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only HR can view all feedback"
-        )
     
     feedback, total = FeedbackService.get_all_feedback(
         db=db,

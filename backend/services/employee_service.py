@@ -108,7 +108,7 @@ class EmployeeService:
                 date_of_birth=employee_data.date_of_birth,
                 hire_date=employee_data.hire_date or datetime.utcnow().date(),
                 salary=employee_data.salary,
-                emergency_contact=employee_data.emergency_contact,
+                emergency_contact=employee_data.emergency_contact or "null",
                 casual_leave_balance=employee_data.casual_leave_balance,
                 sick_leave_balance=employee_data.sick_leave_balance,
                 annual_leave_balance=employee_data.annual_leave_balance,
@@ -469,7 +469,8 @@ class EmployeeService:
             casual_leave_balance=employee.casual_leave_balance,
             sick_leave_balance=employee.sick_leave_balance,
             annual_leave_balance=employee.annual_leave_balance,
-            wfh_balance=employee.wfh_balance
+            wfh_balance=employee.wfh_balance,
+            emergency_contact=employee.emergency_contact
         )
     
     @staticmethod

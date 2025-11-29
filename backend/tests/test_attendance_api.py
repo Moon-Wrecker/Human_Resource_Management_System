@@ -5,7 +5,7 @@ Run with: pytest backend/tests/test_attendance_api.py -v
 import pytest
 import requests
 from datetime import datetime, time, timedelta
-
+import time as t
 
 @pytest.mark.attendance
 class TestAttendanceAPI:
@@ -108,6 +108,10 @@ class TestAttendanceAPI:
         
         if punch_in_response.status_code != 200:
             pytest.skip("Could not punch in for punch out test")
+
+        assert punch_in_response.json()["attendance"]["status"] == "present"
+
+        t.sleep(10)
         
         # Now punch out
         punch_out_data = {}

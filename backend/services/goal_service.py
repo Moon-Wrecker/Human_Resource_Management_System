@@ -262,6 +262,18 @@ class GoalService:
         
         for field, value in update_data.items():
             if field in allowed_fields and value is not None:
+                # Convert status enum from schema to model enum
+                if field == 'status':
+                    # Handle GoalStatusEnum from schema or string value
+                    if hasattr(value, 'value'):
+                        # It's an enum, get its value
+                        status_value = value.value
+                    else:
+                        # It's a string
+                        status_value = value
+                    # Convert to model's GoalStatus enum
+                    value = GoalStatus(status_value)
+                
                 old_value = getattr(goal, field)
                 if old_value != value:
                     changes.append({

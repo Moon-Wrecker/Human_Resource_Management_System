@@ -136,5 +136,32 @@ def pytest_configure(config):
         "markers", "leaves: Leaves API tests"
     )
     config.addinivalue_line(
+        "markers", "applications: Applications API tests"
+    )
+    config.addinivalue_line(
+        "markers", "organization: Organization/Hierarchy API tests"
+    )
+    config.addinivalue_line(
+        "markers", "payslips: Payslips API tests"
+    )
+    config.addinivalue_line(
+        "markers", "policies: Policies API tests"
+    )
+    config.addinivalue_line(
+        "markers", "profile: Profile API tests"
+    )
+    config.addinivalue_line(
+        "markers", "team_requests: Team Requests API tests"
+    )
+    config.addinivalue_line(
+        "markers", "skills: Skills/Modules API tests"
+    )
+    config.addinivalue_line(
+        "markers", "ai_jd: AI Job Description API tests"
+    )
+    config.addinivalue_line(
+        "markers", "integration: Integration tests (may require external services)"
+    )
+    config.addinivalue_line(
         "markers", "permissions: Permission/authorization tests"
     )

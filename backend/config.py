@@ -60,7 +60,7 @@ class Settings(BaseSettings):
     
     # AI Services (Google Gemini)
     GOOGLE_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.0-flash-exp"
+    GEMINI_MODEL: str = "gemini-2.5-flash"
     GEMINI_EMBEDDING_MODEL: str = "models/embedding-001"
     GEMINI_TEMPERATURE: float = 0.2
     
