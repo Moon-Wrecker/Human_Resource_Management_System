@@ -31,11 +31,13 @@ class TestGoalsAPI:
         employee_id = emp_response.json()["id"]
         
         # Create goal
+        start_date = datetime.now().date().isoformat()
         target_date = (datetime.now() + timedelta(days=30)).date().isoformat()
         goal_data = {
-            "title": "Test Goal - API Test",
+            "title": "Test Goal - API Test" + str(datetime.now()),
             "description": "This is a test goal for API testing",
             "employee_id": employee_id,
+            "start_date": start_date,
             "target_date": target_date,
             "priority": "medium",
             "is_personal": False
@@ -121,11 +123,13 @@ class TestGoalsAPI:
         
         employee_id = emp_response.json()["id"]
         
+        start_date = datetime.now().date().isoformat()
         target_date = (datetime.now() + timedelta(days=60)).date().isoformat()
         goal_data = {
             "title": "Learn Python Advanced Concepts",
             "description": "Master decorators, generators, and async programming",
             "employee_id": employee_id,
+            "start_date": start_date,
             "target_date": target_date,
             "priority": "medium",
             "is_personal": True
@@ -238,16 +242,16 @@ class TestGoalsAPI:
         data = response.json()
         assert data["title"] == update_data["title"]
     
-    def test_update_goal_status(self, api_base_url, employee_token, goal_id):
-        """Test update goal status"""
-        if not employee_token or not goal_id:
-            pytest.skip("Employee token or goal not available (database not seeded)")
+    def test_update_goal_status(self, api_base_url, manager_token, goal_id):
+        """Test manager can update goal status"""
+        if not manager_token or not goal_id:
+            pytest.skip("Manager token or goal not available (database not seeded)")
         
         status_data = {"status": "in_progress"}
         
         response = requests.patch(
             f"{api_base_url}/goals/{goal_id}/status",
-            headers={"Authorization": f"Bearer {employee_token}"},
+            headers={"Authorization": f"Bearer {manager_token}"},
             json=status_data
         )
         
@@ -296,19 +300,20 @@ class TestGoalsAPI:
         
         assert response.status_code == 403, f"Expected 403, got {response.status_code}"
     
-    def test_create_checkpoint(self, api_base_url, employee_token, goal_id):
+    def test_create_checkpoint(self, api_base_url, manager_token, goal_id):
         """Test create checkpoint for goal"""
-        if not employee_token or not goal_id:
-            pytest.skip("Employee token or goal not available (database not seeded)")
+        if not manager_token or not goal_id:
+            pytest.skip("Manager token or goal not available (database not seeded)")
         
         checkpoint_data = {
             "title": "Complete research phase",
-            "description": "Research and document findings"
+            "description": "Research and document findings",
+            "sequence_number": 1
         }
         
         response = requests.post(
             f"{api_base_url}/goals/{goal_id}/checkpoints",
-            headers={"Authorization": f"Bearer {employee_token}"},
+            headers={"Authorization": f"Bearer {manager_token}"},
             json=checkpoint_data
         )
         
@@ -317,26 +322,26 @@ class TestGoalsAPI:
         assert "id" in data
         assert data["title"] == checkpoint_data["title"]
     
-    def test_add_comment(self, api_base_url, employee_token, goal_id):
+    def test_add_comment(self, api_base_url, manager_token, goal_id):
         """Test add comment to goal"""
-        if not employee_token or not goal_id:
-            pytest.skip("Employee token or goal not available (database not seeded)")
+        if not manager_token or not goal_id:
+            pytest.skip("Manager token or goal not available (database not seeded)")
         
         comment_data = {
-            "content": "Making good progress on this goal",
+            "comment": "Making good progress on this goal",
             "comment_type": "update"
         }
         
         response = requests.post(
             f"{api_base_url}/goals/{goal_id}/comments",
-            headers={"Authorization": f"Bearer {employee_token}"},
+            headers={"Authorization": f"Bearer {manager_token}"},
             json=comment_data
         )
         
         assert response.status_code == 201, f"Expected 201, got {response.status_code}"
         data = response.json()
         assert "id" in data
-        assert data["content"] == comment_data["content"]
+        assert data["comment"] == comment_data["comment"]
     
     def test_get_comments(self, api_base_url, employee_token, goal_id):
         """Test get goal comments"""
@@ -397,6 +402,7 @@ class TestGoalsAPI:
         employee_id = emp_response.json()["id"]
         
         # Create goal to delete
+        start_date = datetime.now().date().isoformat()
         target_date = (datetime.now() + timedelta(days=30)).date().isoformat()
         create_response = requests.post(
             f"{api_base_url}/goals",
@@ -404,6 +410,7 @@ class TestGoalsAPI:
             json={
                 "title": "Test for Delete",
                 "employee_id": employee_id,
+                "start_date": start_date,
                 "target_date": target_date,
                 "is_personal": False
             }

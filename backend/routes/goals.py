@@ -192,6 +192,67 @@ async def get_team_goals(
     )
 
 
+# ==================== Goal Categories \u0026 Templates (GET) ====================
+# NOTE: These routes MUST come BEFORE /{goal_id} to prevent FastAPI from treating
+# 'categories' and 'templates' as goal_id path parameters
+
+@router.get(
+    "/categories",
+    response_model=list[GoalCategoryResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get Goal Categories",
+    description="Get all goal categories"
+)
+async def get_categories(
+    include_inactive: bool = Query(False, description="Include inactive categories"),
+    current_user: Annotated[User, Depends(get_current_active_user)] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    ## Get Goal Categories
+    
+    Retrieve all goal categories.
+    
+    **Use Cases:**
+    - Category selection dropdown
+    - Goal filtering
+    - Dashboard breakdown by category
+    
+    **Access:** All authenticated users
+    """
+    return GoalService.get_categories(db, include_inactive)
+
+
+@router.get(
+    "/templates",
+    response_model=list[GoalTemplateResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get Goal Templates",
+    description="Get all goal templates"
+)
+async def get_templates(
+    include_inactive: bool = Query(False, description="Include inactive templates"),
+    current_user: Annotated[User, Depends(get_current_active_user)] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    ## Get Goal Templates
+    
+    Retrieve all available goal templates.
+    
+    **Ordering:** By usage count (most used first)
+    
+    **Use Cases:**
+    - Quick goal creation
+    - Standardized goal setting
+    - Best practices sharing
+    
+    **Access:** All authenticated users
+    """
+    return GoalService.get_templates(db, include_inactive)
+
+
+
 @router.get(
     "/{goal_id}",
     response_model=GoalResponse,
@@ -571,31 +632,6 @@ async def create_category(
     return GoalService.create_category(db, category_dict, current_user)
 
 
-@router.get(
-    "/categories",
-    response_model=list[GoalCategoryResponse],
-    status_code=status.HTTP_200_OK,
-    summary="Get Goal Categories",
-    description="Get all goal categories"
-)
-async def get_categories(
-    include_inactive: bool = Query(False, description="Include inactive categories"),
-    db: Session = Depends(get_db)
-):
-    """
-    ## Get Goal Categories
-    
-    Retrieve all goal categories.
-    
-    **Use Cases:**
-    - Category selection dropdown
-    - Goal filtering
-    - Dashboard breakdown by category
-    
-    **Access:** All authenticated users
-    """
-    return GoalService.get_categories(db, include_inactive)
-
 
 @router.put(
     "/categories/{category_id}",
@@ -662,34 +698,6 @@ async def create_template(
     template_dict = template_data.model_dump()
     return GoalService.create_template(db, template_dict, current_user)
 
-
-@router.get(
-    "/templates",
-    response_model=list[GoalTemplateResponse],
-    status_code=status.HTTP_200_OK,
-    summary="Get Goal Templates",
-    description="Get all goal templates"
-)
-async def get_templates(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
-    include_inactive: bool = Query(False, description="Include inactive templates")
-):
-    """
-    ## Get Goal Templates
-    
-    Retrieve all available goal templates.
-    
-    **Ordering:** By usage count (most used first)
-    
-    **Use Cases:**
-    - Quick goal creation
-    - Standardized goal setting
-    - Best practices sharing
-    
-    **Access:** All authenticated users
-    """
-    return GoalService.get_templates(db, include_inactive)
 
 
 @router.get(
