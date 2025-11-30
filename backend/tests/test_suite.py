@@ -60,6 +60,7 @@ def run_tests():
         "test_profile_api.py",
         "test_team_requests_api.py",
         "test_skills_api.py",
+        "test_ai_apis_comprehensive.py",  # AI services comprehensive tests
         "-v",  # Verbose
         "--tb=short",  # Short traceback
         "--color=yes",  # Colored output

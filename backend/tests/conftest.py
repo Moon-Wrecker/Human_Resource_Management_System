@@ -160,6 +160,18 @@ def pytest_configure(config):
         "markers", "ai_jd: AI Job Description API tests"
     )
     config.addinivalue_line(
+        "markers", "ai_performance: AI Performance Reports API tests"
+    )
+    config.addinivalue_line(
+        "markers", "ai_policy_rag: AI Policy RAG API tests"
+    )
+    config.addinivalue_line(
+        "markers", "ai_resume: AI Resume Screener API tests"
+    )
+    config.addinivalue_line(
+        "markers", "ai_comprehensive: Comprehensive AI services tests"
+    )
+    config.addinivalue_line(
         "markers", "integration: Integration tests (may require external services)"
     )
     config.addinivalue_line(

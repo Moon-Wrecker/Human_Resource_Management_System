@@ -1,0 +1,22 @@
+======================================================================
+  COMPREHENSIVE API TEST SUITE (Pytest)
+======================================================================
+Running: pytest --co test_*_api.py
+Timestamp: 2025-11-29T20:50:46
+======================================================================
+
+[1m============================= test session starts ==============================[0m
+platform darwin -- Python 3.11.0, pytest-8.1.1, pluggy-1.5.0 -- /usr/local/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /Users/harshrohitshah/WebstormProjects/soft-engg-project-sep-2025-se-SEP-11
+configfile: pytest.ini
+plugins: anyio-4.1.0
+[1mcollecting ... [0mERROR: file or directory not found: test_*_api.py
+
+collected 0 items
+
+[33m========================= [33mno tests collected[0m[33m in 0.00s[0m[33m ==========================[0m
+
+======================================================================
+Test report saved to: /Users/harshrohitshah/WebstormProjects/soft-engg-project-sep-2025-se-SEP-11/test_reports/2025-11-29T20:50:46.txt
+======================================================================
