@@ -28,6 +28,9 @@ const Announcements = lazy(() => import("@/pages/HR/Announcements"));
 const AnnouncementsEmployee = lazy(
   () => import("@/pages/Common/Announcements"),
 );
+const AnnouncementsDetailsEmployee = lazy(
+  () => import("@/pages/Common/AnnouncementDetails"),
+);
 const Payslips = lazy(() => import("@/pages/Common/Payslips"));
 const PayslipsDetails = lazy(() => import("@/pages/Common/PayslipsDetail"));
 const Applications = lazy(() => import("@/pages/HR/Applications"));
@@ -104,6 +107,11 @@ const router = createBrowserRouter([
             path: "announcements",
             element: <AnnouncementsEmployee />,
           },
+          {
+            path: "announcements/:id",
+            element: <AnnouncementsDetailsEmployee />,
+          },
+
           {
             path: "job-listings",
             element: <JobListingsEmployee />,
