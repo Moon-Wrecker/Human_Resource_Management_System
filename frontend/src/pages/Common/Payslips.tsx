@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardDescription,
@@ -16,77 +16,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import payslipService, {
+  type PayslipResponse,
+} from "@/services/payslipService";
+import { IndianRupeeIcon } from "lucide-react";
 
-const payslips = [
-  {
-    id: 1,
-    label: "Slip 1",
-    desc: "Salary for October",
-    url: "/payslips/slip1.pdf",
-  },
-  {
-    id: 2,
-    label: "Slip 2",
-    desc: "Salary for September",
-    url: "/payslips/slip2.pdf",
-  },
-  {
-    id: 3,
-    label: "Slip 3",
-    desc: "Salary for August",
-    url: "/payslips/slip3.pdf",
-  },
-  {
-    id: 4,
-    label: "Slip 4",
-    desc: "Salary for July",
-    url: "/payslips/slip4.pdf",
-  },
-  {
-    id: 5,
-    label: "Slip 5",
-    desc: "Salary for June",
-    url: "/payslips/slip5.pdf",
-  },
-  {
-    id: 6,
-    label: "Slip 6",
-    desc: "Salary for May",
-    url: "/payslips/slip6.pdf",
-  },
-];
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
+const years = [...Array(9)].map((_, i) =>
+  (new Date().getFullYear() - i).toString(),
+);
 const Payslips = () => {
-  const [month, setMonth] = useState("");
+  const [year, setYear] = useState(years[0]);
+  const [payslips, setPayslips] = useState<PayslipResponse[]>([]);
 
-  // For demo, filtering logic is omitted.
-  // You can add month-based filtering here if your payslips have a month property.
+  useEffect(() => {
+    payslipService
+      .getMyPayslips({ year: parseInt(year) })
+      .then((res) => setPayslips(res.payslips));
+  }, [year]);
 
   return (
     <div className="min-h-screen flex flex-col items-center">
       <h2 className="text-3xl font-semibold text-center my-8">Payslips</h2>
       <div className="w-full max-w-5xl flex justify-center mb-10">
-        <Select value={month} onValueChange={(value) => setMonth(value)}>
+        <Select value={year} onValueChange={(value) => setYear(value)}>
           <SelectTrigger className="w-64">
             <SelectValue placeholder="Month" />
           </SelectTrigger>
           <SelectContent>
-            {months.map((m) => (
+            {years.map((m) => (
               <SelectItem key={m} value={m}>
                 {m}
               </SelectItem>
@@ -103,10 +60,11 @@ const Payslips = () => {
           >
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-gray-900 text-center">
-                {slip.label}
+                {slip.issued_at.split("T")[0]}
               </CardTitle>
-              <CardDescription className="text-sm text-gray-500 text-center mt-1">
-                {slip.desc}
+              <CardDescription className="text-sm text-gray-500 text-center mt-1 flex items-center justify-center ">
+                Net Salary: <IndianRupeeIcon className="h-3 w-3" />
+                {slip.net_salary}
               </CardDescription>
             </CardHeader>
 
@@ -114,10 +72,10 @@ const Payslips = () => {
               <Button
                 asChild
                 variant="outline"
-                className="flex items-center gap-2 font-semibold"
+                className="flex items-center gap-2 font-semibold cursor-pointer"
               >
-                <a href={slip.url} target="_blank" rel="noopener noreferrer">
-                  Download
+                <a href={`payslips/${slip.id}`} rel="noopener noreferrer">
+                  View Details
                 </a>
               </Button>
             </CardFooter>
@@ -129,3 +87,4 @@ const Payslips = () => {
 };
 
 export default Payslips;
+
