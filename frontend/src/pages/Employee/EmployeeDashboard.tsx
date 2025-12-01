@@ -7,7 +7,8 @@ import { dashboardService } from "@/services/dashboardService";
 import type { EmployeeDashboardData } from "@/services/dashboardService";
 
 const EmployeeDashboard = () => {
-  const [dashboardData, setDashboardData] = useState<EmployeeDashboardData | null>(null);
+  const [dashboardData, setDashboardData] =
+    useState<EmployeeDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,9 +18,9 @@ const EmployeeDashboard = () => {
         setLoading(true);
         const data = await dashboardService.getEmployeeDashboard();
         setDashboardData(data);
-      } catch (err: any) {
-        console.error('Failed to fetch employee dashboard data:', err);
-        setError(err.response?.data?.detail || 'Failed to load dashboard data');
+      } catch (err) {
+        console.error("Failed to fetch employee dashboard data:", err);
+        setError(err.response?.data?.detail || "Failed to load dashboard data");
       } finally {
         setLoading(false);
       }
@@ -50,32 +51,61 @@ const EmployeeDashboard = () => {
 
   // Transform data for charts
   const learningGoalsData = [
-    { label: "Completed", value: dashboardData.learning_goals.completed_goals, fill: "#00ff00" },
-    { label: "Pending", value: dashboardData.learning_goals.pending_goals, fill: "#ff0000" },
+    {
+      label: "Completed",
+      value: dashboardData.learning_goals.completed_goals,
+      fill: "#00ff00",
+    },
+    {
+      label: "Pending",
+      value: dashboardData.learning_goals.pending_goals,
+      fill: "#ff0000",
+    },
   ];
 
   // Format check-in/out times
-  const checkInTime = dashboardData.today_attendance?.check_in_time 
-    ? new Date(dashboardData.today_attendance.check_in_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-    : 'N/A';
-  
-  const checkOutTime = dashboardData.today_attendance?.check_out_time 
-    ? new Date(dashboardData.today_attendance.check_out_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-    : 'N/A';
+  const checkInTime = dashboardData.today_attendance?.check_in_time
+    ? new Date(dashboardData.today_attendance.check_in_time).toLocaleTimeString(
+        "en-US",
+        { hour: "2-digit", minute: "2-digit" },
+      )
+    : "N/A";
+
+  const checkOutTime = dashboardData.today_attendance?.check_out_time
+    ? new Date(
+        dashboardData.today_attendance.check_out_time,
+      ).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    : "N/A";
 
   return (
     <main className="flex items-center justify-center flex-col gap-2 my-4">
       <h2 className="text-3xl font-semibold text-center mt-8">
-        Welcome, <span className="text-blue-700">{dashboardData.employee_name}</span>
+        Welcome,{" "}
+        <span className="text-blue-700">{dashboardData.employee_name}</span>
       </h2>
       <div className="flex items-center justify-center flex-col w-full gap-4">
         {/* Leave Balance Cards - 5 cards in a grid */}
         <div className="grid grid-cols-5 w-[90%] gap-4 px-4 mt-16">
-          <EmployeeDashboardCard title="Casual Leave" content={dashboardData.leave_balance.casual_leave.toString()} />
-          <EmployeeDashboardCard title="Sick Leave" content={dashboardData.leave_balance.sick_leave.toString()} />
-          <EmployeeDashboardCard title="Annual Leave" content={dashboardData.leave_balance.annual_leave.toString()} />
-          <EmployeeDashboardCard title="WFH Left" content={dashboardData.leave_balance.wfh_balance.toString()} />
-          <EmployeeDashboardCard title="Learner Rank" content={dashboardData.learner_rank?.toString() || 'N/A'} />
+          <EmployeeDashboardCard
+            title="Casual Leave"
+            content={dashboardData.leave_balance.casual_leave.toString()}
+          />
+          <EmployeeDashboardCard
+            title="Sick Leave"
+            content={dashboardData.leave_balance.sick_leave.toString()}
+          />
+          <EmployeeDashboardCard
+            title="Annual Leave"
+            content={dashboardData.leave_balance.annual_leave.toString()}
+          />
+          <EmployeeDashboardCard
+            title="WFH Left"
+            content={dashboardData.leave_balance.wfh_balance.toString()}
+          />
+          <EmployeeDashboardCard
+            title="Learner Rank"
+            content={dashboardData.learner_rank?.toString() || "N/A"}
+          />
         </div>
         <div className="grid grid-cols-2 gap-4 px-4 w-[80%]">
           <DoughnutChart title="Learning Goals" data={learningGoalsData} />
@@ -83,10 +113,12 @@ const EmployeeDashboard = () => {
             <Card className="text-center w-full">
               <CardContent className="flex flex-col gap-4 items-center justify-center">
                 <p className="text-lg">
-                  <span className="font-bold">Punch In Time: </span>{checkInTime}
+                  <span className="font-bold">Punch In Time: </span>
+                  {checkInTime}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Punch Out Time: </span>{checkOutTime}
+                  <span className="font-bold">Punch Out Time: </span>
+                  {checkOutTime}
                 </p>
               </CardContent>
             </Card>
