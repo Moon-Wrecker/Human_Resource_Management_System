@@ -12,6 +12,7 @@ import {
   differenceInMinutes,
   format,
   getMonth,
+  getYear,
   isSameDay,
   isSameHour,
   isSameMonth,
@@ -32,6 +33,7 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -81,6 +83,7 @@ type ContextType = {
   onEventClick?: (event: CalendarEvent) => void;
   enableHotkeys?: boolean;
   today: Date;
+  onMonthChange?: (month: number, year: number) => void;
 };
 
 const Context = createContext<ContextType>({} as ContextType);
@@ -96,27 +99,48 @@ export type CalendarEvent = {
 type CalendarProps = {
   children: ReactNode;
   defaultDate?: Date;
+  date?: Date;
+  onDateChange?: (date: Date) => void;
   events?: CalendarEvent[];
   view?: View;
   locale?: Locale;
   enableHotkeys?: boolean;
   onChangeView?: (view: View) => void;
   onEventClick?: (event: CalendarEvent) => void;
+  onMonthChange?: (month: number, year: number) => void;
 };
 
 const Calendar = ({
   children,
   defaultDate = new Date(),
+  date: controlledDate,
+  onDateChange,
   locale = enUS,
   enableHotkeys = true,
   view: _defaultMode = "month",
   onEventClick,
+  onMonthChange,
   events: defaultEvents = [],
   onChangeView,
 }: CalendarProps) => {
   const [view, setView] = useState<View>(_defaultMode);
-  const [date, setDate] = useState(defaultDate);
+  const [uncontrolledDate, setUncontrolledDate] = useState(defaultDate);
   const [events, setEvents] = useState<CalendarEvent[]>(defaultEvents);
+
+  const date = controlledDate || uncontrolledDate;
+  const setDate = onDateChange || setUncontrolledDate;
+
+  useEffect(() => {
+    setEvents(defaultEvents);
+  }, [defaultEvents]);
+
+  useEffect(() => {
+    if (view === "month" && onMonthChange) {
+      const month = getMonth(date) + 1;
+      const year = getYear(date);
+      onMonthChange(month, year);
+    }
+  }, [date, view, onMonthChange]);
 
   const changeView = (view: View) => {
     setView(view);
@@ -140,6 +164,7 @@ const Calendar = ({
         enableHotkeys,
         onEventClick,
         onChangeView,
+        onMonthChange,
         today: new Date(),
       }}
     >
