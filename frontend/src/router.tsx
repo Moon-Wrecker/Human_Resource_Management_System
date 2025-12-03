@@ -28,7 +28,11 @@ const Announcements = lazy(() => import("@/pages/HR/Announcements"));
 const AnnouncementsEmployee = lazy(
   () => import("@/pages/Common/Announcements"),
 );
+const AnnouncementsDetailsEmployee = lazy(
+  () => import("@/pages/Common/AnnouncementDetails"),
+);
 const Payslips = lazy(() => import("@/pages/Common/Payslips"));
+const PayslipsDetails = lazy(() => import("@/pages/Common/PayslipsDetail"));
 const Applications = lazy(() => import("@/pages/HR/Applications"));
 const Attendance = lazy(() => import("@/pages/Common/Attendance"));
 const PerformanceReport = lazy(
@@ -67,188 +71,197 @@ const router = createBrowserRouter([
         ],
       },
       { path: "/login", element: <Login /> },
-  {
-    path: "/employee",
-    element: (
-      <ProtectedRoute allowedRoles={['employee', 'manager']}>
-        <Employee />
-      </ProtectedRoute>
-    ),
-    children: [
       {
-        index: true,
-        element: <EmployeeDashboard />,
-      },
-      {
-        path: "performance-report",
-        element: <EmployeePerformanceReport />,
-      },
-      {
-        path: "performance-report/feedbacks",
-        element: <FeedbackReport />,
-      },
-      {
-        path: "payslips",
-        element: <Payslips />,
-      },
-      {
-        path: "attendance",
-        element: <Attendance />,
-      },
-      {
-        path: "announcements",
-        element: <AnnouncementsEmployee />,
-      },
-      {
-        path: "job-listings",
-        element: <JobListingsEmployee />,
-      },
-      {
-        path: "policies",
-        element: <PoliciesEmployee />,
-      },
-      {
-        path: "goal-tracker",
-        element: <GoalTrackerEmployee />,
-      },
-      {
-        path: "goal-tracker/:id",
-        element: <VisitPage />,
-      },
-      {
-        path: "skill-development",
-        element: <SkillDevelopment />,
-      },
-      {
-        path: "skills/:slug",
-        element: <SkillVisit />,
-      },
-      {
-        path: "profile",
-        element: <EmployeeProfile />,
-      },
-    ],
-  },
-  {
-    path: "/hr",
-    element: (
-      <ProtectedRoute allowedRoles={['hr', 'admin']}>
-        <HR />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <HRDashboard />,
-      },
-      {
-        path: "joblistings",
-        element: <HRJobListings />,
+        path: "/employee",
+        element: (
+          <ProtectedRoute allowedRoles={["employee", "manager"]}>
+            <Employee />
+          </ProtectedRoute>
+        ),
         children: [
           {
-            path: "add-new-job",
-            element: <AddJobForm />,
+            index: true,
+            element: <EmployeeDashboard />,
+          },
+          {
+            path: "performance-report",
+            element: <EmployeePerformanceReport />,
+          },
+          {
+            path: "performance-report/feedbacks",
+            element: <FeedbackReport />,
+          },
+          {
+            path: "payslips",
+            element: <Payslips />,
+          },
+          {
+            path: "payslips/:id",
+            element: <PayslipsDetails />,
+          },
+          {
+            path: "attendance",
+            element: <Attendance />,
+          },
+          {
+            path: "announcements",
+            element: <AnnouncementsEmployee />,
+          },
+          {
+            path: "announcements/:id",
+            element: <AnnouncementsDetailsEmployee />,
+          },
+
+          {
+            path: "job-listings",
+            element: <JobListingsEmployee />,
+          },
+          {
+            path: "policies",
+            element: <PoliciesEmployee />,
+          },
+          {
+            path: "goal-tracker",
+            element: <GoalTrackerEmployee />,
+          },
+          {
+            path: "goal-tracker/:goal/:id",
+            element: <VisitPage />,
+          },
+          {
+            path: "skill-development",
+            element: <SkillDevelopment />,
+          },
+          {
+            path: "skills/:slug",
+            element: <SkillVisit />,
+          },
+          {
+            path: "profile",
+            element: <EmployeeProfile />,
           },
         ],
       },
       {
-        path: "employees-list",
-        element: <EmployeesList />,
+        path: "/hr",
+        element: (
+          <ProtectedRoute allowedRoles={["hr", "admin"]}>
+            <HR />
+          </ProtectedRoute>
+        ),
         children: [
           {
-            path: "add-new-employee",
-            element: <AddEmployeeForm />,
+            index: true,
+            element: <HRDashboard />,
+          },
+          {
+            path: "joblistings",
+            element: <HRJobListings />,
+            children: [
+              {
+                path: "add-new-job",
+                element: <AddJobForm />,
+              },
+            ],
+          },
+          {
+            path: "employees-list",
+            element: <EmployeesList />,
+            children: [
+              {
+                path: "add-new-employee",
+                element: <AddEmployeeForm />,
+              },
+            ],
+          },
+          {
+            path: "policies",
+            element: <Policies />,
+          },
+          {
+            path: "resume-screener",
+            element: <ResumeScreener />,
+          },
+          {
+            path: "resume-screener/results",
+            element: <ResumeScreenerResults />,
+          },
+          {
+            path: "announcements",
+            element: <Announcements />,
+          },
+          {
+            path: "payslips",
+            element: <Payslips />,
+          },
+          {
+            path: "applications",
+            element: <Applications />,
+          },
+          {
+            path: "attendance",
+            element: <Attendance />,
+          },
+          {
+            path: "performance-report",
+            element: <PerformanceReport />,
+          },
+          {
+            path: "profile",
+            element: <EmployeeProfile />,
           },
         ],
       },
       {
-        path: "policies",
-        element: <Policies />,
+        path: "/manager",
+        element: (
+          <ProtectedRoute allowedRoles={["manager"]}>
+            <Manager />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <ManagerDashboard />,
+          },
+          {
+            path: "performance-report",
+            element: <PerformanceReport />,
+          },
+          {
+            path: "team-members",
+            element: <TeamMembers />,
+          },
+          {
+            path: "team-requests",
+            element: <TeamRequests />,
+          },
+          {
+            path: "payslips",
+            element: <Payslips />,
+          },
+          {
+            path: "attendance",
+            element: <Attendance />,
+          },
+          {
+            path: "announcements",
+            element: <AnnouncementsEmployee />,
+          },
+          {
+            path: "job-listings",
+            element: <JobListingsEmployee />,
+          },
+          {
+            path: "policies",
+            element: <PoliciesEmployee />,
+          },
+          {
+            path: "profile",
+            element: <EmployeeProfile />,
+          },
+        ],
       },
-      {
-        path: "resume-screener",
-        element: <ResumeScreener />,
-      },
-      {
-        path: "resume-screener/results",
-        element: <ResumeScreenerResults />,
-      },
-      {
-        path: "announcements",
-        element: <Announcements />,
-      },
-      {
-        path: "payslips",
-        element: <Payslips />,
-      },
-      {
-        path: "applications",
-        element: <Applications />,
-      },
-      {
-        path: "attendance",
-        element: <Attendance />,
-      },
-      {
-        path: "performance-report",
-        element: <PerformanceReport />,
-      },
-      {
-        path: "profile",
-        element: <EmployeeProfile />,
-      },
-    ],
-  },
-  {
-    path: "/manager",
-    element: (
-      <ProtectedRoute allowedRoles={['manager']}>
-        <Manager />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <ManagerDashboard />,
-      },
-      {
-        path: "performance-report",
-        element: <PerformanceReport />,
-      },
-      {
-        path: "team-members",
-        element: <TeamMembers />,
-      },
-      {
-        path: "team-requests",
-        element: <TeamRequests />,
-      },
-      {
-        path: "payslips",
-        element: <Payslips />,
-      },
-      {
-        path: "attendance",
-        element: <Attendance />,
-      },
-      {
-        path: "announcements",
-        element: <AnnouncementsEmployee />,
-      },
-      {
-        path: "job-listings",
-        element: <JobListingsEmployee />,
-      },
-      {
-        path: "policies",
-        element: <PoliciesEmployee />,
-      },
-      {
-        path: "profile",
-        element: <EmployeeProfile />,
-      },
-    ],
-  },
     ],
   },
 ]);

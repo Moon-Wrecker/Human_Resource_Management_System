@@ -13,7 +13,11 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import profileService from "@/services/profileService";
-import type { ProfileData, ManagerInfo, UserDocuments } from "@/services/profileService";
+import type {
+  ProfileData,
+  ManagerInfo,
+  UserDocuments,
+} from "@/services/profileService";
 import { API_BASE_URL } from "@/config/api";
 
 const Profile = () => {
@@ -126,7 +130,7 @@ const Profile = () => {
   // Handle document upload
   const handleDocumentUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    documentType: "aadhar" | "pan"
+    documentType: "aadhar" | "pan",
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -141,7 +145,9 @@ const Profile = () => {
       setUploadingDoc(documentType);
       setError(null);
       await profileService.uploadDocument(documentType, file);
-      setSuccessMessage(`${documentType.toUpperCase()} document uploaded successfully!`);
+      setSuccessMessage(
+        `${documentType.toUpperCase()} document uploaded successfully!`,
+      );
       setTimeout(() => setSuccessMessage(null), 3000);
       fetchProfileData(); // Refresh documents
     } catch (err: any) {
@@ -152,7 +158,9 @@ const Profile = () => {
   };
 
   // Handle document delete
-  const handleDeleteDocument = async (documentType: "profile_image" | "aadhar" | "pan") => {
+  const handleDeleteDocument = async (
+    documentType: "profile_image" | "aadhar" | "pan",
+  ) => {
     if (!confirm(`Are you sure you want to delete this document?`)) return;
 
     try {
@@ -296,15 +304,21 @@ const Profile = () => {
             </div>
             <div>
               <span>Job Role : </span>
-              <span className="font-normal">{profileData.job_role || "N/A"}</span>
+              <span className="font-normal">
+                {profileData.job_role || "N/A"}
+              </span>
             </div>
             <div>
               <span>Department : </span>
-              <span className="font-normal">{profileData.department_name || "N/A"}</span>
+              <span className="font-normal">
+                {profileData.department_name || "N/A"}
+              </span>
             </div>
             <div>
               <span>Team Name : </span>
-              <span className="font-normal">{profileData.team_name || "N/A"}</span>
+              <span className="font-normal">
+                {profileData.team_name || "N/A"}
+              </span>
             </div>
             <div>
               <span>Phone No. : </span>
@@ -322,7 +336,9 @@ const Profile = () => {
       <div className="border-t pt-6 space-y-4 text-sm max-w-3xl mx-auto">
         <div>
           <span className="">Employee ID: </span>
-          <span className="font-semibold">{profileData.employee_id || "N/A"}</span>
+          <span className="font-semibold">
+            {profileData.employee_id || "N/A"}
+          </span>
         </div>
 
         <div className="flex items-center justify-between max-w-md">

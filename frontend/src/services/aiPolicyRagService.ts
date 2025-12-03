@@ -3,16 +3,18 @@
  * Frontend service for Policy Q&A AI features
  */
 
-import api from './api';
+import api from "./api";
 
 // ==================== Types ====================
 
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export interface PolicyQuestion {
   question: string;
-  chat_history?: Array<{
-    role: 'user' | 'assistant';
-    content: string;
-  }>;
+  chat_history?: ChatMessage[];
 }
 
 export interface PolicyAnswer {
@@ -45,15 +47,17 @@ export interface PolicyIndexStatus {
 /**
  * Ask a question about company policies
  */
-export const askPolicyQuestion = async (data: PolicyQuestion): Promise<PolicyAnswer> => {
+export const askPolicyQuestion = async (
+  data: PolicyQuestion,
+): Promise<PolicyAnswer> => {
   try {
-    const response = await api.post('/api/v1/ai/policy-rag/ask', data);
+    const response = await api.post("/ai/policy-rag/ask", data);
     return response.data;
   } catch (error: any) {
-    console.error('Error asking policy question:', error);
+    console.error("Error asking policy question:", error);
     return {
       success: false,
-      error: error.response?.data?.detail || 'Failed to get answer'
+      error: error.response?.data?.detail || "Failed to get answer",
     };
   }
 };
@@ -63,10 +67,10 @@ export const askPolicyQuestion = async (data: PolicyQuestion): Promise<PolicyAns
  */
 export const getPolicySuggestions = async (): Promise<string[]> => {
   try {
-    const response = await api.get('/api/v1/ai/policy-rag/suggestions');
+    const response = await api.get("/ai/policy-rag/suggestions");
     return response.data.suggestions || [];
   } catch (error: any) {
-    console.error('Error getting suggestions:', error);
+    console.error("Error getting suggestions:", error);
     return [];
   }
 };
@@ -76,13 +80,13 @@ export const getPolicySuggestions = async (): Promise<string[]> => {
  */
 export const getPolicyIndexStatus = async (): Promise<PolicyIndexStatus> => {
   try {
-    const response = await api.get('/api/v1/ai/policy-rag/status');
+    const response = await api.get("/ai/policy-rag/status");
     return response.data;
   } catch (error: any) {
-    console.error('Error getting index status:', error);
+    console.error("Error getting index status:", error);
     return {
       indexed: false,
-      error: error.response?.data?.detail || 'Failed to get status'
+      error: error.response?.data?.detail || "Failed to get status",
     };
   }
 };
@@ -92,11 +96,11 @@ export const getPolicyIndexStatus = async (): Promise<PolicyIndexStatus> => {
  */
 export const rebuildPolicyIndex = async (): Promise<{ message: string }> => {
   try {
-    const response = await api.post('/api/v1/ai/policy-rag/index/rebuild');
+    const response = await api.post("/ai/policy-rag/index/rebuild");
     return response.data;
   } catch (error: any) {
-    console.error('Error rebuilding index:', error);
-    throw new Error(error.response?.data?.detail || 'Failed to rebuild index');
+    console.error("Error rebuilding index:", error);
+    throw new Error(error.response?.data?.detail || "Failed to rebuild index");
   }
 };
 
@@ -107,7 +111,7 @@ export const rebuildPolicyIndex = async (): Promise<{ message: string }> => {
  */
 export const formatPolicyAnswer = (answer: PolicyAnswer): string => {
   if (!answer.success || !answer.answer) {
-    return answer.error || 'No answer available';
+    return answer.error || "No answer available";
   }
   return answer.answer;
 };
@@ -119,7 +123,7 @@ export const extractSourceCitations = (answer: PolicyAnswer): string[] => {
   if (!answer.sources || answer.sources.length === 0) {
     return [];
   }
-  return answer.sources.map(source => source.policy_title);
+  return answer.sources.map((source) => source.policy_title);
 };
 
 /**
@@ -133,4 +137,3 @@ export const isPolicyRagAvailable = async (): Promise<boolean> => {
     return false;
   }
 };
-

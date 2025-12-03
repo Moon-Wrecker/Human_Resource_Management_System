@@ -3,7 +3,7 @@
  * API calls for profile management
  */
 
-import api, { handleApiError } from './api';
+import api, { handleApiError } from "./api";
 
 export interface ProfileData {
   id: number;
@@ -118,7 +118,7 @@ class ProfileService {
    */
   async getMyProfile(): Promise<ProfileData> {
     try {
-      const response = await api.get('/profile/me');
+      const response = await api.get("/profile/me");
       return response.data;
     } catch (error) {
       throw new Error(handleApiError(error));
@@ -142,7 +142,7 @@ class ProfileService {
    */
   async updateMyProfile(data: UpdateProfileData): Promise<ProfileData> {
     try {
-      const response = await api.put('/profile/me', data);
+      const response = await api.put("/profile/me", data);
       return response.data;
     } catch (error) {
       throw new Error(handleApiError(error));
@@ -155,11 +155,11 @@ class ProfileService {
   async uploadProfileImage(file: File): Promise<DocumentUploadResponse> {
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
-      const response = await api.post('/profile/upload-image', formData, {
+      const response = await api.post("/profile/upload-image", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       return response.data;
@@ -171,15 +171,18 @@ class ProfileService {
   /**
    * Upload document (Aadhar or PAN)
    */
-  async uploadDocument(documentType: 'aadhar' | 'pan', file: File): Promise<DocumentUploadResponse> {
+  async uploadDocument(
+    documentType: "aadhar" | "pan",
+    file: File,
+  ): Promise<DocumentUploadResponse> {
     try {
       const formData = new FormData();
-      formData.append('document_type', documentType);
-      formData.append('file', file);
+      formData.append("document_type", documentType);
+      formData.append("file", file);
 
-      const response = await api.post('/profile/upload-document', formData, {
+      const response = await api.post("/profile/upload-document", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       return response.data;
@@ -193,7 +196,7 @@ class ProfileService {
    */
   async getMyDocuments(): Promise<UserDocuments> {
     try {
-      const response = await api.get('/profile/documents');
+      const response = await api.get("/profile/documents");
       return response.data;
     } catch (error) {
       throw new Error(handleApiError(error));
@@ -203,7 +206,9 @@ class ProfileService {
   /**
    * Delete a document
    */
-  async deleteDocument(documentType: 'profile_image' | 'aadhar' | 'pan'): Promise<{ message: string }> {
+  async deleteDocument(
+    documentType: "profile_image" | "aadhar" | "pan",
+  ): Promise<{ message: string }> {
     try {
       const response = await api.delete(`/profile/documents/${documentType}`);
       return response.data;
@@ -217,7 +222,7 @@ class ProfileService {
    */
   async getMyManager(): Promise<ManagerInfo> {
     try {
-      const response = await api.get('/profile/manager');
+      const response = await api.get("/profile/manager");
       return response.data;
     } catch (error) {
       throw new Error(handleApiError(error));
@@ -229,7 +234,7 @@ class ProfileService {
    */
   async getMyTeam(): Promise<TeamData> {
     try {
-      const response = await api.get('/profile/team');
+      const response = await api.get("/profile/team");
       return response.data;
     } catch (error) {
       throw new Error(handleApiError(error));
@@ -253,7 +258,7 @@ class ProfileService {
    */
   async getMyStats(): Promise<ProfileStats> {
     try {
-      const response = await api.get('/profile/stats');
+      const response = await api.get("/profile/stats");
       return response.data;
     } catch (error) {
       throw new Error(handleApiError(error));
@@ -274,4 +279,3 @@ class ProfileService {
 }
 
 export default new ProfileService();
-

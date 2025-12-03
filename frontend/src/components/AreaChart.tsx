@@ -2,76 +2,73 @@
 
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import type { MonthlyModules } from "@/services/performanceReportService";
 
 export const description = "A simple area chart";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  modules_completed: {
+    label: "Modules Completed:",
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig;
 
-export function ChartAreaDefault() {
+export function ChartAreaDefault({
+  chartData,
+}: {
+  chartData: MonthlyModules[] | undefined;
+}) {
+  console.log(chartData);
   return (
-    <Card className="w-full text-center col-span-2 row-span-3">
+    <Card className="w-full h-full text-center col-span-2 row-span-3">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
           Modules completed by month
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="var(--color-desktop)"
-              fillOpacity={0.4}
-              stroke="var(--color-desktop)"
-            />
-          </AreaChart>
-        </ChartContainer>
+      <CardContent className="h-full w-full flex items-center justify-center">
+        {chartData && chartData[0].modules_completed ? (
+          <ChartContainer className="flex-1" config={chartConfig}>
+            <AreaChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
+                top: 24,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                cursor={true}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+              <Area
+                dataKey="modules_completed"
+                type="natural"
+                fill="var(--color-modules_completed)"
+                fillOpacity={0.4}
+                stroke="var(--color-modules_completed)"
+              />
+            </AreaChart>
+          </ChartContainer>
+        ) : (
+          <p>No data found!</p>
+        )}
       </CardContent>
     </Card>
   );

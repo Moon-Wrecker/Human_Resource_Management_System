@@ -2,55 +2,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import goalService, { type Checkpoint } from "@/services/goalService";
 
-const checkpoints: Record<string, {
-  title: string;
-  description: string;
-  resources: Array<{ name: string; url: string }>;
-}> = {
-  "module-x": {
-    title: "Module X Reading",
-    description:
-      "Here you can find all the materials and resources for Module X reading. Please go through the documents carefully before proceeding to the next checkpoint.",
-    resources: [
-      {
-        name: "Module X Reading Material (PDF)",
-        url: "https://example.com/module-x-reading.pdf",
-      },
-      {
-        name: "Supplementary Video",
-        url: "https://example.com/module-x-video",
-      },
-    ],
-  },
-  "module-y": {
-    title: "Module Y Practice",
-    description: "Practice exercises for Module Y.",
-    resources: [
-      {
-        name: "Module Y Practice Sheet",
-        url: "https://example.com/module-y-practice.pdf",
-      },
-    ],
-  },
-  "module-z": {
-    title: "Module Z Quiz",
-    description:
-      "Take the Module Z assessment quiz to test your understanding.",
-    resources: [
-      { name: "Quiz Link", url: "https://example.com/module-z-quiz" },
-    ],
-  },
-};
 export default function VisitPage() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { goal, id } = useParams();
 
-  const checkpoint = checkpoints[id as string] || {
-    title: "Checkpoint Not Found",
-    description: "Sorry, we couldn't find the requested checkpoint.",
-    resources: [],
-  };
+  const [checkpoint, setCheckpoint] = useState<Checkpoint>();
+
+  useEffect(() => {
+    goalService
+      .getGoalById(parseInt(goal || "0"))
+      .then((res) =>
+        setCheckpoint(
+          res.checkpoints.find((cp) => cp.id === parseInt(id || "0")),
+        ),
+      );
+  }, [goal, id]);
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-4">
@@ -59,37 +28,45 @@ export default function VisitPage() {
         Back
       </Button>
 
-      <Card className="border">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold">
-            {checkpoint.title}
-          </CardTitle>
-        </CardHeader>
+      {!checkpoint ? (
+        <Card className="border">
+          <CardContent className="text-center text-muted-foreground">
+            No checkpoint found!
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="border">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold">
+              {checkpoint.title}
+            </CardTitle>
+          </CardHeader>
 
-        <CardContent className="space-y-4 text-gray-700">
-          <p>{checkpoint.description}</p>
+          <CardContent className="space-y-4 text-gray-700">
+            <p>{checkpoint.description}</p>
 
-          {checkpoint.resources.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="font-semibold text-lg">Resources:</h3>
-              <ul className="list-disc list-inside space-y-1">
-                {checkpoint.resources.map((res, index) => (
-                  <li key={index}>
-                    <a
-                      href={res.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      {res.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            {/* {checkpoint.resources.length > 0 && ( */}
+            {/*   <div className="space-y-2"> */}
+            {/*     <h3 className="font-semibold text-lg">Resources:</h3> */}
+            {/*     <ul className="list-disc list-inside space-y-1"> */}
+            {/*       {checkpoint.resources.map((res, index) => ( */}
+            {/*         <li key={index}> */}
+            {/*           <a */}
+            {/*             href={res.url} */}
+            {/*             target="_blank" */}
+            {/*             rel="noopener noreferrer" */}
+            {/*             className="text-blue-600 hover:underline" */}
+            {/*           > */}
+            {/*             {res.name} */}
+            {/*           </a> */}
+            {/*         </li> */}
+            {/*       ))} */}
+            {/*     </ul> */}
+            {/*   </div> */}
+            {/* )} */}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
