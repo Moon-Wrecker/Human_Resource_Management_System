@@ -14,8 +14,8 @@ import type { MonthlyModules } from "@/services/performanceReportService";
 export const description = "A simple area chart";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  modules_completed: {
+    label: "Modules Completed:",
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig;
@@ -25,22 +25,24 @@ export function ChartAreaDefault({
 }: {
   chartData: MonthlyModules[] | undefined;
 }) {
+  console.log(chartData);
   return (
-    <Card className="w-full text-center col-span-2 row-span-3">
+    <Card className="w-full h-full text-center col-span-2 row-span-3">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
           Modules completed by month
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        {chartData ? (
-          <ChartContainer config={chartConfig}>
+      <CardContent className="h-full w-full flex items-center justify-center">
+        {chartData && chartData[0].modules_completed ? (
+          <ChartContainer className="flex-1" config={chartConfig}>
             <AreaChart
               accessibilityLayer
               data={chartData}
               margin={{
                 left: 12,
                 right: 12,
+                top: 24,
               }}
             >
               <CartesianGrid vertical={false} />
@@ -52,15 +54,15 @@ export function ChartAreaDefault({
                 tickFormatter={(value) => value.slice(0, 3)}
               />
               <ChartTooltip
-                cursor={false}
+                cursor={true}
                 content={<ChartTooltipContent indicator="line" />}
               />
               <Area
-                dataKey="desktop"
+                dataKey="modules_completed"
                 type="natural"
-                fill="var(--color-desktop)"
+                fill="var(--color-modules_completed)"
                 fillOpacity={0.4}
-                stroke="var(--color-desktop)"
+                stroke="var(--color-modules_completed)"
               />
             </AreaChart>
           </ChartContainer>

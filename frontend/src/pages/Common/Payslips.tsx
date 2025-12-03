@@ -52,39 +52,42 @@ const Payslips = () => {
         </Select>
       </div>
 
-      <div className="grid grid-cols-4 my-8 px-4 gap-4 w-full">
-        {payslips.map((slip) => (
-          <Card
-            key={slip.id}
-            className="w-full shadow-md rounded-2xl border border-gray-200"
-          >
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900 text-center">
-                {slip.issued_at.split("T")[0]}
-              </CardTitle>
-              <CardDescription className="text-sm text-gray-500 text-center mt-1 flex items-center justify-center ">
-                Net Salary: <IndianRupeeIcon className="h-3 w-3" />
-                {slip.net_salary}
-              </CardDescription>
-            </CardHeader>
+      {payslips.length > 0 ? (
+        <div className="grid grid-cols-4 my-8 px-4 gap-4 w-full">
+          {payslips.map((slip) => (
+            <Card
+              key={slip.id}
+              className="w-full shadow-md rounded-2xl border border-gray-200"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold text-gray-900 text-center">
+                  {slip.issued_at.split("T")[0]}
+                </CardTitle>
+                <CardDescription className="text-sm text-gray-500 text-center mt-1 flex items-center justify-center ">
+                  Net Salary: <IndianRupeeIcon className="h-3 w-3" />
+                  {slip.net_salary}
+                </CardDescription>
+              </CardHeader>
 
-            <CardFooter className="flex justify-center">
-              <Button
-                asChild
-                variant="outline"
-                className="flex items-center gap-2 font-semibold cursor-pointer"
-              >
-                <a href={`payslips/${slip.id}`} rel="noopener noreferrer">
-                  View Details
-                </a>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+              <CardFooter className="flex justify-center">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="flex items-center gap-2 font-semibold cursor-pointer"
+                >
+                  <a href={`payslips/${slip.id}`} rel="noopener noreferrer">
+                    View Details
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-md text-muted-foreground">No payslips found!</p>
+      )}
     </div>
   );
 };
 
 export default Payslips;
-

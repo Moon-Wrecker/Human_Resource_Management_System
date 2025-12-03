@@ -14,6 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import feedbackService, {
+  type FeedbackListResponse,
+} from "@/services/feedbackService";
 
 export default function PerformanceReport() {
   const { user } = useAuth();
@@ -21,16 +24,50 @@ export default function PerformanceReport() {
   const [reports, setReports] = useState<PerformanceReportResponse>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<FeedbackListResponse>();
 
   useEffect(() => {
     const fetchReports = async () => {
       if (!user) return;
       try {
         setLoading(true);
-        const response = await performanceReportService.getPerformanceReports(
-          {},
-        );
+        const [startDate, endDate] = timePeriod
+          .split(" - ")
+          .map((m, i) =>
+            new Date(
+              2025,
+              [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+              ].indexOf(m) + i,
+              i ? 0 : 1,
+            )
+              .toISOString()
+              .slice(0, 10),
+          );
+
+        const response = await performanceReportService.getPerformanceReports({
+          start_date: startDate,
+          end_date: endDate,
+        });
         setReports(response);
+        feedbackService
+          .getMyFeedback({
+            limit: 1,
+            start_date: `${startDate}T00:00:00`,
+            end_date: `${endDate}T23:59:59`,
+          })
+          .then((res) => setFeedback(res));
         setError(null);
       } catch (err) {
         setError("Failed to fetch performance reports.");
@@ -41,7 +78,9 @@ export default function PerformanceReport() {
     };
 
     fetchReports();
-  }, [user]);
+  }, [user, timePeriod]);
+
+  useEffect(() => {}, []);
 
   if (loading) {
     return (
@@ -98,7 +137,14 @@ export default function PerformanceReport() {
           <CardHeader className="text-xl font-bold">Learner Rank</CardHeader>
           <CardContent className="text-lg font-semibold">3</CardContent>
         </Card>
-        <ChartAreaDefault chartData={reports?.monthly_modules} />
+        <ChartAreaDefault
+          chartData={reports?.monthly_modules.map((m) => ({
+            modules_completed: m.modules_completed,
+            month: new Date(m.month).toLocaleString("en-US", {
+              month: "long",
+            }),
+          }))}
+        />
         {/* TODO: Fetch Value */}
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">
@@ -108,13 +154,25 @@ export default function PerformanceReport() {
         </Card>
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">Latest Feedback</CardHeader>
-          <CardContent className="text-md">
-            <span>Good Work completing the milestone</span>
-            <a href="/employee/performance-report/feedbacks" className="mt-1">
-              <Button variant="link" className="cursor-pointer">
-                View Previous feedbacks <ArrowRight />
-              </Button>
-            </a>
+          <CardContent className="text-md h-full">
+            {feedback && feedback.feedback[0] ? (
+              <>
+                {" "}
+                <p>{feedback?.feedback[0].subject}</p>
+                <p className="text-sm text-black/40 truncate">
+                  {feedback?.feedback[0].description}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-black/70">No feedback found!</p>
+            )}
+            {feedback && feedback.feedback[0] && (
+              <a href="/employee/performance-report/feedbacks" className="mt-1">
+                <Button variant="link" className="cursor-pointer">
+                  View Previous feedbacks <ArrowRight />
+                </Button>
+              </a>
+            )}
           </CardContent>
         </Card>
       </div>
