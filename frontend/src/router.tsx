@@ -49,6 +49,7 @@ const SkillDevelopment = lazy(
 );
 const ManagerDashboard = lazy(() => import("@/pages/Manager/ManagerDashboard"));
 const TeamMembers = lazy(() => import("@/pages/Manager/TeamMembers"));
+const ViewEmployee = lazy(() => import("@/pages/Manager/ViewEmployee"));
 const EmployeeProfile = lazy(() => import("@/pages/Employee/Profile"));
 const SkillVisit = lazy(
   () => import("@/pages/Employee/SkillDevelopmentDetail"),
@@ -233,6 +234,10 @@ const router = createBrowserRouter([
             element: <TeamMembers />,
           },
           {
+            path: "team-members/view/:employeeId",
+            element: <ViewEmployee />,
+          },
+          {
             path: "team-requests",
             element: <TeamRequests />,
           },
@@ -248,6 +253,11 @@ const router = createBrowserRouter([
             path: "announcements",
             element: <AnnouncementsEmployee />,
           },
+          {
+            path: "announcements/:id",
+            element: <AnnouncementsDetailsEmployee />,
+          },
+
           {
             path: "job-listings",
             element: <JobListingsEmployee />,
