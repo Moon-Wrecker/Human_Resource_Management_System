@@ -29,6 +29,7 @@ import requestService, {
   type TeamRequest,
   type RequestStatus,
 } from "@/services/requestService";
+import leaveService, { type LeaveRequest } from "@/services/leaveService";
 
 const statusDot = (status: RequestStatus | string) => {
   if (status === "pending") return <Badge variant="warning">Pending</Badge>;
@@ -42,7 +43,6 @@ const statusDot = (status: RequestStatus | string) => {
   return null;
 };
 
-// Dialog for viewing/acting on a request
 const ViewRequestDialog = ({
   open,
   onClose,
@@ -70,6 +70,23 @@ const ViewRequestDialog = ({
             {requestService.getRequestTypeLabel(request.request_type)}
           </p>
         </div>
+        {request.request_type === 'leave' && (request as any).leave_type && (
+          <p className="text-sm font-semibold mb-1">
+            Leave Type: <span className="font-normal capitalize">{(request as any).leave_type}</span>
+          </p>
+        )}
+        {request.request_type === 'leave' && (request as any).start_date && (request as any).end_date && (
+          <>
+            <p className="text-sm font-semibold mb-1">
+              Duration: <span className="font-normal">
+                {requestService.formatDate((request as any).start_date)} - {requestService.formatDate((request as any).end_date)}
+              </span>
+            </p>
+            <p className="text-sm font-semibold mb-1">
+              Days: <span className="font-normal">{(request as any).days_requested || 0} day(s)</span>
+            </p>
+          </>
+        )}
         <p className="text-sm font-semibold mb-1">
           Subject: <span className="font-normal">{request.subject}</span>
         </p>
@@ -117,17 +134,50 @@ const TeamRequests = () => {
 
   const fetchRequests = () => {
     setLoading(true);
-    requestService
-      .getTeamRequests({
+    
+    // Fetch both team requests and leave requests concurrently
+    Promise.all([
+      requestService.getTeamRequests({
         request_type: type === "all" ? undefined : type,
         status: status === "all" ? undefined : status,
+      }),
+      leaveService.getTeamLeaveRequests({
+        status: status === "all" ? undefined : status,
       })
-      .then((response) => {
-        const sortedRequests = response.requests.sort((a, b) => {
+    ])
+      .then(([requestsResponse, leavesResponse]) => {
+        // Transform leave requests to match TeamRequest interface
+        const transformedLeaves: TeamRequest[] = leavesResponse.leaves.map((leave: LeaveRequest) => ({
+          id: leave.id,
+          employee_id: leave.employee_id,
+          employee_name: leave.employee_name || null,
+          request_type: 'leave',
+          subject: leave.subject || `${leave.leave_type} leave`,
+          description: leave.description || leave.reason || '',
+          request_date: leave.start_date,
+          status: leave.status,
+          approved_by: leave.approved_by || null,
+          approved_by_name: leave.approved_by_name || null,
+          approved_date: leave.approved_date || null,
+          rejection_reason: leave.rejection_reason || null,
+          submitted_date: leave.requested_date,
+          // Store additional leave-specific data for display
+          start_date: leave.start_date,
+          end_date: leave.end_date,
+          days_requested: leave.days_requested,
+          leave_type: leave.leave_type,
+        })) as TeamRequest[];
+
+        // Merge requests and leaves
+        const allRequests = [...requestsResponse.requests, ...transformedLeaves];
+
+        // Sort: pending requests first
+        const sortedRequests = allRequests.sort((a, b) => {
           if (a.status === "pending" && b.status !== "pending") return -1;
           if (a.status !== "pending" && b.status === "pending") return 1;
           return 0;
         });
+
         setRequests(sortedRequests);
       })
       .catch((err) => {
@@ -145,19 +195,37 @@ const TeamRequests = () => {
 
   const handleApprove = () => {
     if (!selectedReq) return;
-    requestService.approveRequest(selectedReq.id).then(() => {
-      fetchRequests();
-    });
+    
+    // Use appropriate service based on request type
+    if (selectedReq.request_type === 'leave') {
+      leaveService.updateLeaveStatus(selectedReq.id, { status: 'approved' }).then(() => {
+        fetchRequests();
+      });
+    } else {
+      requestService.approveRequest(selectedReq.id).then(() => {
+        fetchRequests();
+      });
+    }
   };
 
   const handleReject = () => {
     if (!selectedReq) return;
-    requestService
-      .rejectRequest(selectedReq.id, "Rejected by manager")
-      .then(() => {
-        // Rejection reason is hardcoded
+    
+    // Use appropriate service based on request type
+    if (selectedReq.request_type === 'leave') {
+      leaveService.updateLeaveStatus(selectedReq.id, {
+        status: 'rejected',
+        rejection_reason: 'Rejected by manager'
+      }).then(() => {
         fetchRequests();
       });
+    } else {
+      requestService
+        .rejectRequest(selectedReq.id, "Rejected by manager")
+        .then(() => {
+          fetchRequests();
+        });
+    }
   };
 
   return (
@@ -222,7 +290,9 @@ const TeamRequests = () => {
                   </TableCell>
                   <TableCell>{statusDot(req.status)}</TableCell>
                   <TableCell>
-                    {requestService.formatDate(req.submitted_date)}
+                    {req.request_type === 'leave' && (req as any).start_date && (req as any).end_date
+                      ? `${requestService.formatDate((req as any).start_date)} - ${requestService.formatDate((req as any).end_date)}`
+                      : requestService.formatDate(req.submitted_date)}
                   </TableCell>
                   <TableCell>
                     <Button

@@ -62,8 +62,11 @@ const Profile = () => {
 
       // Fetch manager info
       try {
-        const manager = await profileService.getMyManager();
-        setManagerInfo(manager);
+        setManagerInfo({
+          email: profile.manager_email || "",
+          id: profile.manager_id || 0,
+          name: profile.manager_name || "",
+        });
       } catch (err) {
         console.log("No manager assigned");
       }
