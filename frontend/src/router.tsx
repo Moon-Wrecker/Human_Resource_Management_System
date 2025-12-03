@@ -125,7 +125,7 @@ const router = createBrowserRouter([
             element: <GoalTrackerEmployee />,
           },
           {
-            path: "goal-tracker/:id",
+            path: "goal-tracker/:goal/:id",
             element: <VisitPage />,
           },
           {

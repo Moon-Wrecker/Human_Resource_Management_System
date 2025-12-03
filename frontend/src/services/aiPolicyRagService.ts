@@ -7,12 +7,14 @@ import api from "./api";
 
 // ==================== Types ====================
 
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export interface PolicyQuestion {
   question: string;
-  chat_history?: Array<{
-    role: "user" | "assistant";
-    content: string;
-  }>;
+  chat_history?: ChatMessage[];
 }
 
 export interface PolicyAnswer {
