@@ -4,7 +4,8 @@ Endpoints for HR, Manager, and Employee dashboards
 """
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from typing import Annotated
+from typing import Annotated, Optional
+from datetime import date
 
 from database import get_db
 from models import User, UserRole
@@ -323,6 +324,49 @@ async def get_my_dashboard(
 # ==================== Performance/Analytics Endpoints ====================
 
 @router.get(
+    "/performance/me",
+    response_model=PerformanceMetrics,
+    status_code=status.HTTP_200_OK,
+    summary="Get My Performance Metrics",
+    description="Get performance metrics for the current user with optional date filtering",
+)
+async def get_my_performance(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+    start_date: Optional[date] = Query(default=None, description="Start date for performance data (optional)"),
+    end_date: Optional[date] = Query(default=None, description="End date for performance data (optional, default: today)"),
+    months: int = Query(default=12, ge=1, le=24, description="Number of months of data to retrieve (used if start_date not provided)")
+):
+    """
+    ## My Performance Metrics
+    
+    Get detailed performance metrics for the currently authenticated user.
+    
+    **Query Parameters:**
+    - `start_date`: Start date for data range (optional, overrides months parameter)
+    - `end_date`: End date for data range (optional, defaults to today)
+    - `months`: Number of months back from today (used if start_date not provided)
+    
+    **Access:** All authenticated users
+    """
+    try:
+        performance_data = DashboardService.get_employee_performance_metrics(
+            db, current_user.id, start_date, end_date, months
+        )
+        return performance_data
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch performance metrics: {str(e)}"
+        )
+
+
+@router.get(
     "/performance/{employee_id}",
     response_model=PerformanceMetrics,
     status_code=status.HTTP_200_OK,
@@ -392,42 +436,6 @@ async def get_employee_performance(
         
     except HTTPException:
         raise
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(e)
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to fetch performance metrics: {str(e)}"
-        )
-
-
-@router.get(
-    "/performance/me",
-    response_model=PerformanceMetrics,
-    status_code=status.HTTP_200_OK,
-    summary="Get My Performance Metrics",
-    description="Get performance metrics for the current user",
-)
-async def get_my_performance(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
-    months: int = Query(default=12, ge=1, le=24, description="Number of months of data to retrieve")
-):
-    """
-    ## My Performance Metrics
-    
-    Get detailed performance metrics for the currently authenticated user.
-    
-    **Access:** All authenticated users
-    """
-    try:
-        performance_data = DashboardService.get_employee_performance_metrics(
-            db, current_user.id, months
-        )
-        return performance_data
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
