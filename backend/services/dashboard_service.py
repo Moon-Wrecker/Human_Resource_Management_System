@@ -507,6 +507,8 @@ class DashboardService:
     def get_employee_performance_metrics(
         db: Session, 
         employee_id: int, 
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
         months: int = 12
     ) -> PerformanceMetrics:
         """Get employee performance metrics including monthly module completion"""
@@ -515,8 +517,12 @@ class DashboardService:
         if not employee:
             raise ValueError("Employee not found")
         
-        # Get monthly module completion
-        start_date = date.today() - timedelta(days=months * 30)
+        # Determine date range
+        if start_date is None:
+            start_date = date.today() - timedelta(days=months * 30)
+        
+        if end_date is None:
+            end_date = date.today()
         
         monthly_data = db.query(
             func.strftime('%Y-%m', SkillModuleEnrollment.completed_date).label('month'),
@@ -524,7 +530,8 @@ class DashboardService:
         ).filter(
             SkillModuleEnrollment.employee_id == employee_id,
             SkillModuleEnrollment.status == ModuleStatus.COMPLETED,
-            SkillModuleEnrollment.completed_date >= start_date
+            SkillModuleEnrollment.completed_date >= start_date,
+            SkillModuleEnrollment.completed_date <= end_date
         ).group_by('month').order_by('month').all()
         
         monthly_modules = [
@@ -535,14 +542,16 @@ class DashboardService:
             for month_str, count in monthly_data
         ]
         
-        # Total modules completed
+        # Total modules completed in date range
         total_modules = db.query(func.count(SkillModuleEnrollment.id)).filter(
             SkillModuleEnrollment.employee_id == employee_id,
-            SkillModuleEnrollment.status == ModuleStatus.COMPLETED
+            SkillModuleEnrollment.status == ModuleStatus.COMPLETED,
+            SkillModuleEnrollment.completed_date >= start_date,
+            SkillModuleEnrollment.completed_date <= end_date
         ).scalar() or 0
         
-        # Attendance rate (last 90 days)
-        attendance_start = date.today() - timedelta(days=90)
+        # Attendance rate for the specified date range
+        attendance_start = start_date
         attendance_results = db.query(
             func.count(Attendance.id).label('total'),
             func.sum(
@@ -553,7 +562,8 @@ class DashboardService:
             ).label('present')
         ).filter(
             Attendance.employee_id == employee_id,
-            Attendance.date >= attendance_start
+            Attendance.date >= attendance_start,
+            Attendance.date <= end_date
         ).first()
         
         total_att = attendance_results.total or 0
