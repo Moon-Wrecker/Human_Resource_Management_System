@@ -157,22 +157,18 @@ const router = createBrowserRouter([
           {
             path: "joblistings",
             element: <HRJobListings />,
-            children: [
-              {
-                path: "add-new-job",
-                element: <AddJobForm />,
-              },
-            ],
+          },
+          {
+            path: "add-new-job",
+            element: <AddJobForm />,
           },
           {
             path: "employees-list",
             element: <EmployeesList />,
-            children: [
-              {
-                path: "add-new-employee",
-                element: <AddEmployeeForm />,
-              },
-            ],
+          },
+          {
+            path: "add-new-employee",
+            element: <AddEmployeeForm />,
           },
           {
             path: "policies",

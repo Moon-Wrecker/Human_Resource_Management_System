@@ -1,6 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState , useEffect} from "react";
+import { Link} from "react-router-dom"
+import jobService from "@/services/jobService"; 
+
+import type {
+  JobListing,
+  JobListingsResponse,
+  JobFilters,
+  UpdateJobRequest,
+} from "@/services/jobService";
+
 import {
   Dialog,
   DialogContent,
@@ -19,6 +29,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import { set } from "date-fns";
 
 type Job = {
   position: string;
@@ -29,118 +40,108 @@ type Job = {
   description?: string;
 };
 
-const jobs: Job[] = [
-  {
-    position: "Project Manager",
-    location: "Remote/London, UK",
-    department: "Operations",
-    experience: "5 years",
-    skills: "Leadership, Agile, Communication",
-    description: "Manage multiple projects across global teams with high impact.",
-  },
-  {
-    position: "Project Manager",
-    location: "Gurugram",
-    department: "Operations",
-    experience: "4 years",
-    skills: "PMP, Operations, Team Building",
-    description: "Lead operations and strategic planning in Gurgaon HQ.",
-  },
-  {
-    position: "SDE-I",
-    location: "Remote/ Gurugram",
-    department: "Engineering",
-    experience: "2 years",
-    skills: "HTML, CSS, JS and React JS",
-    description: "Frontend engineering for scalable HR systems.",
-  },
-  {
-    position: "Position 1",
-    location: "Remote/London, UK",
-    department: "HR",
-    experience: "2 years",
-    skills: "HR Systems, Payroll",
-    description: "Supports team with recruitment and HR operations.",
-  },
-  {
-    position: "Position 2",
-    location: "Remote/Delhi",
-    department: "Sales",
-    experience: "1 year",
-    skills: "Salesforce, Client Relations",
-    description: "Drives sales for our digital HR products.",
-  },
-  {
-    position: "Position 3",
-    location: "Ghaziabad, UP",
-    department: "Finance",
-    experience: "3 years",
-    skills: "Accounting, Excel, Financial Reporting",
-    description: "Finances and vendor management for HR division.",
-  },
-];
 
-const departments = ["Operations", "Engineering", "HR", "Sales", "Finance"];
+
+const departments = ["Engineering", "HR", "Finance", "Sales", "Marketing", "Opertions", "Product Management","Quality Assurance", "Customer Success", "Data Science", "Devops", "Legal", "Research and Development", "IT Support", "Business Intelligence"];
 const locations = [
-  "Remote/London, UK",
-  "Gurugram",
-  "Remote/ Gurugram",
-  "Remote/Delhi",
-  "Ghaziabad, UP",
+  "Remote",
+  "Mumbai",
+  "Chennai",
+  "Bangalore",
+  "Pune",
 ];
 
 const JobListings = () => {
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState("");
   const [filterDept, setFilterDept] = useState<string>("");
   const [filterLoc, setFilterLoc] = useState<string>("");
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [showEdit, setShowEdit] = useState<boolean>(false);
-  const [showView, setShowView] = useState<boolean>(false);
+  const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showView, setShowView] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  // Editable state for the Edit modal
-  const [editedJob, setEditedJob] = useState<Job>({
-    position: "",
-    location: "",
-    department: "",
-    experience: "",
-    skills: "",
-    description: "",
-  });
+  const [jobsResponse, setJobsResponse] = useState<JobListingsResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Prepare filtered jobs
-  const filteredJobs: Job[] = jobs.filter(
-    (job) =>
-      (search === "" ||
-        job.position.toLowerCase().includes(search.toLowerCase())) &&
-      (filterDept === "" || job.department === filterDept) &&
-      (filterLoc === "" || job.location === filterLoc)
-  );
+  const [editedJob, setEditedJob] = useState<UpdateJobRequest>({});
 
-  // Handle opening Edit modal with pre-filled job data
-  const handleEditClick = (job: Job) => {
-    setSelectedJob(job);
-    setEditedJob({
-      position: job.position,
-      location: job.location,
-      department: job.department,
-      experience: job.experience ?? "",
-      skills: job.skills ?? "",
-      description: job.description ?? "",
-    });
-    setShowEdit(true);
+  const fetchJobs = async (page = currentPage, size = pageSize) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const filters: JobFilters = {
+        search: search || undefined,
+        location: filterLoc || undefined,
+        department_id: filterDept ? departments.indexOf(filterDept)+1: undefined,
+        is_active: true,
+        page,
+        page_size: size>0? size : undefined,
+      };
+
+      const data = await jobService.getAllJobs(filters);
+      setJobsResponse(data);
+    } catch (e: any) {
+      setError(e?.message || "Failed to load jobs");
+    } finally {
+      setLoading(false);
+    }
   };
+  
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchJobs();
+  }, [search, filterLoc, filterDept]);
+
+  useEffect(() => {
+    fetchJobs(currentPage, pageSize);}, [currentPage, pageSize, search, filterLoc /*, filterDeptId */]);
+  const jobs = jobsResponse?.jobs ?? [];
+  const totalJobs = jobsResponse?.total ?? 0;
+  const totalPages = pageSize > 0 ? Math.ceil(totalJobs / pageSize) : 1;
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 || page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+const handleEditClick = (job: JobListing) => {
+  setSelectedJob(job);
+  setEditedJob({
+    position: job.position,
+    experience_required: job.experience_required,
+    skills_required: job.skills_required,
+    description: job.description,
+    location: job.location,
+    department_id: job.department_id,
+    employment_type: job.employment_type as any,
+    salary_range: job.salary_range,
+    application_deadline: job.application_deadline,
+    is_active: job.is_active,
+  });
+  setShowEdit(true);
+};
+
+const handleSave = async () => {
+  if (!selectedJob) return;
+  await jobService.updateJob(selectedJob.id, editedJob);
+  setShowEdit(false);
+  await fetchJobs();
+};
+
+const handleDelete = async (jobId: number) => {
+  await jobService.deleteJob(jobId);
+  await fetchJobs();
+};
 
   return (
     <div className="min-h-screen bg-white">
       <div className="px-12 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-center mb-6">Job Listings</h1>
-          <a
-            href="/joblistings/add-new-job"
-            className="text-black underline font-medium text-lg"
-          >
-            Add New &rarr;
-          </a>
+          <Link to={"/hr/add-new-job"} className="text-black underline font-medium text-lg"> Add New &rarr;</Link>
         </div>
         {/* Filter Row */}
         <div className="flex gap-4 mb-8">
@@ -175,7 +176,7 @@ const JobListings = () => {
             ))}
           </select>
         </div>
-        {/* Jobs Table (Shadcn table) */}
+        {/* Jobs Table */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -186,28 +187,91 @@ const JobListings = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredJobs.map((job, idx) => (
-              <TableRow key={idx}>
+            {jobs.map(job => (
+              <TableRow key={job.id}>
                 <TableCell>{job.position}</TableCell>
                 <TableCell>{job.location}</TableCell>
-                <TableCell>{job.department}</TableCell>
+                <TableCell>{job.department_name}</TableCell>
                 <TableCell>
                   <button
                     className="underline mr-2"
                     onClick={() => { setSelectedJob(job); setShowView(true); }}
-                  >View</button>
+                  >
+                    View
+                  </button>
                   |
                   <button
                     className="underline mx-2"
                     onClick={() => handleEditClick(job)}
-                  >Edit</button>
+                  >
+                    Edit
+                  </button>
                   |
-                  <button className="underline ml-2 text-red-500">Delete</button>
+                  <button
+                    className="underline ml-2 text-red-500"
+                    onClick={() => handleDelete(job.id)}
+                  >
+                    Delete
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        {/* Pagination Controls */}
+        <div className="flex justify-between items-center mt-8">
+          <div className="text-sm text-gray-600">
+            Showing {jobs.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to {Math.min(currentPage * pageSize, totalJobs)} of {totalJobs} jobs
+          </div>
+          
+          <div className="flex gap-2 items-center">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+            >
+              Previous
+            </button>
+
+            <div className="flex gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-3 py-1 border rounded ${
+                    currentPage === page
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+            >
+              Next
+            </button>
+
+            <select
+              value={pageSize}
+              onChange={e => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="border rounded px-2 py-1 ml-4"
+            >
+              <option value={5}>5 per page</option>
+              <option value={10}>10 per page</option>
+              <option value={25}>25 per page</option>
+              <option value={50}>50 per page</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* View Dialog */}
@@ -218,35 +282,32 @@ const JobListings = () => {
           </DialogHeader>
           <DialogDescription>
             <div>
-              <div className="mb-2">
-                <span className="font-semibold underline mr-1">Title:</span>
-                {selectedJob?.position}
+              <span className="font-semibold underline mr-1">Title:</span>
+              {selectedJob?.position}
+              <br />
+              <span className="font-semibold underline mr-1">Experience Required:</span>
+              {selectedJob?.experience_required}
+              <br />
+              <span className="font-semibold underline mr-1">Skills Required:</span>
+              {selectedJob?.skills_required}
+              <br />
+              <div className="bg-gray-100 rounded p-2 mt-1">
+                {selectedJob?.description}
               </div>
-              <div className="mb-2">
-                <span className="font-semibold underline mr-1">Experience Required:</span>
-                {selectedJob?.experience}
-              </div>
-              <div className="mb-2">
-                <span className="font-semibold underline mr-1">Skills Required:</span>
-                {selectedJob?.skills}
-              </div>
-              <div className="mb-2">
-                <span className="font-semibold underline mr-1">Job Description:</span>
-                <div className="bg-gray-100 rounded p-2 mt-1">{selectedJob?.description}</div>
-              </div>
+              <br />
             </div>
           </DialogDescription>
           <DialogFooter className="flex justify-end gap-3">
             <button
               className="px-4 py-2 bg-red-200 hover:bg-red-400 rounded font-medium"
-              onClick={() => setShowView(false)}
+              onClick={() => {handleDelete(selectedJob!.id) ; setShowView(false); }}
             >
               Delete
             </button>
             <DialogClose asChild>
               <button
                 className="px-4 py-2 bg-gray-200 hover:bg-gray-400 rounded font-medium"
-                onClick={() => { setShowEdit(true); setShowView(false); }}
+                onClick={() => { handleEditClick(selectedJob!); setShowView(false); }}
               >
                 Edit
               </button>
@@ -264,39 +325,39 @@ const JobListings = () => {
           <DialogDescription>
             <div className="mb-2 flex items-center">
               <span className="font-semibold min-w-[130px]">Title:</span>
-              <input 
-                className="flex-1 ml-2 border rounded px-2 py-1" 
-                value={editedJob.position} onChange={e=>setEditedJob({ ...editedJob, position: e.target.value })} 
+              {/* Edit Dialog inputs */}
+              <input
+                className="flex-1 ml-2 border rounded px-2 py-1"
+                value={editedJob.position ?? ""}
+                onChange={e => setEditedJob({ ...editedJob, position: e.target.value })}
               />
-            </div>
-            <div className="mb-2 flex items-center">
-              <span className="font-semibold min-w-[130px]">Experience Required:</span>
-              <input 
-                className="flex-1 ml-2 border rounded px-2 py-1" 
-                value={editedJob.experience} onChange={e=>setEditedJob({ ...editedJob, experience: e.target.value })} 
+
+              <input
+                className="flex-1 ml-2 border rounded px-2 py-1"
+                value={editedJob.experience_required ?? ""}
+                onChange={e => setEditedJob({ ...editedJob, experience_required: e.target.value })}
               />
-            </div>
-            <div className="mb-2 flex items-center">
-              <span className="font-semibold min-w-[130px]">Skills Required:</span>
-              <input 
-                className="flex-1 ml-2 border rounded px-2 py-1" 
-                value={editedJob.skills} onChange={e=>setEditedJob({ ...editedJob, skills: e.target.value })} 
+
+              <input
+                className="flex-1 ml-2 border rounded px-2 py-1"
+                value={editedJob.skills_required ?? ""}
+                onChange={e => setEditedJob({ ...editedJob, skills_required: e.target.value })}
               />
-            </div>
-            <div className="mb-3">
-              <span className="font-semibold min-w-[130px] block">Job Description:</span>
-              <textarea 
-                className="w-full mt-1 border rounded px-2 py-1 bg-gray-100" 
+
+              <textarea
+                className="w-full mt-1 border rounded px-2 py-1 bg-gray-100"
                 rows={3}
-                value={editedJob.description} onChange={e=>setEditedJob({ ...editedJob, description: e.target.value })}
+                value={editedJob.description ?? ""}
+                onChange={e => setEditedJob({ ...editedJob, description: e.target.value })}
               />
+
             </div>
           </DialogDescription>
           <DialogFooter>
             <DialogClose asChild>
               <button
                 className="ml-auto flex items-center justify-end px-4 py-2 bg-black text-white rounded font-medium"
-                onClick={() => setShowEdit(false)}
+                onClick={handleSave}
               >
                 Save &rarr;
               </button>

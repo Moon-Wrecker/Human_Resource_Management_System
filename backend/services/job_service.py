@@ -85,7 +85,7 @@ class JobService:
             is_active=True,
             posted_by=posted_by_id,
             posted_date=datetime.utcnow()
-        )
+        ) 
         
         db.add(new_job)
         db.commit()
