@@ -3,7 +3,6 @@ import { ManagerSidebar } from "@/components/Manager-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 
-
 const Manager = () => {
   return (
     <SidebarProvider>
@@ -14,10 +13,10 @@ const Manager = () => {
         </header>
         <hr />
         <Outlet />
-        Footer
       </SidebarInset>
     </SidebarProvider>
   );
 };
 
 export default Manager;
+

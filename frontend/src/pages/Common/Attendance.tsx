@@ -37,6 +37,7 @@ import type {
 } from "@/services/attendanceService";
 import skillService from "@/services/skillService";
 import leaveService from "@/services/leaveService";
+import requestService from "@/services/requestService";
 
 const monthNames = [
   "January",
@@ -533,7 +534,12 @@ const Attendance = () => {
                   variant="default"
                   onClick={() => {
                     leaveService.applyForLeave({
-                      leave_type: reqType,
+                      leave_type: reqType as
+                        | "leave"
+                        | "casual"
+                        | "annual"
+                        | "maternity"
+                        | "paternity",
                       start_date: reqDate, // Format: YYYY-MM-DD
                       end_date: reqDate, // Format: YYYY-MM-DD
                       subject: reqSubject,
