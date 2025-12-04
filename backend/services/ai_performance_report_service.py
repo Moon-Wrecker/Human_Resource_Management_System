@@ -142,9 +142,9 @@ class AIPerformanceReportService:
             "id": employee.id,
             "name": employee.name,
             "email": employee.email,
-            "position": employee.position,
-            "department": employee.department.name if employee.department else "Not assigned",
-            "team": employee.team.name if employee.team else "Not assigned",
+            "position": employee.job_role,
+            "department": employee.department_obj.name if employee.department_obj else "Not assigned",
+            "team": employee.team_obj.name if employee.team_obj else "Not assigned",
             "manager_name": employee.manager.name if employee.manager else "Not assigned"
         }
         
@@ -1153,7 +1153,7 @@ class AIPerformanceReportService:
         return {
             "id": member.id,
             "name": member.name,
-            "position": member.position or "Employee",
+            "position": member.job_role or "Employee",
             "total_goals": total_goals,
             "completed_goals": completed,
             "overdue_goals": overdue,
