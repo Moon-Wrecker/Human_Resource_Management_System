@@ -39,7 +39,7 @@ const Policies = () => {
   const [currentPolicy, setCurrentPolicy] = useState<Policy | null>(null); // State for fetched policy
   const [isLoadingPolicy, setIsLoadingPolicy] = useState(true); // State for policy loading
   const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([]); // State for dynamic suggestions
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true); // State for suggestion loading
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
 
   // States for controlled suggestions animation
   const [showSuggestionsBlock, setShowSuggestionsBlock] = useState(true);
@@ -50,7 +50,7 @@ const Policies = () => {
     const fetchActivePolicy = async () => {
       try {
         setIsLoadingPolicy(true);
-        const response = await policyService.getActivePolicies(1); // Fetch the latest active policy
+        const response = await policyService.getActivePolicies(1);
         if (response && response.length > 0) {
           setCurrentPolicy(response[0]);
         }
@@ -290,7 +290,7 @@ const Policies = () => {
                 <div
                   className={`p-2 rounded-lg ${
                     message.role === "user"
-                      ? "bg-secondary text-secondary-foreground"
+                      ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground"
                   }`}
                 >
@@ -380,3 +380,4 @@ const Policies = () => {
 };
 
 export default Policies;
+
