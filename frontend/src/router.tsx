@@ -236,6 +236,10 @@ const router = createBrowserRouter([
             element: <TeamMembers />,
           },
           {
+            path: "team-requests",
+            element: <TeamRequests />,
+          },
+          {
             path: "team-members/view/:employeeId",
             element: <ViewEmployee />,
           },

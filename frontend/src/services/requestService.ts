@@ -187,7 +187,9 @@ class RequestService {
    * Format date for display
    */
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
+    if (!dateString) return '';
+    const [year, month, day] = dateString.split('T')[0].split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('en-IN', {
       year: 'numeric',
       month: 'short',

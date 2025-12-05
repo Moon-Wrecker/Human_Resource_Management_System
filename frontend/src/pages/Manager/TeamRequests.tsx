@@ -134,51 +134,72 @@ const TeamRequests = () => {
 
   const fetchRequests = () => {
     setLoading(true);
-    
-    // Fetch both team requests and leave requests concurrently
-    Promise.all([
-      requestService.getTeamRequests({
-        request_type: type === "all" ? undefined : type,
-        status: status === "all" ? undefined : status,
-      }),
+
+    const handleResponse = (requests: TeamRequest[]) => {
+      const sortedRequests = requests.sort((a, b) => {
+        if (a.status === "pending" && b.status !== "pending") return -1;
+        if (a.status !== "pending" && b.status === "pending") return 1;
+        return 0;
+      });
+      setRequests(sortedRequests);
+    };
+
+    const transformLeaves = (leaves: LeaveRequest[]): TeamRequest[] => {
+      return leaves.map((leave: LeaveRequest) => ({
+        id: leave.id,
+        employee_id: leave.employee_id,
+        employee_name: leave.employee_name || null,
+        request_type: 'leave',
+        subject: leave.subject || `${leave.leave_type} leave`,
+        description: leave.description || leave.reason || '',
+        request_date: leave.start_date,
+        status: leave.status,
+        approved_by: leave.approved_by || null,
+        approved_by_name: leave.approved_by_name || null,
+        approved_date: leave.approved_date || null,
+        rejection_reason: leave.rejection_reason || null,
+        submitted_date: leave.requested_date,
+        start_date: leave.start_date,
+        end_date: leave.end_date,
+        days_requested: leave.days_requested,
+        leave_type: leave.leave_type,
+      })) as TeamRequest[];
+    };
+
+    if (type === 'leave') {
       leaveService.getTeamLeaveRequests({
         status: status === "all" ? undefined : status,
       })
-    ])
+      .then(leavesResponse => handleResponse(transformLeaves(leavesResponse.leaves)))
+      .catch(err => {
+        console.error(err);
+        setError("Failed to fetch leave requests.");
+      })
+      .finally(() => setLoading(false));
+    } else if (type !== 'all') {
+      requestService.getTeamRequests({
+        request_type: type,
+        status: status === "all" ? undefined : status,
+      })
+      .then(requestsResponse => handleResponse(requestsResponse.requests))
+      .catch(err => {
+        console.error(err);
+        setError("Failed to fetch team requests.");
+      })
+      .finally(() => setLoading(false));
+    } else {
+      Promise.all([
+        requestService.getTeamRequests({
+          status: status === "all" ? undefined : status,
+        }),
+        leaveService.getTeamLeaveRequests({
+          status: status === "all" ? undefined : status,
+        })
+      ])
       .then(([requestsResponse, leavesResponse]) => {
-        // Transform leave requests to match TeamRequest interface
-        const transformedLeaves: TeamRequest[] = leavesResponse.leaves.map((leave: LeaveRequest) => ({
-          id: leave.id,
-          employee_id: leave.employee_id,
-          employee_name: leave.employee_name || null,
-          request_type: 'leave',
-          subject: leave.subject || `${leave.leave_type} leave`,
-          description: leave.description || leave.reason || '',
-          request_date: leave.start_date,
-          status: leave.status,
-          approved_by: leave.approved_by || null,
-          approved_by_name: leave.approved_by_name || null,
-          approved_date: leave.approved_date || null,
-          rejection_reason: leave.rejection_reason || null,
-          submitted_date: leave.requested_date,
-          // Store additional leave-specific data for display
-          start_date: leave.start_date,
-          end_date: leave.end_date,
-          days_requested: leave.days_requested,
-          leave_type: leave.leave_type,
-        })) as TeamRequest[];
-
-        // Merge requests and leaves
+        const transformedLeaves = transformLeaves(leavesResponse.leaves);
         const allRequests = [...requestsResponse.requests, ...transformedLeaves];
-
-        // Sort: pending requests first
-        const sortedRequests = allRequests.sort((a, b) => {
-          if (a.status === "pending" && b.status !== "pending") return -1;
-          if (a.status !== "pending" && b.status === "pending") return 1;
-          return 0;
-        });
-
-        setRequests(sortedRequests);
+        handleResponse(allRequests);
       })
       .catch((err) => {
         console.error(err);
@@ -187,6 +208,7 @@ const TeamRequests = () => {
       .finally(() => {
         setLoading(false);
       });
+    }
   };
 
   useEffect(() => {
