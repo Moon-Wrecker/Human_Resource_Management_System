@@ -14,6 +14,7 @@ const EmployeeDashboard = lazy(
 );
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
 const JobListingsEmployee = lazy(() => import("@/pages/Employee/JobListings"));
+const JobListingsManager = lazy(() => import("@/pages/Manager/JobListings"));
 const AddJobForm = lazy(() => import("@/pages/HR/AddJobForm"));
 const EmployeesList = lazy(() => import("@/pages/HR/EmployeesList"));
 const AddEmployeeForm = lazy(() => import("@/pages/HR/AddEmployeeForm"));
@@ -234,29 +235,8 @@ const router = createBrowserRouter([
             element: <ViewEmployee />,
           },
           {
-            path: "team-requests",
-            element: <TeamRequests />,
-          },
-          {
-            path: "payslips",
-            element: <Payslips />,
-          },
-          {
-            path: "attendance",
-            element: <Attendance />,
-          },
-          {
-            path: "announcements",
-            element: <AnnouncementsEmployee />,
-          },
-          {
-            path: "announcements/:id",
-            element: <AnnouncementsDetailsEmployee />,
-          },
-
-          {
             path: "job-listings",
-            element: <JobListingsEmployee />,
+            element: <JobListingsManager />,
           },
           {
             path: "policies",
