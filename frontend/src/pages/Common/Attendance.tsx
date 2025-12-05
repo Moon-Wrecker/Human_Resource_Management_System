@@ -37,6 +37,7 @@ import type {
 } from "@/services/attendanceService";
 import skillService from "@/services/skillService";
 import leaveService from "@/services/leaveService";
+import requestService from "@/services/requestService";
 
 const monthNames = [
   "January",
@@ -56,11 +57,16 @@ const monthNames = [
 const Attendance = () => {
   const { toast } = useToast();
   const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const tomorrowISO = tomorrow.toISOString().split("T")[0]; // YYYY-MM-DD
 
   const [selectedMonth, setSelectedMonth] = useState(
     monthNames[today.getMonth()],
   );
   const [calendarDate, setCalendarDate] = useState(today);
+
+  // State for leave request modal
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reqSubject, setReqSubject] = useState("");
   const [reqType, setReqType] = useState<
@@ -68,6 +74,15 @@ const Attendance = () => {
   >("leave");
   const [reqDate, setReqDate] = useState("");
   const [reqDesc, setReqDesc] = useState("");
+
+  // State for general request modal
+  const [requestModalOpen, setRequestModalOpen] = useState(false);
+  const [generalReqSubject, setGeneralReqSubject] = useState("");
+  const [generalReqType, setGeneralReqType] = useState<
+    "wfh" | "equipment" | "travel" | "other"
+  >("wfh");
+  const [generalReqDate, setGeneralReqDate] = useState("");
+  const [generalReqDesc, setGeneralReqDesc] = useState("");
 
   // API state
   const [todayAttendance, setTodayAttendance] =
@@ -78,9 +93,6 @@ const Attendance = () => {
   >([]);
   const [punchingIn, setPunchingIn] = useState(false);
   const [punchingOut, setPunchingOut] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<"present" | "wfh">(
-    "present",
-  );
 
   useEffect(() => {
     handleMonthChange(selectedMonth);
@@ -133,8 +145,8 @@ const Attendance = () => {
     setPunchingIn(true);
     try {
       const response: PunchInResponse = await attendanceService.punchIn({
-        status: selectedStatus,
-        location: selectedStatus === "wfh" ? "home" : "office",
+        status: "present",
+        location: "office",
       });
 
       toast({
@@ -307,34 +319,14 @@ const Attendance = () => {
           {/* Punch In/Out Buttons */}
           <div className="mt-6 flex flex-col sm:flex-row gap-4 items-center justify-center">
             {!todayAttendance?.check_in_time && (
-              <>
-                <div className="flex gap-2">
-                  <Button
-                    variant={
-                      selectedStatus === "present" ? "default" : "outline"
-                    }
-                    onClick={() => setSelectedStatus("present")}
-                    className="flex items-center gap-2"
-                  >
-                    <Briefcase className="w-4 h-4" /> Office
-                  </Button>
-                  <Button
-                    variant={selectedStatus === "wfh" ? "default" : "outline"}
-                    onClick={() => setSelectedStatus("wfh")}
-                    className="flex items-center gap-2"
-                  >
-                    <Home className="w-4 h-4" /> WFH
-                  </Button>
-                </div>
-                <Button
-                  onClick={handlePunchIn}
-                  disabled={punchingIn}
-                  className="w-full sm:w-auto"
-                  size="lg"
-                >
-                  {punchingIn ? "Punching In..." : "Punch In"}
-                </Button>
-              </>
+              <Button
+                onClick={handlePunchIn}
+                disabled={punchingIn}
+                className="w-full sm:w-auto"
+                size="lg"
+              >
+                {punchingIn ? "Punching In..." : "Punch In"}
+              </Button>
             )}
 
             {todayAttendance?.check_in_time &&
@@ -418,12 +410,19 @@ const Attendance = () => {
       <div className="flex justify-center items-center gap-4 mb-7 flex-wrap">
         <Button
           onClick={() => {
-            setReqType("leave");
             setDialogOpen(true);
           }}
           variant="outline"
         >
           Apply For Leave
+        </Button>
+        <Button
+          onClick={() => {
+            setRequestModalOpen(true);
+          }}
+          variant="outline"
+        >
+          Apply For Request
         </Button>
       </div>
 
@@ -457,11 +456,11 @@ const Attendance = () => {
         </div>
       </Calendar>
 
-      {/* Leave/WFH Request Dialog */}
+      {/* Leave Request Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md rounded-2xl shadow-lg p-6">
           <DialogHeader>
-            <DialogTitle>Send Request</DialogTitle>
+            <DialogTitle>Send Leave Request</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4 pt-3">
             <div>
@@ -471,10 +470,11 @@ const Attendance = () => {
                 value={reqDate}
                 onChange={(e) => setReqDate(e.target.value)}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                min={tomorrowISO}
               />
             </div>
             <div>
-              <label className="font-medium block mb-2">Request Mode</label>
+              <label className="font-medium block mb-2">Leave Type</label>
               <div className="flex gap-2">
                 {["casual", "sick", "annual", "maternity", "paternity"].map(
                   (i) => (
@@ -509,13 +509,110 @@ const Attendance = () => {
               />
             </div>
             <div>
-              .
+              <label className="font-medium block mb-2">Reason for Leave</label>
+              <textarea
+                value={reqDesc}
+                onChange={(e) => setReqDesc(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-3 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                placeholder="Reason for leave..."
+                rows={4}
+              />
+            </div>
+            <div className="flex justify-end mt-4 gap-2">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={() => {
+                    leaveService.applyForLeave({
+                      leave_type: reqType as
+                        | "leave"
+                        | "casual"
+                        | "annual"
+                        | "maternity"
+                        | "paternity",
+                      start_date: reqDate, // Format: YYYY-MM-DD
+                      end_date: reqDate, // Format: YYYY-MM-DD
+                      subject: reqSubject,
+                      reason: reqDesc,
+                    });
+                    toast({
+                      title: "Request Submitted",
+                      description:
+                        "Your leave request has been submitted for approval.",
+                    });
+                    setDialogOpen(false);
+                    setReqSubject("");
+                    setReqType("leave");
+                    setReqDesc("");
+                    setReqDate("");
+                  }}
+                >
+                  Send Request
+                </Button>
+              </DialogClose>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* General Request Dialog */}
+      <Dialog open={requestModalOpen} onOpenChange={setRequestModalOpen}>
+        <DialogContent className="max-w-md rounded-2xl shadow-lg p-6">
+          <DialogHeader>
+            <DialogTitle>Apply for Request</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 pt-3">
+            <div>
+              <label className="font-medium block mb-2">Date</label>
+              <input
+                type="date"
+                value={generalReqDate}
+                onChange={(e) => setGeneralReqDate(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                min={tomorrowISO}
+              />
+            </div>
+            <div>
+              <label className="font-medium block mb-2">Request Type</label>
+              <div className="flex gap-2">
+                {["wfh", "equipment", "travel", "other"].map((i) => (
+                  <Button
+                    type="button"
+                    className="capitalize"
+                    variant={generalReqType === i ? "default" : "outline"}
+                    onClick={() =>
+                      setGeneralReqType(
+                        i as "wfh" | "equipment" | "travel" | "other",
+                      )
+                    }
+                  >
+                    {i}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="font-medium block mb-2">Subject</label>
+              <input
+                value={generalReqSubject}
+                onChange={(e) => setGeneralReqSubject(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                placeholder="Subject for Request..."
+              />
+            </div>
+            <div>
               <label className="font-medium block mb-2">
                 Request Description
               </label>
               <textarea
-                value={reqDesc}
-                onChange={(e) => setReqDesc(e.target.value)}
+                value={generalReqDesc}
+                onChange={(e) => setGeneralReqDesc(e.target.value)}
                 className="w-full rounded-md border border-input bg-background px-3 py-3 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 placeholder="Request description..."
                 rows={4}
@@ -532,23 +629,22 @@ const Attendance = () => {
                   type="button"
                   variant="default"
                   onClick={() => {
-                    leaveService.applyForLeave({
-                      leave_type: reqType,
-                      start_date: reqDate, // Format: YYYY-MM-DD
-                      end_date: reqDate, // Format: YYYY-MM-DD
-                      subject: reqSubject,
-                      reason: reqDesc,
+                    requestService.submitRequest({
+                      request_type: generalReqType,
+                      request_date: generalReqDate, // Format: YYYY-MM-DD
+                      subject: generalReqSubject,
+                      description: generalReqDesc,
                     });
                     toast({
                       title: "Request Submitted",
                       description:
                         "Your request has been submitted for approval.",
                     });
-                    setDialogOpen(false);
-                    setReqSubject("");
-                    setReqType("leave");
-                    setReqDesc("");
-                    setReqDate("");
+                    setRequestModalOpen(false);
+                    setGeneralReqSubject("");
+                    setGeneralReqType("wfh");
+                    setGeneralReqDesc("");
+                    setGeneralReqDate("");
                   }}
                 >
                   Send Request

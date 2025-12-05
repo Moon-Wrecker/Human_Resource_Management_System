@@ -24,12 +24,12 @@ class AIProviderManager:
             {
                 "name": "gemini-primary",
                 "key": os.getenv("GOOGLE_API_KEY"),
-                "model": "gemini-2.0-flash-exp"
+                "model": "gemini-2.5-flash"
             },
             {
                 "name": "gemini-backup",
                 "key": os.getenv("GOOGLE_API_KEY_1"),
-                "model": "gemini-2.0-flash-exp"
+                "model": "gemini-2.5-flash"
             }
         ]
         
