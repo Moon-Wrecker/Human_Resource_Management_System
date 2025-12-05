@@ -255,6 +255,10 @@ const router = createBrowserRouter([
             path: "profile",
             element: <EmployeeProfile />,
           },
+          {
+            path: "attendance",
+            element: <Attendance />,
+          },
         ],
       },
     ],
