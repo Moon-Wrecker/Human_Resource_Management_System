@@ -232,6 +232,19 @@ const router = createBrowserRouter([
             element: <PerformanceReport />,
           },
           {
+            path: "announcements",
+            element: <AnnouncementsEmployee />,
+          },
+          {
+            path: "announcements/:id",
+            element: <AnnouncementsDetailsEmployee />,
+          },
+          {
+            path: "payslips",
+            element: <Payslips />,
+          },
+
+          {
             path: "team-members",
             element: <TeamMembers />,
           },
