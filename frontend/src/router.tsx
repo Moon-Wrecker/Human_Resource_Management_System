@@ -56,6 +56,7 @@ const SkillVisit = lazy(
   () => import("@/pages/Employee/SkillDevelopmentDetail"),
 );
 const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackReport"));
+const AIReportPage = lazy(() => import("@/pages/Employee/AIReportPage"));
 
 const router = createBrowserRouter([
   {
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
           {
             path: "performance-report",
             element: <EmployeePerformanceReport />,
+          },
+          {
+            path: "performance-report/ai-report",
+            element: <AIReportPage />,
           },
           {
             path: "performance-report/feedbacks",
