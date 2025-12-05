@@ -133,9 +133,18 @@ export default function PerformanceReport() {
             {reports?.total_modules_completed || "0"}
           </CardContent>
         </Card>
-        <Card className="w-full text-center">
-          <CardHeader className="text-xl font-bold">Learner Rank</CardHeader>
-          <CardContent className="text-lg font-semibold">3</CardContent>
+        {/* <Card className="w-full text-center"> */}
+        {/*   <CardHeader className="text-xl font-bold">Learner Rank</CardHeader> */}
+        {/*   <CardContent className="text-lg font-semibold">3</CardContent> */}
+        {/* </Card> */}
+        {/* TODO: Fetch Value */}
+        <Card className="text-center">
+          <CardHeader className="text-xl font-bold">
+            Get your AI generated performance report
+          </CardHeader>
+          <CardContent>
+            <Button>Generate Report</Button>
+          </CardContent>
         </Card>
         <ChartAreaDefault
           chartData={reports?.monthly_modules.map((m) => ({
@@ -145,13 +154,6 @@ export default function PerformanceReport() {
             }),
           }))}
         />
-        {/* TODO: Fetch Value */}
-        <Card className="w-full text-center">
-          <CardHeader className="text-xl font-bold">
-            Punctuality Score
-          </CardHeader>
-          <CardContent className="text-lg font-semibold">4.9</CardContent>
-        </Card>
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">Latest Feedback</CardHeader>
           <CardContent className="text-md h-full">
