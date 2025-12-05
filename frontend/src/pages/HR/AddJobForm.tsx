@@ -8,7 +8,7 @@ import {
   Loader2,
   Wand2,
 } from "lucide-react";
-import jobService from "@/services/jobService";
+import jobService, { type EmploymentType } from "@/services/jobService";
 import departmentService, {
   type Department,
 } from "@/services/departmentService";
@@ -157,7 +157,6 @@ const AddJobForm = () => {
       const payload: GenerateJDRequest = {
         job_title: formData.position,
         job_level: aiFormData.job_level,
-        skills_required: formData.skills_required,
         responsibilities: aiFormData.responsibilities
           .split("\n")
           .filter((r) => r.trim() !== ""),
@@ -214,6 +213,9 @@ const AddJobForm = () => {
       const payload = {
         ...formData,
         department_id: parseInt(formData.department_id, 10),
+        employment_type: formData.employment_type as EmploymentType,
+        skills_required: formData.skills_required || "",
+        application_deadline: formData.application_deadline ? new Date(formData.application_deadline).toISOString() : undefined,
       };
       await jobService.createJob(payload);
       toast({
