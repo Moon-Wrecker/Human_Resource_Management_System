@@ -194,7 +194,7 @@ class AIReportResponse(BaseModel):
     data_summary: DataSummary
     
     # Metadata
-    ai_model: str = "gemini-2.0-flash-exp"
+    ai_model: str = "gemini-2.5-flash"
     generation_time_seconds: Optional[float] = None
     
     # Storage info (for weekly saved reports)

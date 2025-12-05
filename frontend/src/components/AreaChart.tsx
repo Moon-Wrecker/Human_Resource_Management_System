@@ -27,7 +27,7 @@ export function ChartAreaDefault({
 }) {
   console.log(chartData);
   return (
-    <Card className="w-full h-full text-center col-span-2 row-span-3">
+    <Card className="w-full h-full text-center col-span-2 row-span-2">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
           Modules completed by month

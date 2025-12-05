@@ -11,123 +11,181 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
-import { useState } from "react";
+import { Search, X, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import jobService from "@/services/jobService";
+import type { JobListing } from "@/services/jobService";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import applicationService from "@/services/applicationService";
+import profileService, {
+  type ProfileData,
+  type TeamMember,
+} from "@/services/profileService";
 
-type Job = {
-  id: number;
-  title: string;
-  department: string;
-  location: string;
-  type: string;
-  postedOn: string;
-  link: string;
-};
+export default function JobListingsTableManager() {
+  const { toast } = useToast();
+  const [jobs, setJobs] = useState<JobListing[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [selectedEmployee, setSelectedEmployee] = useState<TeamMember | null>(
+    null,
+  );
 
-const jobListings = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    department: "Engineering",
-    location: "Mumbai, India",
-    type: "Full-time",
-    postedOn: "2025-10-30",
-    link: "https://company.com/jobs/frontend-developer",
-  },
-  {
-    id: 2,
-    title: "Backend Developer",
-    department: "Engineering",
-    location: "Bangalore, India",
-    type: "Full-time",
-    postedOn: "2025-10-28",
-    link: "https://company.com/jobs/backend-developer",
-  },
-  {
-    id: 3,
-    title: "UI/UX Designer",
-    department: "Design",
-    location: "Remote",
-    type: "Contract",
-    postedOn: "2025-10-25",
-    link: "https://company.com/jobs/ui-ux-designer",
-  },
-  {
-    id: 4,
-    title: "HR Executive",
-    department: "Human Resources",
-    location: "Pune, India",
-    type: "Full-time",
-    postedOn: "2025-10-22",
-    link: "https://company.com/jobs/hr-executive",
-  },
-  {
-    id: 5,
-    title: "Product Manager",
-    department: "Product",
-    location: "Hyderabad, India",
-    type: "Full-time",
-    postedOn: "2025-10-20",
-    link: "https://company.com/jobs/product-manager",
-  },
-  {
-    id: 6,
-    title: "Data Analyst",
-    department: "Analytics",
-    location: "Delhi, India",
-    type: "Full-time",
-    postedOn: "2025-10-18",
-    link: "https://company.com/jobs/data-analyst",
-  },
-  {
-    id: 7,
-    title: "Customer Success Manager",
-    department: "Support",
-    location: "Remote",
-    type: "Full-time",
-    postedOn: "2025-10-15",
-    link: "https://company.com/jobs/customer-success-manager",
-  },
-  {
-    id: 8,
-    title: "Marketing Specialist",
-    department: "Marketing",
-    location: "Chennai, India",
-    type: "Part-time",
-    postedOn: "2025-10-12",
-    link: "https://company.com/jobs/marketing-specialist",
-  },
-  {
-    id: 9,
-    title: "DevOps Engineer",
-    department: "Engineering",
-    location: "Remote",
-    type: "Full-time",
-    postedOn: "2025-10-10",
-    link: "https://company.com/jobs/devops-engineer",
-  },
-  {
-    id: 10,
-    title: "Finance Associate",
-    department: "Finance",
-    location: "Ahmedabad, India",
-    type: "Internship",
-    postedOn: "2025-10-08",
-    link: "https://company.com/jobs/finance-associate",
-  },
-];
+  useEffect(() => {
+    fetchJobs();
+    profileService
+      .getMyProfile()
+      .then(setProfile)
+      .catch((err) => console.error("Failed to fetch profile", err));
+    profileService
+      .getMyTeam()
+      .then((res) => setTeamMembers(res.members))
+      .catch((err) => console.error("Failed to fetch team members", err));
+  }, []);
 
-const submitSearch = (e: React.FormEvent) => {
-  e.preventDefault();
-};
+  const fetchJobs = async () => {
+    setLoading(true);
+    try {
+      const response = await jobService.getAllJobs({
+        is_active: true,
+        page_size: 50,
+      });
+      setJobs(response.jobs);
+    } catch (error: any) {
+      console.error("Error fetching jobs:", error);
+      const errorMessage =
+        error?.response?.data?.detail ||
+        error?.message ||
+        "Failed to load job listings";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const handleJobApply = () => {};
+  const submitSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await jobService.getAllJobs({
+        search: searchTerm,
+        is_active: true,
+        page_size: 50,
+      });
+      setJobs(response.jobs);
+    } catch (error: any) {
+      console.error("Error searching jobs:", error);
+      const errorMessage =
+        error?.response?.data?.detail || error?.message || "Search failed";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-export default function JobListingsTable() {
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const handleOpenModal = (job: JobListing) => {
+    setSelectedJob(job);
+    setResumeFile(null);
+    setCandidateName("");
+    setCandidateEmail("");
+    setCandidatePhone("");
+  };
 
-  const handleOpenModal = (job: Job) => setSelectedJob(job);
-  const handleCloseModal = () => setSelectedJob(null);
+  const handleCloseModal = () => {
+    setSelectedJob(null);
+    setResumeFile(null);
+    setCandidateName("");
+    setCandidateEmail("");
+    setCandidatePhone("");
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
+        toast({
+          variant: "destructive",
+          title: "File Too Large",
+          description: "Resume must be less than 5MB",
+        });
+        return;
+      }
+      setResumeFile(file);
+    }
+  };
+
+  const handleReferralSubmit = async () => {
+    if (!resumeFile) {
+      toast({
+        variant: "destructive",
+        title: "Resume Required",
+        description: "Please upload the candidate's resume before submitting",
+      });
+      return;
+    }
+
+    if (!selectedJob || !profile || !selectedEmployee) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description:
+          "Job, profile, or selected employee information is missing.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const applicationData = {
+        job_id: selectedJob.id,
+        applicant_name: selectedEmployee.name,
+        applicant_email: selectedEmployee.email,
+        source: "referral" as const,
+        referred_by: profile.id,
+      };
+
+      const application =
+        await applicationService.createApplication(applicationData);
+
+      if (application && application.id) {
+        await applicationService.uploadResume(application.id, resumeFile);
+      }
+
+      toast({
+        title: "Referral Submitted!",
+        description: `${selectedEmployee.name} has been successfully referred for the ${selectedJob?.position} position.`,
+      });
+      handleCloseModal();
+    } catch (error: any) {
+      console.error("Error submitting referral:", error);
+      const errorMessage =
+        error?.response?.data?.detail ||
+        error?.message ||
+        "Failed to submit referral";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-5xl mx-auto mt-10 flex flex-col justify-center items-center gap-4">
@@ -154,38 +212,40 @@ export default function JobListingsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {jobListings.map((job) => (
+          {jobs.map((job) => (
             <TableRow key={job.id}>
-              <TableCell className="font-medium">{job.title}</TableCell>
-              <TableCell>{job.department}</TableCell>
-              <TableCell>{job.location}</TableCell>
-              <TableCell>{job.type}</TableCell>
+              <TableCell className="font-medium">{job.position}</TableCell>
+              <TableCell>{job.department_name || "N/A"}</TableCell>
+              <TableCell>{job.location || "Remote"}</TableCell>
               <TableCell>
-                {new Date(job.postedOn).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
+                <Badge
+                  variant={
+                    jobService.getEmploymentTypeBadge(job.employment_type)
+                      .color as any
+                  }
+                >
+                  {jobService.getEmploymentTypeBadge(job.employment_type).label}
+                </Badge>
               </TableCell>
+              <TableCell>{jobService.formatDate(job.posted_date)}</TableCell>
               <TableCell className="text-right">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleOpenModal(job)}
                 >
-                  View
+                  Refer
                 </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
       {/* Modal */}
       {selectedJob && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 animate-in fade-in duration-200">
           {/* Modal Card */}
-          <div className="relative bg-white dark:bg-neutral-900 rounded-xl shadow-2xl p-8 w-full max-w-md mx-4 border border-gray-200 dark:border-neutral-700">
+          <div className="relative bg-white dark:bg-neutral-900 rounded-xl shadow-2xl p-8 w-full max-w-2xl mx-4 border border-gray-200 dark:border-neutral-700 max-h-[90vh] overflow-y-auto">
             {/* Close Button */}
             <button
               onClick={handleCloseModal}
@@ -195,81 +255,167 @@ export default function JobListingsTable() {
             </button>
 
             {/* Header */}
-            <div className="mb-6 text-center">
+            <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                Apply for {selectedJob.title}
+                Refer a Candidate for {selectedJob.position}
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {selectedJob.department} • {selectedJob.location}
+                {selectedJob.department_name} • {selectedJob.location}
               </p>
             </div>
 
-            {/* Body */}
-            <div className="space-y-2 mb-8 text-sm text-gray-600 dark:text-gray-300">
-              <div className="flex justify-between">
+            {/* Job Details */}
+            <div className="space-y-3 mb-6 text-sm text-gray-600 dark:text-gray-300">
+              <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-neutral-700">
                 <span className="font-medium text-gray-700 dark:text-gray-200">
                   Department:
                 </span>
-                <span>{selectedJob.department}</span>
+                <span>{selectedJob.department_name || "N/A"}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-neutral-700">
                 <span className="font-medium text-gray-700 dark:text-gray-200">
                   Location:
                 </span>
-                <span>{selectedJob.location}</span>
+                <span>{selectedJob.location || "Remote"}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-neutral-700">
                 <span className="font-medium text-gray-700 dark:text-gray-200">
                   Type:
                 </span>
-                <span>{selectedJob.type}</span>
+                <Badge
+                  variant={
+                    jobService.getEmploymentTypeBadge(
+                      selectedJob.employment_type,
+                    ).color as any
+                  }
+                >
+                  {
+                    jobService.getEmploymentTypeBadge(
+                      selectedJob.employment_type,
+                    ).label
+                  }
+                </Badge>
               </div>
-              <div className="flex justify-between">
+              {selectedJob.experience_required && (
+                <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-neutral-700">
+                  <span className="font-medium text-gray-700 dark:text-gray-200">
+                    Experience:
+                  </span>
+                  <span>{selectedJob.experience_required}</span>
+                </div>
+              )}
+              {selectedJob.salary_range && (
+                <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-neutral-700">
+                  <span className="font-medium text-gray-700 dark:text-gray-200">
+                    Salary Range:
+                  </span>
+                  <span>{selectedJob.salary_range}</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-neutral-700">
                 <span className="font-medium text-gray-700 dark:text-gray-200">
                   Posted On:
                 </span>
-                <span>
-                  {new Date(selectedJob.postedOn).toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </span>
+                <span>{jobService.formatDate(selectedJob.posted_date)}</span>
+              </div>
+              {selectedJob.application_deadline && (
+                <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-neutral-700">
+                  <span className="font-medium text-gray-700 dark:text-gray-200">
+                    Deadline:
+                  </span>
+                  <span
+                    className={
+                      jobService.isDeadlineApproaching(
+                        selectedJob.application_deadline,
+                      )
+                        ? "text-warning"
+                        : ""
+                    }
+                  >
+                    {jobService.formatDate(selectedJob.application_deadline)}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            {selectedJob.description && (
+              <div className="mb-6">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  Description:
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap">
+                  {selectedJob.description}
+                </p>
+              </div>
+            )}
+
+            {/* Skills */}
+            {selectedJob.skills_required && (
+              <div className="mb-6">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  Required Skills:
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {selectedJob.skills_required}
+                </p>
+              </div>
+            )}
+
+            {/* Referral Form */}
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="employee-select"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                >
+                  Select Employee to Refer{" "}
+                  <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="employee-select"
+                  value={selectedEmployee?.id || ""}
+                  onChange={(e) => {
+                    const employee =
+                      teamMembers.find(
+                        (emp) => emp.id === parseInt(e.target.value),
+                      ) || null;
+                    setSelectedEmployee(employee);
+                  }}
+                  className="w-full text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-neutral-700 rounded-md p-2"
+                >
+                  <option value="">Select a team member</option>
+                  {teamMembers.map((employee) => (
+                    <option key={employee.id} value={employee.id}>
+                      {employee.name} ({employee.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="resume-upload"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                >
+                  Upload Resume <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="resume-upload"
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileChange}
+                  className="w-full text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-neutral-700 rounded-md p-2 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-gray-900 file:text-white hover:file:bg-gray-800 cursor-pointer"
+                />
+                {resumeFile && (
+                  <p className="text-xs text-green-600 mt-1">
+                    Selected: {resumeFile.name}
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Upload Resume */}
-            <div className="mb-6">
-              <label
-                htmlFor="resume-upload"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
-              >
-                Upload Resume
-              </label>
-              <input
-                id="resume-upload"
-                type="file"
-                accept=".pdf,.doc,.docx"
-                className="w-full text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-neutral-700 rounded-md p-2 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-gray-900 file:text-white hover:file:bg-gray-800 cursor-pointer"
-              />
-            </div>
-            <div className="mb-6">
-              <label
-                htmlFor="resume-upload"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
-              >
-                Employee
-              </label>
-              <input
-                id="refer-team-mate"
-                type="text"
-                placeholder="Enter team mate"
-                className="w-full text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-neutral-700 rounded-md p-2 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-gray-900 file:text-white hover:file:bg-gray-800 cursor-pointer"
-              />
-            </div>
-
             {/* Footer Actions */}
-            <div className="flex justify-end gap-1">
+            <div className="flex justify-end gap-2 mt-6">
               <Button
                 variant="outline"
                 onClick={handleCloseModal}
@@ -277,7 +423,16 @@ export default function JobListingsTable() {
               >
                 Cancel
               </Button>
-              <Button onClick={() => handleJobApply()}>Refer</Button>
+              <Button
+                onClick={handleReferralSubmit}
+                disabled={!resumeFile || !selectedEmployee || isSubmitting}
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Submit Referral"
+                )}
+              </Button>
             </div>
           </div>
         </div>

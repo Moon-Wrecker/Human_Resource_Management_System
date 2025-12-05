@@ -14,6 +14,7 @@ const EmployeeDashboard = lazy(
 );
 const HRDashboard = lazy(() => import("@/pages/HR/HRDashboard"));
 const JobListingsEmployee = lazy(() => import("@/pages/Employee/JobListings"));
+const JobListingsManager = lazy(() => import("@/pages/Manager/JobListings"));
 const AddJobForm = lazy(() => import("@/pages/HR/AddJobForm"));
 const EmployeesList = lazy(() => import("@/pages/HR/EmployeesList"));
 const AddEmployeeForm = lazy(() => import("@/pages/HR/AddEmployeeForm"));
@@ -55,6 +56,7 @@ const SkillVisit = lazy(
   () => import("@/pages/Employee/SkillDevelopmentDetail"),
 );
 const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackReport"));
+const AIReportPage = lazy(() => import("@/pages/Employee/AIReportPage"));
 
 const router = createBrowserRouter([
   {
@@ -87,6 +89,10 @@ const router = createBrowserRouter([
           {
             path: "performance-report",
             element: <EmployeePerformanceReport />,
+          },
+          {
+            path: "performance-report/ai-report",
+            element: <AIReportPage />,
           },
           {
             path: "performance-report/feedbacks",
@@ -226,26 +232,6 @@ const router = createBrowserRouter([
             element: <PerformanceReport />,
           },
           {
-            path: "team-members",
-            element: <TeamMembers />,
-          },
-          {
-            path: "team-members/view/:employeeId",
-            element: <ViewEmployee />,
-          },
-          {
-            path: "team-requests",
-            element: <TeamRequests />,
-          },
-          {
-            path: "payslips",
-            element: <Payslips />,
-          },
-          {
-            path: "attendance",
-            element: <Attendance />,
-          },
-          {
             path: "announcements",
             element: <AnnouncementsEmployee />,
           },
@@ -253,10 +239,26 @@ const router = createBrowserRouter([
             path: "announcements/:id",
             element: <AnnouncementsDetailsEmployee />,
           },
+          {
+            path: "payslips",
+            element: <Payslips />,
+          },
 
           {
+            path: "team-members",
+            element: <TeamMembers />,
+          },
+          {
+            path: "team-requests",
+            element: <TeamRequests />,
+          },
+          {
+            path: "team-members/view/:employeeId",
+            element: <ViewEmployee />,
+          },
+          {
             path: "job-listings",
-            element: <JobListingsEmployee />,
+            element: <JobListingsManager />,
           },
           {
             path: "policies",
@@ -265,6 +267,10 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <EmployeeProfile />,
+          },
+          {
+            path: "attendance",
+            element: <Attendance />,
           },
         ],
       },

@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { ChartAreaDefault } from "@/components/AreaChart";
 import performanceReportService, {
   type PerformanceReportResponse,
 } from "@/services/performanceReportService";
+import aiPerformanceReportService, {
+  type AIPerformanceReportResponse,
+  AIReportTemplateEnum,
+  AITimePeriodEnum,
+} from "@/services/aiPerformanceReportService";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Select,
@@ -20,11 +26,13 @@ import feedbackService, {
 
 export default function PerformanceReport() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [timePeriod, setTimePeriod] = useState("Sep - Dec");
   const [reports, setReports] = useState<PerformanceReportResponse>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<FeedbackListResponse>();
+  const [aiReportLoading, setAiReportLoading] = useState(false);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -80,6 +88,28 @@ export default function PerformanceReport() {
     fetchReports();
   }, [user, timePeriod]);
 
+  const handleGenerateAIReport = async () => {
+    if (!user) return;
+    setAiReportLoading(true);
+    setError(null);
+    try {
+      // Assuming a default time period and template for now
+      const report =
+        await aiPerformanceReportService.getPersonalPerformanceReport({
+          time_period: AITimePeriodEnum.CURRENT_YEAR, // Example default
+          template: AIReportTemplateEnum.COMPREHENSIVE_REVIEW, // Example default
+        });
+      navigate("/employee/performance-report/ai-report", {
+        state: { aiReport: report },
+      });
+    } catch (err) {
+      setError("Failed to generate AI performance report.");
+      console.error(err);
+    } finally {
+      setAiReportLoading(false);
+    }
+  };
+
   useEffect(() => {}, []);
 
   if (loading) {
@@ -133,9 +163,21 @@ export default function PerformanceReport() {
             {reports?.total_modules_completed || "0"}
           </CardContent>
         </Card>
+        {/* <Card className="w-full text-center"> */}
+        {/*   <CardHeader className="text-xl font-bold">Learner Rank</CardHeader> */}
+        {/*   <CardContent className="text-lg font-semibold">3</CardContent> */}
+        {/* </Card> */}
+        {/* TODO: Fetch Value */}
         <Card className="w-full text-center">
-          <CardHeader className="text-xl font-bold">Learner Rank</CardHeader>
-          <CardContent className="text-lg font-semibold">3</CardContent>
+          <CardHeader className="text-xl font-bold">
+            Get your AI generated performance report
+          </CardHeader>
+          <CardContent>
+            <Button onClick={handleGenerateAIReport} disabled={aiReportLoading}>
+              {aiReportLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {aiReportLoading ? "Generating..." : "Generate Report"}
+            </Button>
+          </CardContent>
         </Card>
         <ChartAreaDefault
           chartData={reports?.monthly_modules.map((m) => ({
@@ -145,13 +187,6 @@ export default function PerformanceReport() {
             }),
           }))}
         />
-        {/* TODO: Fetch Value */}
-        <Card className="w-full text-center">
-          <CardHeader className="text-xl font-bold">
-            Punctuality Score
-          </CardHeader>
-          <CardContent className="text-lg font-semibold">4.9</CardContent>
-        </Card>
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">Latest Feedback</CardHeader>
           <CardContent className="text-md h-full">
