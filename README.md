@@ -152,6 +152,7 @@ cd soft-engg-project-sep-2025-se-SEP-11
 ```bash
 pip3 install uv
 
+# Create .venv
 uv venv
 uv sync
 
@@ -175,6 +176,7 @@ uv run backend/main.py
 ```bash
 pip3 install uv
 
+# Create .venv
 uv venv
 uv sync
 
