@@ -49,7 +49,7 @@ class SkillMatch(BaseModel):
 class ExperienceMatch(BaseModel):
     """Representation of experience match between resume and job description"""
     area: str = Field(description="Area of experience (e.g., 'Python development', 'Project management')")
-    years_required: float = Field(description="Years of experience required in job description")
+    years_required: float | None = Field(description="Years of experience required in job description")
     years_present: float = Field(description="Years of experience present in resume")
     relevance_score: int = Field(description="How relevant the experience is to the job, 1-5 scale")
     context: Optional[str] = Field(None, description="Context from resume showing the experience")

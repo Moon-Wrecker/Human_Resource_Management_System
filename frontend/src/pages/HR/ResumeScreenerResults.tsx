@@ -106,11 +106,15 @@ const ResumeScreenerResults = () => {
                     {r.candidate_name}
                   </TableCell>
                   <TableCell>{r.overall_fit_score}</TableCell>
-                  <TableCell className="whitespace-normal">
-                    {r.strengths.join(", ")}
+                  <TableCell>
+                    <div className="max-h-24 overflow-y-auto whitespace-normal">
+                      {r.strengths.join(", ")}
+                    </div>
                   </TableCell>
-                  <TableCell className="whitespace-normal">
-                    {r.gaps.join(", ")}
+                  <TableCell>
+                    <div className="max-h-24 overflow-y-auto whitespace-normal">
+                      {r.gaps.join(", ")}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

@@ -113,7 +113,7 @@ class ExperienceMatchResponse(BaseModel):
     """Experience match details"""
 
     area: str
-    years_required: float | str
+    years_required: Optional[float | str] = None
     years_present: float
     relevance_score: int = Field(ge=0, le=5)
     context: Optional[str] = None
