@@ -35,6 +35,7 @@ const AnnouncementsDetailsEmployee = lazy(
 );
 const Payslips = lazy(() => import("@/pages/Common/Payslips"));
 const PayslipsDetails = lazy(() => import("@/pages/Common/PayslipsDetail"));
+const HRPayslipsPage = lazy(() => import("@/pages/HR/HRPayslips"));
 const Applications = lazy(() => import("@/pages/HR/Applications"));
 const Attendance = lazy(() => import("@/pages/Common/Attendance"));
 const PerformanceReport = lazy(
@@ -200,7 +201,7 @@ const router = createBrowserRouter([
           },
           {
             path: "payslips",
-            element: <Payslips />,
+            element: <HRPayslipsPage />,
           },
           {
             path: "applications",

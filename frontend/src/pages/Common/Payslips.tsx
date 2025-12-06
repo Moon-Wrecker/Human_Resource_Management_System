@@ -38,7 +38,7 @@ const Payslips = () => {
     <div className="min-h-screen flex flex-col items-center">
       <h2 className="text-3xl font-semibold text-center my-8">Payslips</h2>
       <div className="w-full max-w-5xl flex justify-center mb-10">
-        <Select value={year} onValueChange={(value) => setYear(value)}>
+        <Select value={year} onValueChange={(value: string) => setYear(value)}>
           <SelectTrigger className="w-64">
             <SelectValue placeholder="Month" />
           </SelectTrigger>
