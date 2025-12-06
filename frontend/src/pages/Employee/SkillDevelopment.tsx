@@ -34,8 +34,6 @@ const SkillDevelopment = () => {
   const prevSearch = useRef(search);
   const prevDifficulty = useRef(difficulty);
 
-  // TODO: Filter by enrollment
-
   useEffect(() => {
     const isFilterChanged =
       search !== prevSearch.current || difficulty !== prevDifficulty.current;
@@ -102,7 +100,7 @@ const SkillDevelopment = () => {
   };
 
   const enrolledIds = new Set(
-    enrolledSkillDevelopementItems?.map((en) => en.id),
+    enrolledSkillDevelopementItems?.map((en) => en.module_id),
   );
 
   const filteredModules = skillDevelopementItems.filter(
