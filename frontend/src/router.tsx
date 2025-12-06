@@ -201,7 +201,11 @@ const router = createBrowserRouter([
           },
           {
             path: "announcements",
-            element: <Announcements />,
+            element: <AnnouncementsEmployee />,
+          },
+          {
+            path: "announcements/:id",
+            element: <AnnouncementsDetailsEmployee />,
           },
           {
             path: "payslips",
