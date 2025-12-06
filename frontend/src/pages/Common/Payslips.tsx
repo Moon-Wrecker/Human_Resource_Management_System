@@ -7,7 +7,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"; // Adjust import if needed
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -21,13 +21,18 @@ import payslipService, {
 } from "@/services/payslipService";
 import { IndianRupeeIcon } from "lucide-react";
 
+import { useAuth } from "@/contexts/AuthContext";
+import PayslipGenerator from "../HR/PayslipGenerator";
+
 const years = [...Array(9)].map((_, i) =>
   (new Date().getFullYear() - i).toString(),
 );
 const Payslips = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { user } = useAuth();
   const [year, setYear] = useState(years[0]);
   const [payslips, setPayslips] = useState<PayslipResponse[]>([]);
-
+  const isHR = user?.role === "hr" || user?.role === "admin";
   useEffect(() => {
     payslipService
       .getMyPayslips({ year: parseInt(year) })
@@ -36,6 +41,14 @@ const Payslips = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center">
+      {isHR && (
+          <PayslipGenerator
+            onSuccess={() => {
+              // Trigger refetch of payslips
+              setRefreshKey((prev) => prev + 1);
+            }}
+          />
+        )}
       <h2 className="text-3xl font-semibold text-center my-8">Payslips</h2>
       <div className="w-full max-w-5xl flex justify-center mb-10">
         <Select value={year} onValueChange={(value: string) => setYear(value)}>
