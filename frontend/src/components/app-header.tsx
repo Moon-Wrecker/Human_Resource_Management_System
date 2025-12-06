@@ -38,11 +38,16 @@ export default function AppHeader() {
     navigate(getProfilePath());
   };
 
+  const getOrganizationalChartPath = () => {
+    const role = user?.role?.toLowerCase();
+    if (role === 'hr' || role === 'admin') return '/hr/organizational-chart';
+    if (role === 'manager') return '/manager/organizational-chart';
+    return '/employee/organizational-chart'; // Default for employee and others
+  };
+
   return (
     <div className="flex h-16 shrink-0 items-center justify-end px-4  gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-      <Button variant="outline" size="icon">
-        <Bell />
-      </Button>
+
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -57,13 +62,8 @@ export default function AppHeader() {
               Profile
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              Billing
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            <DropdownMenuItem onClick={() => navigate(getOrganizationalChartPath())} className="cursor-pointer">
+              Organizational Chart
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

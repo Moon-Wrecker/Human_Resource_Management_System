@@ -58,6 +58,7 @@ const SkillVisit = lazy(
 );
 const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackReport"));
 const AIReportPage = lazy(() => import("@/pages/Employee/AIReportPage"));
+const OrganizationalChartPage = lazy(() => import("@/pages/OrganizationalChartPage"));
 
 const router = createBrowserRouter([
   {
@@ -148,6 +149,10 @@ const router = createBrowserRouter([
             path: "profile",
             element: <EmployeeProfile />,
           },
+          {
+            path: "organizational-chart",
+            element: <OrganizationalChartPage />,
+          },
         ],
       },
       {
@@ -218,6 +223,10 @@ const router = createBrowserRouter([
             path: "profile",
             element: <EmployeeProfile />,
           },
+          {
+            path: "organizational-chart",
+            element: <OrganizationalChartPage />,
+          },
         ],
       },
       {
@@ -276,6 +285,10 @@ const router = createBrowserRouter([
           {
             path: "attendance",
             element: <Attendance />,
+          },
+          {
+            path: "organizational-chart",
+            element: <OrganizationalChartPage />,
           },
         ],
       },

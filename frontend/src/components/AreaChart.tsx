@@ -34,41 +34,41 @@ export function ChartAreaDefault({
         </CardTitle>
       </CardHeader>
       <CardContent className="h-full w-full flex items-center justify-center">
-        {chartData && chartData[0].modules_completed ? (
-          <ChartContainer className="flex-1" config={chartConfig}>
-            <AreaChart
-              accessibilityLayer
-              data={chartData}
-              margin={{
-                left: 12,
-                right: 12,
-                top: 24,
-              }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
-              />
-              <ChartTooltip
-                cursor={true}
-                content={<ChartTooltipContent indicator="line" />}
-              />
-              <Area
-                dataKey="modules_completed"
-                type="natural"
-                fill="var(--color-modules_completed)"
-                fillOpacity={0.4}
-                stroke="var(--color-modules_completed)"
-              />
-            </AreaChart>
-          </ChartContainer>
-        ) : (
-          <p>No data found!</p>
-        )}
+        {chartData && chartData.length > 0 ? (
+        <ChartContainer className="flex-1" config={chartConfig}>
+          <AreaChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              left: 12,
+              right: 12,
+              top: 24,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <ChartTooltip
+              cursor={true}
+              content={<ChartTooltipContent indicator="line" />}
+            />
+            <Area
+              dataKey="modules_completed"
+              type="natural"
+              fill="var(--color-modules_completed)"
+              fillOpacity={0.4}
+              stroke="var(--color-modules_completed)"
+            />
+          </AreaChart>
+        </ChartContainer>
+      ) : (
+        <p className="text-sm text-black/70">No module data available for this period</p>
+      )}
       </CardContent>
     </Card>
   );
