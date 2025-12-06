@@ -7,6 +7,8 @@ import {
   Scan,
   CalendarCheck,
   BookOpen,
+  ScanBarcode,
+  FormInputIcon,
 } from "lucide-react";
 
 const HRSidebarItems = {
@@ -37,6 +39,16 @@ const HRSidebarItems = {
       icon: Scan,
     },
     {
+      name: "Resume Screener History",
+      url: "/hr/screening-history",
+      icon: ScanBarcode,
+    },
+    {
+      name: "Applications",
+      url: "/hr/applications",
+      icon: FormInputIcon,
+    },
+    {
       name: "Announcements",
       url: "/hr/announcements",
       icon: Megaphone,
@@ -55,4 +67,3 @@ const HRSidebarItems = {
 };
 
 export default HRSidebarItems;
-
