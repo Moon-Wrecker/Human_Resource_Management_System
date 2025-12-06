@@ -42,7 +42,6 @@ export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sideba
       <SidebarFooter>
         <SidebarTrigger
           className="flex items-center justify-between px-2"
-          withText
         />
       </SidebarFooter>
       <SidebarRail />

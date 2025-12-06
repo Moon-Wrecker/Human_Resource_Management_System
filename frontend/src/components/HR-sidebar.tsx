@@ -42,8 +42,7 @@ export function HRSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <SidebarTrigger
           className="flex items-center justify-between px-2"
-          withText
-        />
+                  />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
