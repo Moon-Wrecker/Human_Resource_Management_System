@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Download, ArrowRight, CheckCheck, ChevronRight } from "lucide-react";
+import { Download, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -18,11 +18,6 @@ import {
   type PolicyQuestion,
   getPolicySuggestions, // Imported getPolicySuggestions
 } from "@/services/aiPolicyRagService";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import policyService, { type Policy } from "@/services/policyService"; // Import policyService and Policy type
 
@@ -35,9 +30,9 @@ const Policies = () => {
   const [question, setQuestion] = useState("");
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // Added state for collapsible
   const [currentPolicy, setCurrentPolicy] = useState<Policy | null>(null); // State for fetched policy
   const [isLoadingPolicy, setIsLoadingPolicy] = useState(true); // State for policy loading
+  const [downloading, setDownloading] = useState(false); // State for download operation
   const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([]); // State for dynamic suggestions
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
 
@@ -45,6 +40,24 @@ const Policies = () => {
   const [showSuggestionsBlock, setShowSuggestionsBlock] = useState(true);
   const [renderSuggestionsBlock, setRenderSuggestionsBlock] = useState(true);
   const transitionDuration = 200; // ms, matches Tailwind's duration-200
+
+  // Handler for downloading policy
+  const handleDownloadPolicy = async () => {
+    if (!currentPolicy) return;
+
+    try {
+      setDownloading(true);
+      await policyService.downloadAndSavePolicyDocument(
+        currentPolicy.id,
+        `Company_Policy_v${currentPolicy.version}.pdf`
+      );
+    } catch (error) {
+      console.error("Error downloading policy:", error);
+      alert("Failed to download policy document");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchActivePolicy = async () => {
@@ -142,118 +155,56 @@ const Policies = () => {
     <div className="w-full max-w-3xl mx-auto px-4 flex flex-col items-center justify-center gap-6 mt-10">
       <h2 className="text-3xl font-semibold text-center mt-8">Policies</h2>
 
-      {/* Policy Collapsible */}
+      {/* Policy Card */}
       {isLoadingPolicy ? (
         <div className="w-full text-center p-4">Loading policy...</div>
       ) : currentPolicy ? (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-          <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between w-full cursor-pointer py-2 px-4 rounded-md text-lg font-bold text-foreground">
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
-                Our Company's policy
+                Company Policy
                 <Badge>v{currentPolicy.version}</Badge>
               </span>
-              <ChevronRight
-                className={cn(
-                  "h-4 w-4 transition-transform",
-                  isOpen && "rotate-90",
-                )}
-              />
-            </div>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-200">
-            <div className="mt-4 p-4 border rounded-md bg-gray-50">
-              <div className="flex items-center justify-end mb-4">
-                {" "}
-                {/* Removed "Policy document embedded below." */}
+              {currentPolicy.has_document && (
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  onClick={handleDownloadPolicy}
+                  disabled={downloading}
+                >
+                  {downloading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+              )}
+            </CardTitle>
+            <CardDescription>
+              Effective Date: {policyService.formatDate(currentPolicy.effective_date)}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {currentPolicy.description && (
+                <p className="text-sm text-gray-700">{currentPolicy.description}</p>
+              )}
+              {currentPolicy.category && (
                 <div className="flex items-center gap-2">
-                  {currentPolicy.document_url && (
-                    <a
-                      href={currentPolicy.document_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        variant="outline"
-                        className="flex items-center gap-2"
-                      >
-                        <Download className="w-4 h-4" />
-                        Download
-                      </Button>
-                    </a>
-                  )}
-                </div>
-              </div>
-              {currentPolicy.document_url ? (
-                <div className="relative" style={{ paddingTop: "56.25%" }}>
-                  {" "}
-                  {/* 16:9 Aspect Ratio */}
-                  <iframe
-                    src={currentPolicy.document_url}
-                    className="absolute top-0 left-0 w-full h-full"
-                    title="Policy Document"
-                    style={{ border: "none" }}
-                  ></iframe>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {currentPolicy.description && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Description:</h3>
-                      <p className="text-gray-800">
-                        {currentPolicy.description}
-                      </p>
-                    </div>
-                  )}
-                  {currentPolicy.content && (
-                    <div>
-                      <h3 className="text-lg font-semibold">Content:</h3>
-                      <div className="prose max-w-none">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {currentPolicy.content}
-                        </ReactMarkdown>
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex flex-wrap gap-4">
-                    {currentPolicy.category && (
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-600">
-                          Category:
-                        </h3>
-                        <Badge variant="secondary">
-                          {currentPolicy.category}
-                        </Badge>
-                      </div>
-                    )}
-                    {currentPolicy.effective_date && (
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-600">
-                          Effective Date:
-                        </h3>
-                        <p className="text-gray-800">
-                          {policyService.formatDate(
-                            currentPolicy.effective_date,
-                          )}
-                        </p>
-                      </div>
-                    )}
-                    {currentPolicy.review_date && (
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-600">
-                          Review Date:
-                        </h3>
-                        <p className="text-gray-800">
-                          {policyService.formatDate(currentPolicy.review_date)}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                  <span className="text-sm font-medium">Category:</span>
+                  <Badge variant="secondary">{currentPolicy.category}</Badge>
                 </div>
               )}
             </div>
-          </CollapsibleContent>
-        </Collapsible>
+          </CardContent>
+        </Card>
       ) : (
         <div className="w-full text-center p-4">No active policy found.</div>
       )}
