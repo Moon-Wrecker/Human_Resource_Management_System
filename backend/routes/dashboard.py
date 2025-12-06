@@ -331,41 +331,6 @@ async def get_my_dashboard(
     response_model=PerformanceMetrics,
     status_code=status.HTTP_200_OK,
     summary="Get My Performance Metrics",
-    description="Get performance metrics for the current user",
-)
-async def get_my_performance(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
-    months: int = Query(
-        default=12, ge=1, le=24, description="Number of months of data to retrieve"
-    ),
-):
-    """
-    ## My Performance Metrics
-
-    Get detailed performance metrics for the currently authenticated user.
-
-    **Access:** All authenticated users
-    """
-    try:
-        performance_data = DashboardService.get_employee_performance_metrics(
-            db, current_user.id, months
-        )
-        return performance_data
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to fetch performance metrics: {str(e)}",
-        )
-
-
-@router.get(
-    "/performance/me",
-    response_model=PerformanceMetrics,
-    status_code=status.HTTP_200_OK,
-    summary="Get My Performance Metrics",
     description="Get performance metrics for the current user with optional date filtering",
 )
 async def get_my_performance(

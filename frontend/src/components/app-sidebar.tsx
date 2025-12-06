@@ -43,7 +43,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenuButton size="lg" className="px-0 pl-0">
           <SidebarTrigger
             className="flex items-center justify-between px-0 pl-0 mx-0"
-            withText
           />
         </SidebarMenuButton>
       </SidebarFooter>

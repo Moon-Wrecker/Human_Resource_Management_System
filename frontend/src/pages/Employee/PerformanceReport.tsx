@@ -8,7 +8,6 @@ import performanceReportService, {
   type PerformanceReportResponse,
 } from "@/services/performanceReportService";
 import aiPerformanceReportService, {
-  type AIPerformanceReportResponse,
   AIReportTemplateEnum,
   AITimePeriodEnum,
 } from "@/services/aiPerformanceReportService";
@@ -39,30 +38,35 @@ export default function PerformanceReport() {
       if (!user) return;
       try {
         setLoading(true);
-        const [startDate, endDate] = timePeriod
-          .split(" - ")
-          .map((m, i) =>
-            new Date(
-              2025,
-              [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-              ].indexOf(m) + i,
-              i ? 0 : 1,
-            )
-              .toISOString()
-              .slice(0, 10),
-          );
+        // Parse the time period (e.g., "Sep - Dec")
+        const months = timePeriod.split(" - ");
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        
+        const startMonthIndex = monthNames.indexOf(months[0]);
+        const endMonthIndex = monthNames.indexOf(months[1]);
+        
+        // Create start date (first day of start month)
+        const startDate = new Date(2025, startMonthIndex, 1)
+          .toISOString()
+          .slice(0, 10);
+        
+        // Create end date (last day of end month)
+        const endDate = new Date(2025, endMonthIndex + 1, 0)
+          .toISOString()
+          .slice(0, 10);
 
         const response = await performanceReportService.getPerformanceReports({
           start_date: startDate,
@@ -87,6 +91,32 @@ export default function PerformanceReport() {
 
     fetchReports();
   }, [user, timePeriod]);
+
+  // Calculate performance score based on multiple metrics
+  const calculatePerformanceScore = (): string => {
+    if (!reports) return "N/A";
+    
+    // Check if we have any meaningful data
+    if (reports.total_modules_completed === 0 && 
+        reports.attendance_rate === 0 && 
+        reports.goals_completion_rate === 0) {
+      return "0.0";
+    }
+    
+    // Weighted formula:
+    // 40% Attendance Rate (0-100 -> 0-2 points)
+    // 40% Goals Completion Rate (0-100 -> 0-2 points)
+    // 20% Module Completion (normalized, 0-10 modules -> 0-1 point)
+    
+    const attendanceScore = (reports.attendance_rate / 100) * 2; // Max 2 points
+    const goalsScore = (reports.goals_completion_rate / 100) * 2; // Max 2 points
+    const modulesScore = Math.min((reports.total_modules_completed / 10), 1); // Max 1 point (capped at 10 modules)
+    
+    const totalScore = attendanceScore + goalsScore + modulesScore;
+    
+    // Round very small scores to 0.0 to avoid showing misleading tiny values
+    return totalScore < 0.05 ? "0.0" : totalScore.toFixed(1);
+  };
 
   const handleGenerateAIReport = async () => {
     if (!user) return;
@@ -148,12 +178,13 @@ export default function PerformanceReport() {
             {(reports?.total_modules_completed || 0) * 2.5}
           </CardContent>
         </Card>
-        {/* TODO: Fetch Value */}
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">
             Performance Score
           </CardHeader>
-          <CardContent className="text-lg font-semibold">4.3</CardContent>
+          <CardContent className="text-lg font-semibold">
+            {calculatePerformanceScore()} / 5.0
+          </CardContent>
         </Card>
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">
@@ -180,12 +211,12 @@ export default function PerformanceReport() {
           </CardContent>
         </Card>
         <ChartAreaDefault
-          chartData={reports?.monthly_modules.map((m) => ({
+          chartData={reports?.monthly_modules?.map((m) => ({
             modules_completed: m.modules_completed,
             month: new Date(m.month).toLocaleString("en-US", {
               month: "long",
             }),
-          }))}
+          })) || []}
         />
         <Card className="w-full text-center">
           <CardHeader className="text-xl font-bold">Latest Feedback</CardHeader>

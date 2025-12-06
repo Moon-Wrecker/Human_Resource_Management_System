@@ -16,30 +16,35 @@ PulseTrack HRMS is a **next-generation, AI-powered Human Resource Management Sys
 Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 
 ### 🤖 **AI-First Architecture**
+
 - **Smart Policy Assistant**: 24/7 AI-powered chatbot using Retrieval-Augmented Generation (RAG) for instant policy queries
 - **Intelligent Resume Screening**: AI analyzes and ranks candidates automatically based on job requirements
 - **Auto Job Description Generator**: Creates professional, comprehensive JDs using Google Gemini AI
 - **AI Performance Insights**: Automated performance report generation with actionable recommendations
 
 ### 🎯 **Modern Technology Stack**
+
 - **FastAPI Backend**: High-performance, async Python framework with auto-generated API documentation
 - **React 19 Frontend**: Modern, responsive UI with TypeScript and Tailwind CSS
 - **Vector Database**: ChromaDB for semantic search capabilities
 - **LangChain Integration**: Advanced RAG pipeline for intelligent document processing
 
 ### 💡 **User-Centric Design**
+
 - **Role-Based Dashboards**: Personalized dashboards for HR, Managers, Employees, and Executives
 - **Real-Time Analytics**: Live workforce insights and performance metrics
 - **Self-Service Portal**: Empowers employees with instant access to payslips, policies, and more
 - **Mobile-Responsive**: Works seamlessly across all devices
 
 ### ⚡ **Comprehensive Feature Set**
+
 - **165+ API Endpoints**: Fully documented with OpenAPI/Swagger
 - **16 User Stories**: Complete implementation covering all HR workflows
 - **Multi-Role Access Control**: Granular permissions for different user types
 - **Enterprise-Grade Security**: JWT authentication, password hashing, role-based access
 
 ### 🔄 **Automation & Efficiency**
+
 - Automated leave approvals workflow
 - Intelligent goal tracking with milestone management
 - Automated payslip generation
@@ -51,6 +56,7 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 ## 📋 Features Overview
 
 ### For HR Managers
+
 - 📊 **Comprehensive Dashboard** with real-time workforce analytics
 - 🤖 **AI Resume Screener** for automated candidate evaluation
 - 📝 **AI Job Description Generator** for creating professional JDs
@@ -59,6 +65,7 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 - 📢 **Announcements** and company-wide communications
 
 ### For Managers/Team Leads
+
 - 🎯 **Team Performance Dashboard** with detailed metrics
 - ✅ **Goal Setting & Tracking** for team members
 - 💬 **Feedback Management** for continuous employee reviews
@@ -67,6 +74,7 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 - 📊 **Team Analytics** and performance insights
 
 ### For Employees
+
 - 🏠 **Personal Dashboard** with performance overview
 - 💰 **Payslip Access** with download functionality
 - 📅 **Leave Management** with real-time status updates
@@ -76,6 +84,7 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 - 📢 **Company Announcements** and updates
 
 ### AI-Powered Features
+
 - 🧠 **Policy RAG Chatbot**: Ask any policy question in natural language
 - 🔍 **Resume Screener**: Upload resumes and get AI-powered candidate rankings
 - ✍️ **JD Generator**: Generate professional job descriptions from simple requirements
@@ -86,9 +95,10 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 ## 🛠️ Technology Stack
 
 ### Backend
+
 - **Framework**: FastAPI (Python 3.8+)
 - **Database**: SQLite with SQLAlchemy ORM
-- **AI/ML**: 
+- **AI/ML**:
   - Google Gemini API (Natural Language Processing)
   - ChromaDB (Vector Database)
   - LangChain (RAG Framework)
@@ -97,6 +107,7 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 - **API Documentation**: Auto-generated OpenAPI 3.0 (Swagger/ReDoc)
 
 ### Frontend
+
 - **Framework**: React 19.2 with TypeScript
 - **Styling**: Tailwind CSS 4.1
 - **UI Components**: Radix UI primitives
@@ -106,8 +117,9 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 - **Build Tool**: Vite 7
 
 ### DevOps & Tools
+
 - **Version Control**: Git
-- **Package Management**: pip (Python), npm (Node.js)
+- **Package Management**: pip/uv (Python), pnpm (Node.js)
 - **Development**: Hot reload, auto-restart
 - **Testing**: Comprehensive test suite for APIs
 
@@ -118,6 +130,7 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - **Python 3.8+** ([Download](https://www.python.org/downloads/))
 - **Node.js 18+** and npm ([Download](https://nodejs.org/))
 - **Git** ([Download](https://git-scm.com/downloads))
@@ -135,57 +148,56 @@ cd soft-engg-project-sep-2025-se-SEP-11
 #### 2️⃣ Backend Setup
 
 **For Windows:**
+
 ```bash
-cd backend
+pip3 install uv
 
-# Run automated setup script
-.\setup.ps1
+# Create .venv
+uv venv
+uv sync
 
-# Or manual setup:
-python -m venv venv
-.\venv\Scripts\activate
-pip install -r requirements.txt
-
-# Install AI dependencies (optional, for AI features)
-pip install -r requirements_ai.txt
+.venv/scripts/activate
 
 # Create .env file (copy from .env.example if available)
 # Add your configuration:
-# - SECRET_KEY=your-secret-key
-# - JWT_SECRET_KEY=your-jwt-secret
 # - GOOGLE_API_KEY=your-gemini-api-key
+# - GOOGLE_API_KEY_1=your-gemini-api-key
 
 # Initialize database and seed data
-python database.py
-python seed_data.py
+uv run backend/database.py
+uv run backend/seed_data.py
 
 # Start the backend server
-python main.py
+uv run backend/main.py
 ```
 
 **For Linux/Mac:**
+
 ```bash
-cd backend
+pip3 install uv
 
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+# Create .venv
+uv venv
+uv sync
 
-# Install AI dependencies (optional)
-pip install -r requirements_ai.txt
+source .venv/scripts/activate
 
-# Create .env file with your configuration
+# Create .env file (copy from .env.example if available)
+# Add your configuration:
+# - GOOGLE_API_KEY=your-gemini-api-key
+# - GOOGLE_API_KEY_1=your-gemini-api-key
 
 # Initialize database and seed data
-python3 database.py
-python3 seed_data.py
+uv run backend/database.py
+uv run backend/seed_data.py
 
 # Start the backend server
-python3 main.py
+uv run backend/main.py
+
 ```
 
 The backend will start at: `http://localhost:8000`
+
 - API Documentation: `http://localhost:8000/api/docs`
 - Alternative Docs: `http://localhost:8000/api/redoc`
 - Health Check: `http://localhost:8000/health`
@@ -217,15 +229,18 @@ The frontend will start at: `http://localhost:5173`
 After running `seed_data.py`, you can login with these credentials:
 
 ### HR Manager
-- **Email**: `hr.manager@company.com`
+
+- **Email**: `sarah.johnson@company.com`
 - **Password**: `pass123`
 
 ### Team Manager
-- **Email**: `manager1@company.com`
+
+- **Email**: `michael.chen@company.com`
 - **Password**: `pass123`
 
 ### Employee
-- **Email**: `john.doe@company.com`
+
+- **Email**: `john.anderson@company.com`
 - **Password**: `pass123`
 
 ---
@@ -275,18 +290,18 @@ soft-engg-project-sep-2025-se-SEP-11/
 
 ## 🎯 Key Differentiators vs Traditional HRMS
 
-| Feature | Traditional HRMS | PulseTrack HRMS |
-|---------|------------------|-----------------|
-| **Policy Queries** | Search through documents manually | AI-powered 24/7 chatbot with instant answers |
-| **Resume Screening** | Manual review by HR team | Automated AI screening with candidate ranking |
-| **Job Descriptions** | Written manually | AI-generated professional JDs in seconds |
-| **API Documentation** | Often outdated or missing | Auto-generated, always up-to-date Swagger docs |
-| **Tech Stack** | Legacy frameworks | Modern FastAPI + React 19 |
-| **Performance** | Synchronous, slower | Async, high-performance architecture |
-| **User Experience** | Complex, cluttered UI | Clean, role-specific, intuitive interface |
-| **Mobile Support** | Limited or none | Fully responsive design |
-| **Development** | Slow iteration cycles | Hot reload, fast development |
-| **Scalability** | Monolithic architecture | Microservices-ready, modular design |
+| Feature               | Traditional HRMS                  | PulseTrack HRMS                                |
+| --------------------- | --------------------------------- | ---------------------------------------------- |
+| **Policy Queries**    | Search through documents manually | AI-powered 24/7 chatbot with instant answers   |
+| **Resume Screening**  | Manual review by HR team          | Automated AI screening with candidate ranking  |
+| **Job Descriptions**  | Written manually                  | AI-generated professional JDs in seconds       |
+| **API Documentation** | Often outdated or missing         | Auto-generated, always up-to-date Swagger docs |
+| **Tech Stack**        | Legacy frameworks                 | Modern FastAPI + React 19                      |
+| **Performance**       | Synchronous, slower               | Async, high-performance architecture           |
+| **User Experience**   | Complex, cluttered UI             | Clean, role-specific, intuitive interface      |
+| **Mobile Support**    | Limited or none                   | Fully responsive design                        |
+| **Development**       | Slow iteration cycles             | Hot reload, fast development                   |
+| **Scalability**       | Monolithic architecture           | Microservices-ready, modular design            |
 
 ---
 
@@ -331,7 +346,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For issues, questions, or contributions:
-- **Email**: support@pulsetrack-hrms.com
+
 - **Documentation**: See `docs/` folder
 - **API Issues**: Check `http://localhost:8000/api/docs`
 
