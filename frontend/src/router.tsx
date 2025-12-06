@@ -265,7 +265,10 @@ const router = createBrowserRouter([
             path: "payslips",
             element: <Payslips />,
           },
-
+          {
+            path: "payslips/:id",
+            element: <PayslipsDetails />,
+          },
           {
             path: "team-members",
             element: <TeamMembers />,
