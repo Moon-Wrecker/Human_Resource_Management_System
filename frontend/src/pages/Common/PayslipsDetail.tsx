@@ -11,6 +11,7 @@ import payslipService, {
 } from "@/services/payslipService";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Printer } from "lucide-react";
 
 const PayslipsDetail = () => {
   const { id: payslipId } = useParams();
@@ -25,9 +26,64 @@ const PayslipsDetail = () => {
 
   if (!payslip) return <p>Data not found!</p>;
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="flex justify-center my-8">
-      <Card className="w-[80%] shadow-lg rounded-2xl border border-gray-200">
+      <style>
+        {`
+          @media print {
+            /* Remove browser default headers and footers */
+            @page {
+              margin: 0;
+              size: auto;
+            }
+            
+            /* Hide everything except our content */
+            body * {
+              visibility: hidden;
+            }
+            
+            /* Make only the payslip card and its children visible */
+            .print-card,
+            .print-card * {
+              visibility: visible;
+            }
+            
+            /* Position the card at the top left */
+            .print-card {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100% !important;
+              margin: 0 !important;
+              padding: 2rem !important;
+              border: none !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+            }
+            
+            /* Hide buttons and other non-printable elements */
+            .no-print {
+              display: none !important;
+              visibility: hidden !important;
+            }
+            
+            /* Remove margins from body */
+            html, body {
+              margin: 0 !important;
+              padding: 0 !important;
+              width: 100%;
+              height: 100%;
+              print-color-adjust: exact;
+              -webkit-print-color-adjust: exact;
+            }
+          }
+        `}
+      </style>
+      <Card className="w-[80%] shadow-lg rounded-2xl border border-gray-200 print-card">
         {/* Header */}
         <CardHeader className="border-b">
           <CardTitle className="text-2xl font-bold">
@@ -90,17 +146,23 @@ const PayslipsDetail = () => {
 
         {/* Footer */}
         <CardFooter className="flex justify-between items-center">
-          {payslip.has_document && (
-            <Button asChild variant="outline">
-              <a
-                href={payslip.payslip_file_path}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Download Payslip
-              </a>
+          <div className="flex gap-2 no-print">
+            <Button onClick={handlePrint} variant="default">
+              <Printer className="h-4 w-4 mr-2" />
+              Print Payslip
             </Button>
-          )}
+            {payslip.has_document && (
+              <Button asChild variant="outline">
+                <a
+                  href={payslip.payslip_file_path}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Download Payslip
+                </a>
+              </Button>
+            )}
+          </div>
           <p className="text-sm text-gray-500">
             Issued at: {new Date(payslip.issued_at).toLocaleString()}
           </p>

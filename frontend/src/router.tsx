@@ -25,6 +25,7 @@ const TeamRequests = lazy(() => import("@/pages/Manager/TeamRequests"));
 const ResumeScreenerResults = lazy(
   () => import("@/pages/HR/ResumeScreenerResults"),
 );
+const ScreeningHistory = lazy(() => import("@/pages/HR/ScreeningHistory"));
 const Announcements = lazy(() => import("@/pages/HR/Announcements"));
 const AnnouncementsEmployee = lazy(
   () => import("@/pages/Common/Announcements"),
@@ -188,6 +189,10 @@ const router = createBrowserRouter([
           {
             path: "resume-screener/results",
             element: <ResumeScreenerResults />,
+          },
+          {
+            path: "screening-history",
+            element: <ScreeningHistory />,
           },
           {
             path: "announcements",

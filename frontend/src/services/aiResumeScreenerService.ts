@@ -3,7 +3,8 @@
  * Frontend service for AI-powered resume screening
  */
 
-import api from './api';
+import api, { handleApiError } from './api';
+import { API_URL } from '@/config/api';
 
 // ==================== Types ====================
 
@@ -91,68 +92,77 @@ export const screenResumes = async (
   data: ResumeScreeningRequest
 ): Promise<ResumeScreeningResult> => {
   try {
-    const response = await api.post('/api/v1/ai/resume-screener/screen', data);
+    const response = await api.post('/ai/resume-screener/screen', data);
     return response.data;
-  } catch (error: any) {
-    console.error('Error screening resumes:', error);
-    return {
-      success: false,
-      job_id: data.job_id,
-      results: [],
-      total_analyzed: 0,
-      average_score: 0,
-      error: error.response?.data?.detail || 'Failed to screen resumes'
-    };
+  } catch (error) {
+    throw new Error(handleApiError(error));
   }
 };
 
-/**
- * Screen resumes with streaming progress (Server-Sent Events)
- */
-export const screenResumesWithProgress = (
+export const screenResumesWithProgress = async (
   data: ResumeScreeningRequest,
   onProgress: (progress: ScreeningProgress) => void,
   onError: (error: string) => void
-): EventSource => {
-  const token = localStorage.getItem('token');
-  const queryParams = new URLSearchParams({
-    job_id: data.job_id.toString(),
-    ...(data.job_description && { job_description: data.job_description }),
-    ...(data.resume_ids && { resume_ids: JSON.stringify(data.resume_ids) })
-  });
+): Promise<void> => {
+  const token = localStorage.getItem('access_token');
 
-  const eventSource = new EventSource(
-    `${import.meta.env.VITE_API_BASE_URL}/api/v1/ai/resume-screener/screen/stream?${queryParams}&token=${token}`
-  );
+  try {
+    const response = await fetch(`${API_URL}/ai/resume-screener/screen/stream`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
 
-  eventSource.addEventListener('start', (event) => {
-    const data = JSON.parse(event.data);
-    onProgress({ type: 'start', data });
-  });
+    if (!response.body) {
+      throw new Error('Response body is null');
+    }
 
-  eventSource.addEventListener('result', (event) => {
-    const data = JSON.parse(event.data);
-    onProgress({ type: 'result', data });
-  });
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
 
-  eventSource.addEventListener('complete', (event) => {
-    const data = JSON.parse(event.data);
-    onProgress({ type: 'complete', data });
-    eventSource.close();
-  });
+    let buffer = '';
 
-  eventSource.addEventListener('error', (event: any) => {
-    const data = JSON.parse(event.data || '{}');
-    onError(data.error || 'Streaming error occurred');
-    eventSource.close();
-  });
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
 
-  eventSource.onerror = () => {
+      buffer += decoder.decode(value, { stream: true });
+
+      const parts = buffer.split('\n\n');
+      buffer = parts.pop() || '';
+
+      for (const part of parts) {
+        const lines = part.split('\n');
+        let event = '';
+        let data = '';
+
+        for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            event = line.substring(7);
+          } else if (line.startsWith('data: ')) {
+            data = line.substring(6);
+          }
+        }
+
+        if (event && data) {
+          try {
+            const parsedData = JSON.parse(data);
+            onProgress({ type: event as any, data: parsedData });
+          } catch (e) {
+            console.error('Failed to parse SSE data:', e);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error in streaming resume screening:', error);
     onError('Connection error occurred');
-    eventSource.close();
-  };
-
-  return eventSource;
+  }
 };
 
 /**
@@ -162,11 +172,10 @@ export const getScreeningResults = async (
   analysisId: string
 ): Promise<ResumeScreeningResult> => {
   try {
-    const response = await api.get(`/api/v1/ai/resume-screener/results/${analysisId}`);
+    const response = await api.get(`/ai/resume-screener/results/${analysisId}`);
     return response.data;
-  } catch (error: any) {
-    console.error('Error getting screening results:', error);
-    throw new Error(error.response?.data?.detail || 'Failed to get results');
+  } catch (error) {
+    throw new Error(handleApiError(error));
   }
 };
 
@@ -178,15 +187,10 @@ export const getScreeningHistory = async (
 ): Promise<ScreeningHistory> => {
   try {
     const params = jobId ? { job_id: jobId } : {};
-    const response = await api.get('/api/v1/ai/resume-screener/history', { params });
+    const response = await api.get('/ai/resume-screener/history', { params });
     return response.data;
-  } catch (error: any) {
-    console.error('Error getting screening history:', error);
-    return {
-      success: false,
-      total: 0,
-      history: []
-    };
+  } catch (error) {
+    throw new Error(handleApiError(error));
   }
 };
 

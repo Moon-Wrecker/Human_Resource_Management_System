@@ -49,6 +49,34 @@ export type GenerateJDResponse = {
   message: string;
 };
 
+export type ImproveJDRequest = {
+  job_listing_id: number;
+  improvements: string[];
+};
+
+export type ImproveJDResponse = {
+  success: boolean;
+  message: string;
+  improved_description: string;
+};
+
+export type ExtractKeywordsRequest = {
+  job_description: string;
+};
+
+export type ExtractKeywordsResponse = {
+  success: boolean;
+  keywords: string[];
+  total: number;
+};
+
+export type JDGeneratorStatusResponse = {
+  available: boolean;
+  model?: string;
+  features?: string[];
+  error?: string;
+};
+
 // ===== SERVICE CLASS =====
 
 class AIJobDescriptionService {

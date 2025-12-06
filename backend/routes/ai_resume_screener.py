@@ -228,7 +228,7 @@ async def screen_resumes(
             resume_files.append(
                 {
                     "path": app.resume_path,
-                    "candidate_name": app.full_name,
+                    "candidate_name": app.applicant_name,
                     "application_id": app.id,
                 }
             )
@@ -245,7 +245,7 @@ async def screen_resumes(
             resume_files=resume_files,
             job_description=job_description,
             job_id=request.job_id,
-            job_title=job.title,
+            job_title=job.position,
         )
 
         if not result.get("success"):
@@ -263,7 +263,7 @@ async def screen_resumes(
             total_analyzed=result["total_analyzed"],
             average_score=result["average_score"],
             top_candidate=result.get("top_candidate"),
-            analysis_id=result.get("analysis_id"),
+            analysis_id=int(result.get("analysis_id") or "0"),
         )
 
     except HTTPException:
@@ -427,7 +427,7 @@ async def screen_resumes_stream(
                 resume_files.append(
                     {
                         "path": app.resume_path,
-                        "candidate_name": app.full_name,
+                        "candidate_name": app.applicant_name,
                         "application_id": app.id,
                     }
                 )
@@ -437,7 +437,7 @@ async def screen_resumes_stream(
                 return
 
             total = len(resume_files)
-            yield f"event: start\ndata: {json.dumps({'total': total, 'job_title': job.title})}\n\n"
+            yield f"event: start\ndata: {json.dumps({'total': total, 'job_title': job.position})}\n\n"
 
             # Screen resumes one by one with progress updates
             service = get_resume_screener_service()
@@ -501,7 +501,7 @@ async def screen_resumes_stream(
             screening_data = {
                 "analysis_id": analysis_id,
                 "job_id": request.job_id,
-                "job_title": job.title,
+                "job_title": job.position,
                 "timestamp": datetime.utcnow().isoformat(),
                 "total_analyzed": len(results),
                 "average_score": average_score,
