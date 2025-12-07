@@ -131,12 +131,12 @@ export function LoginForm({
               </Field>
               
               {/* Test credentials hint */}
-              <div className="rounded-md bg-blue-50 p-4 text-xs text-blue-800 border border-blue-200">
+              {/* <div className="rounded-md bg-blue-50 p-4 text-xs text-blue-800 border border-blue-200">
                 <p className="font-semibold mb-1">Test Credentials:</p>
                 <p>HR: sarah.johnson@company.com / pass123</p>
                 <p>Manager: michael.chen@company.com / pass123</p>
                 <p>Employee: john.doe@company.com / pass123</p>
-              </div>
+              </div> */}
 
 
             </FieldGroup>
