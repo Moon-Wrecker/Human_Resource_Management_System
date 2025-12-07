@@ -1,3 +1,4 @@
+import AppLogoName from "../assets/app-logo-name.svg"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -140,6 +141,9 @@ export function LoginForm({
 
             </FieldGroup>
           </form>
+          <div className="hidden flex-col items-center justify-center p-1 md:flex bg-gradient-to-br from-gray-400 to-white-600">
+            <img src={AppLogoName} alt="App Logo" className="w-2/3 h-auto" />
+          </div>
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">

@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Book } from "lucide-react";
 
 import { NavItems } from "@/components/nav-projects";
 import {
@@ -15,7 +14,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import EmployeeSidebarItems from "@/constants/EmployeeSidebarItems";
+import AppLogo from "../assets/app-logo.svg";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -27,9 +26,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <Book className="size-4" />
-              </div>
+              <img src={AppLogo} alt="App Logo" className="h-8 w-auto" />
               PulseTrack HRMS
             </SidebarMenuButton>
           </SidebarMenuItem>
