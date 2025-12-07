@@ -201,11 +201,19 @@ const router = createBrowserRouter([
           },
           {
             path: "announcements",
-            element: <Announcements />,
+            element: <AnnouncementsEmployee />,
+          },
+          {
+            path: "announcements/:id",
+            element: <AnnouncementsDetailsEmployee />,
           },
           {
             path: "payslips",
             element: <Payslips />,
+          },
+          {
+            path: "payslips/:id",
+            element: <PayslipsDetails />,
           },
           {
             path: "applications",
@@ -257,7 +265,10 @@ const router = createBrowserRouter([
             path: "payslips",
             element: <Payslips />,
           },
-
+          {
+            path: "payslips/:id",
+            element: <PayslipsDetails />,
+          },
           {
             path: "team-members",
             element: <TeamMembers />,
