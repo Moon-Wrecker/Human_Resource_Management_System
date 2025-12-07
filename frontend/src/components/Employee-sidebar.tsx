@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Book } from "lucide-react";
+import AppLogo from "../assets/app-logo.svg";
 
 import { NavItems } from "@/components/nav-projects";
 import {
@@ -28,7 +28,7 @@ export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sideba
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <Book className="size-4" />
+                <img src={AppLogo} alt="App Logo" className="h-8 w-auto" />
               </div>
               PulseTrack HRMS
             </SidebarMenuButton>

@@ -25,7 +25,7 @@ const HRSidebarItems = {
     },
     {
       name: "Employee List",
-      url: "employees-list",
+      url: "/hr/employees-list",
       icon: Users,
     },
     {
