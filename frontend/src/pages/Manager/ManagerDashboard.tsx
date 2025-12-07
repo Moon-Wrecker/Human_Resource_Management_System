@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import EmployeeDashboardCard from "@/components/EmployeeDashboardCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell } from "recharts";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Loader2, Zap } from "lucide-react";
 import {
   ChartContainer,
   ChartLegend,
@@ -14,6 +18,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { dashboardService } from "@/services/dashboardService";
 import type { ManagerDashboardData } from "@/services/dashboardService";
+
+import aiPerformanceReportService, {
+  AIReportTemplateEnum,
+  AITimePeriodEnum,
+} from "@/services/aiPerformanceReportService";
 
 const attendanceChartConfig = {
   present: { label: "Present %", color: "#34d399" },
@@ -29,7 +38,9 @@ const ManagerDashboard = () => {
     useState<ManagerDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [teamAIReportLoading, setTeamAIReportLoading] = useState(false);
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -104,6 +115,26 @@ const ManagerDashboard = () => {
       ).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
     : "N/A";
 
+    const handleGenerateTeamAIReport = async () => {
+  if (!user) return;
+  
+  setTeamAIReportLoading(true);
+  try {
+    const report = await aiPerformanceReportService.getTeamPerformanceReport({
+      scope: "team_summary",
+      time_period: AITimePeriodEnum.CURRENT_YEAR,
+      template: AIReportTemplateEnum.COMPREHENSIVE_REVIEW,
+    });
+    
+    navigate("/manager/team-ai-report", { 
+      state: { teamAIReport: report } 
+    });
+  } catch (err) {
+    console.error("Failed to generate team report:", err);
+  } finally {
+    setTeamAIReportLoading(false);
+  }
+};
   return (
     <main className="min-h-screen bg-white flex flex-col items-center w-full py-10 px-2">
       <h2 className="text-3xl font-semibold text-center mt-2">
@@ -237,8 +268,36 @@ const ManagerDashboard = () => {
               </CardContent>
             </Card>
           </div>
-          <div className="grid md:grid-cols-2 grid-cols-1 gap-6 mt-6">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 mt-6">
             {/* Team Stats Cards */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Team Performance AI Report</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Get comprehensive AI insights for your entire team
+                </p>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Button 
+                  onClick={handleGenerateTeamAIReport}
+                  disabled={teamAIReportLoading}
+                  className="w-full"
+                  size="lg"
+                >
+                  {teamAIReportLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="mr-2 h-4 w-4" />
+                      Generate AI Report
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader>
                 <CardTitle>Team Training Hours</CardTitle>

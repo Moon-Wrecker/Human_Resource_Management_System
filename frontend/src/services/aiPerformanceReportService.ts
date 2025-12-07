@@ -16,6 +16,22 @@ export type AIPerformanceReportResponse = {
   // Add other fields as needed from the backend schema
 };
 
+export type TeamAIReportResponse = {
+  report_id: string;
+  team_id: number;
+  team_name: string;
+  report_type: string;
+  generated_at: string;
+  time_period_start: string;
+  time_period_end: string;
+  template_used: string;
+  team_summary_markdown: string;
+  team_comparative_markdown: string;
+  member_reports: any[];
+  team_data_summary: Record<string, any>;
+  generation_time_seconds: number;
+};
+
 export enum AITimePeriodEnum {
   LAST_30_DAYS = "last_30_days",
   LAST_90_DAYS = "last_90_days",
@@ -45,6 +61,12 @@ export type GetPersonalReportParams = {
   include_period_comparison?: boolean;
 };
 
+export type GetTeamReportParams = {
+  scope: "individual" | "team_individual" | "team_summary" | "team_comparative" | "department" | "organization";
+  time_period?: AITimePeriodEnum;
+  template?: AIReportTemplateEnum;
+};
+
 export type ReportTemplate = {
   name: string;
   description: string;
@@ -64,6 +86,15 @@ const aiPerformanceReportService = {
     params: GetPersonalReportParams,
   ): Promise<AIPerformanceReportResponse> {
     const response = await api.get("/ai/performance-report/individual/me", {
+      params,
+    });
+    return response.data;
+  },
+
+  async getTeamPerformanceReport(
+    params: GetTeamReportParams,
+  ): Promise<TeamAIReportResponse> {
+    const response = await api.get("/ai/performance-report/team/my-team", {
       params,
     });
     return response.data;

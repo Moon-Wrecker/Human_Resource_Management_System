@@ -48,7 +48,6 @@ Unlike traditional HRMS applications, PulseTrack HRMS stands out with:
 - Automated leave approvals workflow
 - Intelligent goal tracking with milestone management
 - Automated payslip generation
-- Smart notification system
 - Bulk employee data management
 
 ---

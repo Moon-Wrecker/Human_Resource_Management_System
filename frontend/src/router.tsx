@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import RootLayout from "@/layouts/RootLayout";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import PerformanceReport from "@/pages/Employee/PerformanceReport";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Login = lazy(() => import("@/pages/Login"));
@@ -26,7 +27,6 @@ const ResumeScreenerResults = lazy(
   () => import("@/pages/HR/ResumeScreenerResults"),
 );
 const ScreeningHistory = lazy(() => import("@/pages/HR/ScreeningHistory"));
-const Announcements = lazy(() => import("@/pages/HR/Announcements"));
 const AnnouncementsEmployee = lazy(
   () => import("@/pages/Common/Announcements"),
 );
@@ -37,9 +37,6 @@ const Payslips = lazy(() => import("@/pages/Common/Payslips"));
 const PayslipsDetails = lazy(() => import("@/pages/Common/PayslipsDetail"));
 const Applications = lazy(() => import("@/pages/HR/Applications"));
 const Attendance = lazy(() => import("@/pages/Common/Attendance"));
-const PerformanceReport = lazy(
-  () => import("@/pages/Common/PerformanceReport"),
-);
 const EmployeePerformanceReport = lazy(
   () => import("@/pages/Employee/PerformanceReport"),
 );
@@ -58,6 +55,9 @@ const SkillVisit = lazy(
 );
 const FeedbackReport = lazy(() => import("@/pages/Employee/FeedbackReport"));
 const AIReportPage = lazy(() => import("@/pages/Employee/AIReportPage"));
+const AIReportPageManager = lazy(
+  () => import("@/pages/Manager/AIReportPage"),
+);
 const OrganizationalChartPage = lazy(() => import("@/pages/OrganizationalChartPage"));
 
 const router = createBrowserRouter([
@@ -252,6 +252,14 @@ const router = createBrowserRouter([
           {
             path: "performance-report",
             element: <PerformanceReport />,
+          },
+          {
+            path: "team-ai-report",
+            element: <AIReportPageManager />,
+          },
+          {
+            path: "performance-report/feedbacks",
+            element: <FeedbackReport />,
           },
           {
             path: "announcements",
