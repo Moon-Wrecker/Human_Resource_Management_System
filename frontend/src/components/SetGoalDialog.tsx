@@ -25,7 +25,7 @@ const SetGoalDialog = ({
   member: TeamMember | null;
 }) => {
   const [goalTitle, setGoalTitle] = useState("");
-  const [checkpoints, setCheckpoints] = useState([{ title: "" }]);
+  const [checkpoints, setCheckpoints] = useState([{ title: "", description: "" }]);
   const [deadline, setDeadline] = useState("");
   const [info, setInfo] = useState("");
 
@@ -57,35 +57,47 @@ const SetGoalDialog = ({
               Checkpoints:
             </Label>
             {checkpoints.map((checkpoint, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder={`Checkpoint ${index + 1}`}
+              <div key={index} className="flex flex-col gap-2 border p-2 rounded">
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="text"
+                    placeholder={`Checkpoint ${index + 1} Title`}
+                    className="px-2 py-1 w-full"
+                    value={checkpoint.title}
+                    onChange={(e) => {
+                      const newCheckpoints = [...checkpoints];
+                      newCheckpoints[index].title = e.target.value;
+                      setCheckpoints(newCheckpoints);
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      const newCheckpoints = checkpoints.filter((_, i) => i !== index);
+                      setCheckpoints(newCheckpoints);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+                <Textarea
+                  placeholder={`Checkpoint ${index + 1} Description`}
                   className="px-2 py-1 w-full"
-                  value={checkpoint.title}
+                  value={checkpoint.description}
                   onChange={(e) => {
                     const newCheckpoints = [...checkpoints];
-                    newCheckpoints[index].title = e.target.value;
+                    newCheckpoints[index].description = e.target.value;
                     setCheckpoints(newCheckpoints);
                   }}
                 />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => {
-                    const newCheckpoints = checkpoints.filter((_, i) => i !== index);
-                    setCheckpoints(newCheckpoints);
-                  }}
-                >
-                  Remove
-                </Button>
               </div>
             ))}
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setCheckpoints([...checkpoints, { title: "" }])}
+              onClick={() => setCheckpoints([...checkpoints, { title: "", description: "" }])}
             >
               Add Checkpoint
             </Button>

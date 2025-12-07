@@ -25,6 +25,7 @@ interface FullOrganizationalHierarchyProps {
 
 // ORG NODE (shadcn styled)
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // if you have shadcn avatar
+import type { Divide } from 'lucide-react';
 
 const OrgNode: React.FC<{
   user: UserHierarchyNode;
@@ -103,7 +104,7 @@ const OrgNode: React.FC<{
 const FullOrganizationalHierarchy: React.FC<
   FullOrganizationalHierarchyProps
 > = ({ reportingStructure }) => {
-  const { employee, direct_manager, peers } = reportingStructure;
+  const { employee, direct_manager, skip_level_manager, direct_reports, peers } = reportingStructure;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -120,44 +121,74 @@ const FullOrganizationalHierarchy: React.FC<
     );
   }
 
+  const buildTree = () => {
+    const employeeNode = (
+      <TreeNode key={employee.id} label={<div className="w-full flex items-center justify-center"><OrgNode user={employee} isMe level="employee" /></div>}>
+        {direct_reports.map((report) => (
+          <TreeNode key={report.id} label={<div className="w-full flex items-center justify-center"><OrgNode user={report} level="employee" /></div>} />
+        ))}
+      </TreeNode>
+    );
+
+    const peerNodes = peers.map((peer) => (
+      <TreeNode key={peer.id} label={<div className="w-full flex items-center justify-center"><OrgNode user={peer} level="employee" /></div>} />
+    ));
+
+    if (direct_manager) {
+      if (skip_level_manager) {
+        return (
+          <Tree
+            lineWidth="2px"
+            lineColor="#000"
+            lineBorderRadius="0"
+            label={<div className="w-full flex items-center justify-center"><OrgNode user={skip_level_manager} level="manager" /></div>}
+          >
+            <TreeNode label={<div className="w-full flex items-center justify-center"><OrgNode user={direct_manager} level="manager" /></div>}>
+              {employeeNode}
+              {peerNodes}
+            </TreeNode>
+          </Tree>
+        );
+      }
+
+      return (
+        <Tree
+          lineWidth="2px"
+          lineColor="#000"
+          lineBorderRadius="0"
+          label={<div className="w-full flex items-center justify-center"><OrgNode user={direct_manager} level="manager" /></div>}
+        >
+          {employeeNode}
+          {peerNodes}
+        </Tree>
+      );
+    }
+
+    // No manager, just the employee and their reports
+    return (
+      <Tree
+        lineWidth="2px"
+        lineColor="#000"
+        lineBorderRadius="0"
+        label={<div className="w-full flex items-center justify-center"><OrgNode user={employee} isMe level="employee" /></div>}
+      >
+        {direct_reports.map((child) => (
+          <TreeNode key={child.id} label={<div className="w-full flex items-center justify-center"><OrgNode user={child} level="employee" /></div>} />
+        ))}
+      </Tree>
+    );
+  };
+
+
   return (
     <TooltipProvider>
       <div className="p-10 w-full overflow-auto">
         <h2 className="text-center mb-10 text-2xl font-bold">
-          My Manager & Peers
+          My Reporting Structure
         </h2>
 
-        <ScrollArea className="w-full">
-          {direct_manager ? (
-            <Tree
-              lineWidth="2px"
-              lineColor="#000"
-              lineBorderRadius="0"
-              label={
-                <div className="flex items-center justify-center w-full">
-                 <OrgNode user={direct_manager} level="manager" />
-                </div>
-              }
-            >
-              <TreeNode
-                label={<OrgNode user={employee} isMe level="employee" />}
-              />
-
-              {peers.map((peer) => (
-                <TreeNode
-                  key={peer.id}
-                  label={<OrgNode user={peer} level="employee" />}
-                />
-              ))}
-            </Tree>
-          ) : (
-            <div className="text-center">
-              <OrgNode user={employee} isMe level="employee" />
-              <p className="text-muted-foreground mt-3">
-                No manager information available
-              </p>
-            </div>
-          )}
+        <ScrollArea className="w-full flex justify-center">
+          {buildTree()}
         </ScrollArea>
       </div>
     </TooltipProvider>

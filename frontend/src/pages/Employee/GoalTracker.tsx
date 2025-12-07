@@ -55,7 +55,7 @@ export default function GoalTracker() {
                 {goal[0].description}
               </CardDescription>
               <p className="font-semibold text-sm">
-                <span className="font-bold">Deadline:</span> 21 October 2025
+                <span className="font-bold">Deadline:</span> {goal[0].target_date}
               </p>
               {goal[0].is_overdue && (
                 <Badge variant="destructive">OVERDUE</Badge>
