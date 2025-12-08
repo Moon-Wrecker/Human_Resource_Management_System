@@ -102,10 +102,10 @@ class ResumeScreeningRequest(BaseModel):
 class SkillMatchResponse(BaseModel):
     """Skill match details"""
 
-    skill_name: str
-    present_in_resume: bool
-    importance_level: int = Field(ge=0, le=5)
-    proficiency_level: Optional[int] = Field(None, ge=0, le=5)
+    skill_name: str | None
+    present_in_resume: bool | None
+    importance_level: int | None = Field(ge=0, le=5)
+    proficiency_level: Optional[int] | None = Field(None, ge=0, le=5)
     context: Optional[str] = None
 
 
@@ -114,8 +114,8 @@ class ExperienceMatchResponse(BaseModel):
 
     area: str
     years_required: Optional[float | str] = None
-    years_present: float
-    relevance_score: int = Field(ge=0, le=5)
+    years_present: float | None = None
+    relevance_score: int | None = Field(None, ge=0, le=5)
     context: Optional[str] = None
 
 
@@ -123,22 +123,22 @@ class EducationMatchResponse(BaseModel):
     """Education match details"""
 
     requirement: str
-    has_match: bool
-    details: str
+    has_match: bool | None = None
+    details: str | None = None
 
 
 class ResumeAnalysisResponse(BaseModel):
     """Resume analysis result"""
 
-    candidate_name: str
+    candidate_name: str | None
     application_id: Optional[int] = None
-    overall_fit_score: int = Field(ge=0, le=100)
+    overall_fit_score: int | None = Field(ge=0, le=100)
     skill_matches: List[SkillMatchResponse]
     experience_matches: List[ExperienceMatchResponse]
     education_match: EducationMatchResponse
-    strengths: List[str]
-    gaps: List[str]
-    summary: str
+    strengths: List[str] | None
+    gaps: List[str] | None
+    summary: str | None
     analysis_date: datetime
 
 
