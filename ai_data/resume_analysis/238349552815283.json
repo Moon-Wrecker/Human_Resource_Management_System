@@ -1,0 +1,270 @@
+{
+  "analysis_id": 238349552815283,
+  "job_id": 2,
+  "job_title": "Frontend Developer",
+  "timestamp": "2025-12-07T10:57:06.478970",
+  "total_analyzed": 2,
+  "average_score": 93.5,
+  "top_candidate": "ALARIC VAUGHN",
+  "results": [
+    {
+      "candidate_name": "ALARIC VAUGHN",
+      "overall_fit_score": 95,
+      "skill_matches": [
+        {
+          "skill_name": "Bootstrap",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Redesigned Bootstrap-based UI components, enhancing overall application performance"
+        },
+        {
+          "skill_name": "Angular",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Implemented JWT authentication to improve data security in Angular applications"
+        },
+        {
+          "skill_name": "SVN",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 3,
+          "context": "Restructured SVN work\ufb02ows by introducing automated scripts"
+        },
+        {
+          "skill_name": "Bower",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 3,
+          "context": "Developed Bower packages for internal use, speeding up development cycles"
+        },
+        {
+          "skill_name": "Flexbox",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Resolved layout inconsistencies across different browsers with Flexbox, gaining a 93% success rate in user acceptance testing."
+        },
+        {
+          "skill_name": "Sass",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Leveraged Sass functions to create dynamic and responsive styles based on user interactions"
+        },
+        {
+          "skill_name": "Gulp",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 4,
+          "context": "Accelerated the styling process by integrating Gulp for automated CSS preprocessing"
+        },
+        {
+          "skill_name": "Karma",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Created quality mockups and prototypes by using Karma tests to validate functionality"
+        },
+        {
+          "skill_name": "Lighthouse",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Optimized image formats and sizes as recommended by Lighthouse, shortening image load times by 0.8 seconds."
+        },
+        {
+          "skill_name": "Chrome DevTools",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Employed Chrome DevTools for real-time debugging and logging"
+        },
+        {
+          "skill_name": "UI/UX Design Principles",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Achieved a 4.2/5 rating in app store reviews by focusing on user-centered design principles"
+        },
+        {
+          "skill_name": "Performance Optimization",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Redesigned Bootstrap-based UI components, enhancing overall application performance and cutting down load times by 11 seconds; Optimized image formats and sizes as recommended by Lighthouse"
+        },
+        {
+          "skill_name": "Responsive Design",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Used responsive design techniques, ensuring a consistent user experience across all devices and growing mobile traf\ufb01c by 31%."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "Frontend Development",
+          "years_required": 0,
+          "years_present": 7,
+          "relevance_score": 5,
+          "context": "Lead Front End Developer (2022-current), UI/UX Developer (2019-2022), and Full Stack Developer with strong frontend focus (2017-2019)."
+        },
+        {
+          "area": "UI/UX Design & Implementation",
+          "years_required": 0,
+          "years_present": 5,
+          "relevance_score": 5,
+          "context": "UI/UX Developer role (2019-2022) and Lead Front End Developer with focus on UI component redesign, mockups, prototypes, and user-centered design principles."
+        },
+        {
+          "area": "Frontend Performance Optimization",
+          "years_required": 0,
+          "years_present": 5,
+          "relevance_score": 5,
+          "context": "Enhanced application performance and cut load times by 11 seconds; optimized image formats and sizes using Lighthouse."
+        }
+      ],
+      "education_match": {
+        "requirement": "Bachelor's in Computer Science or related field",
+        "has_match": true,
+        "details": "Bachelor of Science, Computer Science, Cornell University (2013-2017)"
+      },
+      "strengths": [
+        "Extensive and dedicated frontend and UI/UX experience (7+ years), directly aligning with the job description.",
+        "Proven ability to build 'beautiful user interfaces' with a strong focus on performance, responsiveness, and user-centered design.",
+        "Strong command of modern frontend technologies and tooling (Angular, Bootstrap, Flexbox, Sass, Gulp, Karma, Lighthouse, Chrome DevTools).",
+        "Quantifiable achievements demonstrating significant impact on application performance, development cycles, and user satisfaction.",
+        "Leadership experience as a Lead Front End Developer, indicating strong technical and team guidance capabilities."
+      ],
+      "gaps": [
+        "No explicit mention of other popular frontend frameworks like React or Vue.js, which might be used by the team.",
+        "While 'beautiful' is subjective, no explicit mention of advanced visual design tools (e.g., Figma, Sketch) or deep graphic design skills, though prototyping experience is present.",
+        "Limited explicit mention of CI/CD practices specifically for frontend deployments, though process improvement is evident."
+      ],
+      "summary": "ALARIC VAUGHN is an exceptionally strong candidate with a highly relevant and impressive background for a frontend team role focused on building user interfaces. Their 7+ years of experience, including leadership, directly align with the job description's core requirements. The resume showcases a deep technical skill set, a strong focus on UI/UX principles, and a track record of delivering high-quality, performant, and user-centric interfaces with measurable results. This candidate is an excellent fit and likely capable of making an immediate significant impact on the team.",
+      "analysis_date": "2025-12-07T10:56:46.044628",
+      "application_id": 28
+    },
+    {
+      "candidate_name": "resume5",
+      "overall_fit_score": 92,
+      "skill_matches": [
+        {
+          "skill_name": "HTML",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Listed as a core language; essential for building user interfaces."
+        },
+        {
+          "skill_name": "CSS",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Listed as a core language; essential for styling beautiful user interfaces."
+        },
+        {
+          "skill_name": "JavaScript",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Listed as a core language; primary language for interactive frontend development."
+        },
+        {
+          "skill_name": "React",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Rebuilt a 4-year-old SaaS application in React 15 at Zillow with a full user experience redesign."
+        },
+        {
+          "skill_name": "Redux",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Used in conjunction with React for rebuilding a SaaS application at Zillow."
+        },
+        {
+          "skill_name": "Jest",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Listed as a testing framework, indicating attention to code quality in frontend development."
+        },
+        {
+          "skill_name": "Node.js",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 3,
+          "context": "Developed a Node.js server at HubSpot; useful for frontend tooling, build processes, or Backend for Frontend (BFF) architectures."
+        },
+        {
+          "skill_name": "jQuery",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 3,
+          "context": "Listed as a library; a common frontend utility, though less central for modern React-focused development."
+        },
+        {
+          "skill_name": "Angular.js",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 2,
+          "context": "Listed as a framework; Angular.js is an older version of Angular, suggesting broader framework exposure."
+        },
+        {
+          "skill_name": "Python",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 2,
+          "context": "Integrated an automated property valuation model fed by machine learning Python data; less direct for pure frontend but shows full-stack awareness."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "Frontend Development",
+          "years_required": 2,
+          "years_present": 2.75,
+          "relevance_score": 5,
+          "context": "Nearly 3 years of dedicated frontend development experience at Zillow and HubSpot, including rebuilding a SaaS application with React/Redux and designing customer-facing web applications."
+        },
+        {
+          "area": "UI/UX Implementation",
+          "years_required": 2,
+          "years_present": 2.75,
+          "relevance_score": 5,
+          "context": "Led a 'full user experience redesign' of a SaaS application at Zillow, directly addressing the job description's emphasis on 'beautiful user interfaces'."
+        },
+        {
+          "area": "Impact & Efficiency",
+          "years_required": 2,
+          "years_present": 2.75,
+          "relevance_score": 4,
+          "context": "Demonstrated ability to reduce valuation review time by 46% and save service providers 84% at Zillow, and saved HubSpot $22.5K, indicating a focus on user efficiency and business value."
+        }
+      ],
+      "education_match": {
+        "requirement": "Bachelor's in Computer Science or related field",
+        "has_match": true,
+        "details": "Bachelor of Science in Computer Science from University of Oregon (2014-2018)."
+      },
+      "strengths": [
+        "Strong experience with modern frontend frameworks (React, Redux).",
+        "Proven ability to lead and execute full user experience redesigns, directly aligning with 'beautiful user interfaces'.",
+        "Quantifiable impact and efficiency improvements in previous roles at reputable tech companies (Zillow, HubSpot).",
+        "Mentorship experience, indicating leadership and team collaboration skills.",
+        "Solid Computer Science educational background."
+      ],
+      "gaps": [
+        "No explicit mention of specific modern styling solutions (e.g., Styled Components, Tailwind CSS, Sass/Less), though CSS is listed.",
+        "No explicit mention of modern build tools (e.g., Webpack, Vite) or package managers (npm/yarn), though implied by modern development experience.",
+        "No explicit mention of version control systems (e.g., Git), though standard for development roles."
+      ],
+      "summary": "Johann Bach is a highly qualified frontend developer with nearly 3 years of experience at Zillow and HubSpot. Their background includes significant work with React/Redux, leading a full user experience redesign, and delivering quantifiable improvements in user efficiency and cost savings. The candidate's skills and experience are an excellent match for building beautiful user interfaces, making them a strong fit for the role despite minor gaps in explicitly listed modern tooling.",
+      "analysis_date": "2025-12-07T10:57:06.478902",
+      "application_id": 29
+    }
+  ]
+}

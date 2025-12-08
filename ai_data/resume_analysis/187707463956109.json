@@ -1,0 +1,642 @@
+{
+  "analysis_id": 187707463956109,
+  "job_id": 8,
+  "job_title": "UX Designer",
+  "timestamp": "2025-12-07T10:54:59.836127",
+  "total_analyzed": 7,
+  "average_score": 89.42857142857143,
+  "top_candidate": "Alex Carter",
+  "results": [
+    {
+      "candidate_name": "Dee Nitao",
+      "overall_fit_score": 80,
+      "skill_matches": [
+        {
+          "skill_name": "HTML",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Listed in skills, used in work experience creating and maintaining 40+ e-Commerce websites."
+        },
+        {
+          "skill_name": "CSS",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Listed in skills, used in work experience creating and maintaining 40+ e-Commerce websites."
+        },
+        {
+          "skill_name": "JavaScript",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Listed in skills, objective focuses on 'JavaScript mobile-first development'."
+        },
+        {
+          "skill_name": "React.js",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Listed in skills, modern framework for dynamic user experiences."
+        },
+        {
+          "skill_name": "Angular.js",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Listed in skills, modern framework for dynamic user experiences."
+        },
+        {
+          "skill_name": "Node.js",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 2,
+          "context": "Listed in skills, primarily a backend runtime, less direct for front-end UX creation."
+        },
+        {
+          "skill_name": "WordPress",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 4,
+          "context": "Mentioned 'success with WordPress front-end development' and assisted in developing 6 WordPress sites."
+        },
+        {
+          "skill_name": "Bootstrap",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Listed in skills, directly supports responsive design, a key aspect of delightful UX."
+        },
+        {
+          "skill_name": "Agile/Scrum",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Listed in skills, 'Worked in an Agile, collaborative environment' during internship."
+        },
+        {
+          "skill_name": "Accessibility & Responsive Design",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Objective states eagerness to continue career by 'perfecting accessibility and responsive design'."
+        },
+        {
+          "skill_name": "UX/UI Implementation",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Maintained web pages under direction of UX manager; partnered with 2 designer teams to take client wireframes from conception to implementation."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "Front-End Development & UX Implementation",
+          "years_required": 0,
+          "years_present": 4.5,
+          "relevance_score": 5,
+          "context": "Entry-level Front-End Developer at Guess, INC (Sept 2019 - current). Maintained 20+ web pages under direction of UX manager, created and maintained front-end code for 40+ e-Commerce websites, led troubleshooting for 1,000+ bugs, and partnered with designer teams to implement wireframes."
+        },
+        {
+          "area": "Front-End Development Internship",
+          "years_required": 0,
+          "years_present": 0.25,
+          "relevance_score": 4,
+          "context": "Front-End Developer Intern at Punch (June 2019 - Sept 2019). Assisted in maintaining 8 websites, implemented front-end solutions for 5 new web pages, and worked in an Agile, collaborative environment."
+        }
+      ],
+      "education_match": {
+        "requirement": "Relevant Bachelor's Degree",
+        "has_match": true,
+        "details": "Bachelor of Science in Computer Engineering from Cal State Hayward (2015-2019), GPA: 3.7."
+      },
+      "strengths": [
+        "Strong foundational and modern front-end development skills (HTML, CSS, JavaScript, React, Angular, Bootstrap).",
+        "Direct experience in implementing user interfaces and collaborating effectively with UX/design teams.",
+        "Proven ability to maintain, update, and troubleshoot web applications, directly contributing to user experience quality (fixed 1,000+ bugs).",
+        "Explicit focus and eagerness to perfect accessibility and responsive design, which are critical for delightful user experiences.",
+        "Experience working in an Agile, collaborative development environment.",
+        "Solid academic background with a high GPA in Computer Engineering."
+      ],
+      "gaps": [
+        "Limited explicit demonstration of UX design or research skills (e.g., user testing, wireframing, prototyping tools), though the role is likely more implementation-focused.",
+        "Lack of a highlighted portfolio or specific project examples that showcase 'delightful user experiences' beyond general job duties (Github link is present but no specific projects are called out).",
+        "Minor formatting issue with 'AWSOBJECTIVE' section header."
+      ],
+      "summary": "Dee Nitao is a highly capable and experienced Junior Front-End Developer with a strong technical skill set directly applicable to creating user experiences. The candidate's work history demonstrates significant involvement in implementing, maintaining, and improving front-end code for various web platforms, including e-commerce, under the guidance of UX managers and in collaboration with design teams. Dee's objective clearly aligns with the job description's goal, emphasizing a desire to perfect accessibility and responsive design. While the resume showcases excellent implementation skills, providing specific examples or a portfolio demonstrating the *delightful* aspect of user experiences created would further strengthen the application. Dee is a strong candidate for a front-end role focused on UX implementation.",
+      "analysis_date": "2025-12-07T10:52:50.301179",
+      "application_id": 21
+    },
+    {
+      "candidate_name": "Alex Carter",
+      "overall_fit_score": 92,
+      "skill_matches": [
+        {
+          "skill_name": "User-Centric Front-End Development",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Demonstrated ability to increase user satisfaction by 53% (TD Bank) and client approval by 38% (TE Connectivity) through UI development and brand alignment."
+        },
+        {
+          "skill_name": "Front-End Performance Optimization",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Improved application load times by 26% and 2.7 seconds (QVC), and shrunk bundle sizes by 14% (TD Bank)."
+        },
+        {
+          "skill_name": "Responsive Web Design",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Implemented CSS Grid for responsive web design (QVC) and customized Bootstrap components (TE Connectivity)."
+        },
+        {
+          "skill_name": "Quality Assurance & Bug Reduction",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Automated testing procedures cutting down reported bugs by 18% (QVC) and minimizing post-deployment bugs by 11% (TD Bank)."
+        },
+        {
+          "skill_name": "Modern JavaScript Frameworks (Angular/React)",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "6+ years experience with Angular (QVC) and React.js (TD Bank), building dynamic user interfaces."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "User Experience-Focused Front-End Development",
+          "years_required": 5,
+          "years_present": 7,
+          "relevance_score": 5,
+          "context": "7 years of progressive experience as a Front End Developer, consistently delivering projects that directly improved user satisfaction, client approval, and application performance across multiple organizations."
+        }
+      ],
+      "education_match": {
+        "requirement": "Bachelor's degree in Computer Science or related field",
+        "has_match": true,
+        "details": "Bachelor of Science in Computer Science from Carnegie Mellon University (2014-2017)."
+      },
+      "strengths": [
+        "Exceptional focus on user experience outcomes, evidenced by quantifiable improvements in user satisfaction (53%), client approval (38%), and application performance (26% uptick, 2.7s load time reduction).",
+        "Strong proficiency in modern front-end technologies, including Angular, React.js, CSS Grid, and Webpack.",
+        "Proven ability to enhance application reliability and reduce bugs through automated testing and robust development practices.",
+        "Demonstrated commitment to code quality, maintainability, and efficient development workflows.",
+        "Clear career progression and consistent delivery of impactful results across diverse projects."
+      ],
+      "gaps": [
+        "No explicit mention of direct collaboration with UX designers or involvement in user research methodologies (e.g., usability testing, A/B testing beyond satisfaction scores).",
+        "Lack of explicit mention of accessibility (A11y) standards or implementation, which is crucial for truly 'delightful' and inclusive user experiences."
+      ],
+      "summary": "Alex Carter is an outstanding candidate for a role focused on creating delightful user experiences. Their resume is replete with quantifiable achievements directly tied to improving user satisfaction, application performance, and overall reliability. With 7 years of progressive front-end development experience, specializing in Angular and React.js, Alex demonstrates a strong user-centric approach. While the resume clearly highlights implementation skills that lead to delightful experiences, further exploration into direct UX design collaboration, user research involvement, and accessibility practices would provide a more complete picture.",
+      "analysis_date": "2025-12-07T10:53:12.589875",
+      "application_id": 22
+    },
+    {
+      "candidate_name": "Grace Garcia",
+      "overall_fit_score": 92,
+      "skill_matches": [
+        {
+          "skill_name": "Front-End Development (HTML, CSS, JavaScript)",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Employed CSS, HTML, and JavaScript to design 200+ intuitive landing pages; combined CSS, Node, and HTML to embed an internal web app."
+        },
+        {
+          "skill_name": "UI/UX Design Principles",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Designed 200+ intuitive landing pages; revamped refund tool UI; led mobile app redesign project using InVision."
+        },
+        {
+          "skill_name": "Performance Optimization",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Automated performance and optimization through minified JS, and Grunt; cutting loading time by 71.5%."
+        },
+        {
+          "skill_name": "User Feedback & Analytics Integration",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Built assessment forms using Socrative to gather customer insights; acted on analytics insights to act on customers' feedback to improve user experience."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "User-Centric Front-End Development",
+          "years_required": 5,
+          "years_present": 5,
+          "relevance_score": 5,
+          "context": "5 years of experience designing and developing intuitive, engaging, and high-performing web and mobile interfaces, consistently focusing on user needs."
+        },
+        {
+          "area": "Impactful UX Improvement",
+          "years_required": 5,
+          "years_present": 5,
+          "relevance_score": 5,
+          "context": "Proven track record of delivering quantifiable improvements in user experience metrics, including increased downloads (44%), CTR (61%), reduced loading time (71.5%), and improved customer engagement (11%)."
+        }
+      ],
+      "education_match": {
+        "requirement": "Bachelor's degree in Computer Science or related field",
+        "has_match": true,
+        "details": "B.S. Computer Science from Carnegie Mellon University (2013 - 2017)"
+      },
+      "strengths": [
+        "Exceptional focus on user experience, consistently delivering 'delightful' outcomes.",
+        "Strong command of core front-end technologies (HTML, CSS, JavaScript) and design tools (InVision).",
+        "Proven ability to drive quantifiable improvements in UX metrics (e.g., downloads, CTR, loading time, engagement).",
+        "Experience with user research, gathering customer insights, and acting on analytics/feedback.",
+        "Demonstrated leadership in design and development projects.",
+        "Strong problem-solving and quality assurance skills."
+      ],
+      "gaps": [
+        "Lack of explicit mention of modern JavaScript frameworks (e.g., React, Angular, Vue) in the skills section, which are often key for contemporary 'delightful user experiences' roles.",
+        "The career objective contains specific company and role details (Atlassian, content for non-technical members) that do not align with a generic 'create delightful user experiences' role, suggesting a templated objective."
+      ],
+      "summary": "Grace Garcia is an outstanding candidate with a highly relevant and impressive background for a role focused on creating delightful user experiences. Her resume showcases 5 years of dedicated experience in front-end development and UI/UX design, consistently delivering user-centric solutions with measurable positive impacts. While her core front-end skills are robust, explicitly listing proficiency in modern JavaScript frameworks would further strengthen her profile for many current roles. Overall, a very strong fit.",
+      "analysis_date": "2025-12-07T10:53:35.470489",
+      "application_id": 23
+    },
+    {
+      "candidate_name": "resume4",
+      "overall_fit_score": 92,
+      "skill_matches": [
+        {
+          "skill_name": "Bootstrap",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Redesigned Bootstrap-based UI components, enhancing overall application performance."
+        },
+        {
+          "skill_name": "Angular",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Implemented JWT authentication to improve data security in Angular applications."
+        },
+        {
+          "skill_name": "Flexbox",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Resolved layout inconsistencies across different browsers with Flexbox, gaining a 93% success rate in user acceptance testing."
+        },
+        {
+          "skill_name": "Sass",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Leveraged Sass functions to create dynamic and responsive styles based on user interactions, slashing events of styling bugs by 21%."
+        },
+        {
+          "skill_name": "Lighthouse",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Optimized image formats and sizes as recommended by Lighthouse, shortening image load times by 0.8 seconds."
+        },
+        {
+          "skill_name": "Karma (for prototyping)",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Created quality mockups and prototypes by using Karma tests to validate functionality, leading to a 14% rise in prototype approval rates."
+        },
+        {
+          "skill_name": "Chrome DevTools",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Employed Chrome DevTools for real-time debugging and logging, reducing the average issue resolution time from 4 to 2 hours."
+        },
+        {
+          "skill_name": "User-Centered Design Principles",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Achieved a 4.2/5 rating in app store reviews by focusing on user-centered design principles and regular feature updates."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "UI/UX Development & Front-End Leadership",
+          "years_required": 5,
+          "years_present": 7,
+          "relevance_score": 5,
+          "context": "7 years of progressive experience in front-end and UI/UX development, including 3 years as a dedicated UI/UX Developer and 2 years as Lead Front End Developer, consistently delivering user-centric solutions."
+        }
+      ],
+      "education_match": {
+        "requirement": "Bachelor's in Computer Science or related field",
+        "has_match": true,
+        "details": "Bachelor of Science in Computer Science from Cornell University (2013 - 2017)."
+      },
+      "strengths": [
+        "Direct and extensive experience as a UI/UX Developer and Lead Front End Developer, aligning perfectly with the job description's focus.",
+        "Proven ability to create delightful user experiences, evidenced by a 4.2/5 app store rating and successful user acceptance testing (93% success rate).",
+        "Strong technical proficiency in key front-end technologies (Bootstrap, Angular, Flexbox, Sass) and performance optimization tools (Lighthouse, Chrome DevTools).",
+        "Demonstrated impact through quantified achievements, such as reducing load times by 11 seconds and cutting styling bugs by 21%.",
+        "Experience in prototyping and validating functionality, crucial for iterative design and development.",
+        "Clear progression in roles, showcasing leadership and increasing responsibility in front-end development."
+      ],
+      "gaps": [
+        "Lack of explicit mention of specific UI/UX design tools (e.g., Figma, Sketch, Adobe XD) often used in the design phase.",
+        "Limited explicit detail on user research methodologies beyond user acceptance testing (e.g., user interviews, usability studies).",
+        "No portfolio link provided, which is typically valuable for showcasing visual and interaction design skills in UI/UX roles.",
+        "No explicit mention of adherence to accessibility standards (e.g., WCAG compliance), though Lighthouse can cover some aspects."
+      ],
+      "summary": "Alaric Vaughn is an exceptionally strong candidate for a role focused on creating delightful user experiences. With 7 years of progressive experience, including a dedicated UI/UX Developer role and leadership as a Lead Front End Developer, he demonstrates a deep understanding of user-centered design principles and a proven track record of delivering high-quality, performant, and user-satisfying interfaces. His resume is rich with quantified achievements and relevant technical skills. While his implementation and optimization skills are outstanding, providing more detail on specific design tools, broader user research methodologies, or a portfolio could further strengthen his profile for a comprehensive UI/UX role.",
+      "analysis_date": "2025-12-07T10:53:57.609989",
+      "application_id": 24
+    },
+    {
+      "candidate_name": "resume5",
+      "overall_fit_score": 90,
+      "skill_matches": [
+        {
+          "skill_name": "HTML",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Fundamental for web development, demonstrated through extensive front-end experience."
+        },
+        {
+          "skill_name": "CSS",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Fundamental for styling user interfaces, demonstrated through extensive front-end experience."
+        },
+        {
+          "skill_name": "JavaScript",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 5,
+          "context": "Core language for interactive web experiences, demonstrated through extensive front-end experience."
+        },
+        {
+          "skill_name": "React",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Rebuilt 4-year-old SaaS application with full user experience redesign in React 15 at Zillow."
+        },
+        {
+          "skill_name": "Redux",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 4,
+          "context": "Used in the rebuild of a SaaS application with full user experience redesign at Zillow."
+        },
+        {
+          "skill_name": "Node.js",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 3,
+          "context": "Developed a node.js server to validate membership and track digital badges at HubSpot."
+        },
+        {
+          "skill_name": "Python",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 3,
+          "context": "Integrated an automated property valuation model fed by machine learning Python data at Zillow."
+        },
+        {
+          "skill_name": "jQuery",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 3,
+          "context": "Listed as a skill, indicating familiarity with common web libraries."
+        },
+        {
+          "skill_name": "Angular.js",
+          "present_in_resume": true,
+          "importance_level": 2,
+          "proficiency_level": 3,
+          "context": "Listed as a skill, indicating familiarity with web frameworks."
+        },
+        {
+          "skill_name": "Jest",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 3,
+          "context": "Listed as a skill, important for testing front-end components and ensuring quality user experiences."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "Front-End Development & User Experience Implementation",
+          "years_required": 3,
+          "years_present": 3,
+          "relevance_score": 5,
+          "context": "Total of ~3 years of experience as a Front-End Developer at HubSpot and Software Engineer at Zillow. Key contributions include 'full user experience redesign' of a SaaS application using React/Redux, designing and implementing 'customer-facing projects,' and focusing on 'maximizing user efficiency' in career objective."
+        },
+        {
+          "area": "Impact on User Efficiency & Business Outcomes",
+          "years_required": 2,
+          "years_present": 3,
+          "relevance_score": 5,
+          "context": "Reduced average valuation review time by 46% and saved service providers an average of 84% at Zillow. Generated $50K+ in annual ad revenue and saved $22.5K at HubSpot, demonstrating a clear understanding of how development impacts users and business."
+        }
+      ],
+      "education_match": {
+        "requirement": "Bachelor's in Computer Science or related field",
+        "has_match": true,
+        "details": "Bachelor of Science, Computer Science, University of Oregon (2014 - 2018)"
+      },
+      "strengths": [
+        "Direct experience with 'full user experience redesign' using modern front-end technologies (React, Redux).",
+        "Proven ability to design and implement customer-facing web applications and platforms.",
+        "Quantifiable impact on user efficiency (reduced review time) and business outcomes (cost savings, revenue generation).",
+        "Strong proficiency in core front-end development languages and libraries (HTML, CSS, JavaScript, React).",
+        "Clear focus on 'maximizing user efficiency' as stated in career objective.",
+        "Mentorship experience demonstrates leadership and collaborative skills within a development team."
+      ],
+      "gaps": [
+        "Lack of explicit mention of UI/UX design tools (e.g., Figma, Sketch) or direct involvement in user research/testing methodologies, which could further enhance 'delightful user experiences.'",
+        "No explicit mention of adherence to accessibility standards (e.g., WCAG) or specific performance optimization techniques for user experience, beyond general efficiency."
+      ],
+      "summary": "Johann Bach is a highly relevant candidate for a role focused on 'creating delightful user experiences.' His resume demonstrates strong front-end development expertise with a direct track record of user experience redesign and optimization, particularly at Zillow. He possesses a modern tech stack (React, Redux) and a clear focus on user efficiency and business impact. While his experience is primarily on the development and implementation side, his explicit contributions to UX redesign and customer-facing projects make him a strong fit. Minor gaps exist in explicit mentions of dedicated UX design tools or research involvement.",
+      "analysis_date": "2025-12-07T10:54:20.607310",
+      "application_id": 25
+    },
+    {
+      "candidate_name": "resume6_Resume",
+      "overall_fit_score": 88,
+      "skill_matches": [
+        {
+          "skill_name": "HTML5",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Incorporated HTML5 form validation for the library's online registration system, lowering form submission errors by 42%."
+        },
+        {
+          "skill_name": "React",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Developed a React-based notification system for overdue books, decreasing overdue cases by 11%."
+        },
+        {
+          "skill_name": "Bootstrap",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Implemented Bootstrap alerts for real-time updates on pet care status, improving communication and boosting client satisfaction scores by 32%."
+        },
+        {
+          "skill_name": "Git/GitHub",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 3,
+          "context": "Leveraged Git to manage version history of a new pet behavior tracking software... Devised and maintained a GitHub repository for tour guide schedules."
+        },
+        {
+          "skill_name": "Jest",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 3,
+          "context": "Built Jest test cases to verify the integration of multimedia elements in tour scripts, leading to a 21% surge in visitor engagement."
+        },
+        {
+          "skill_name": "UI/UX Design Tools (e.g., Figma, Sketch)",
+          "present_in_resume": false,
+          "importance_level": 3,
+          "proficiency_level": 0,
+          "context": "Not explicitly mentioned, though the candidate demonstrates strong UX outcomes."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "Front-end Development & User Experience",
+          "years_required": 0,
+          "years_present": 0,
+          "relevance_score": 5,
+          "context": "Implemented Bootstrap alerts for real-time updates... boosting client satisfaction scores by 32%. Created digital pet profiles, increasing information accessibility... Revamped the site using responsive web design techniques... growing mobile registrations by 28%. Conducted 15+ campus tours weekly, providing informational experiences... resulting in a 67% uplift in campus visit satisfaction scores."
+        }
+      ],
+      "education_match": {
+        "requirement": "Bachelor's in Computer Science or related field",
+        "has_match": true,
+        "details": "Bachelor of Science, Computer Science, Georgia Institute of Technology (2021 - current)"
+      },
+      "strengths": [
+        "Strong user-centric mindset, consistently framing technical work in terms of user satisfaction, accessibility, and engagement.",
+        "Practical application of core front-end technologies (HTML5, React, Bootstrap) to deliver tangible improvements in user experience.",
+        "Demonstrated ability to achieve quantifiable results, such as boosting client satisfaction by 32% and increasing mobile registrations by 28%.",
+        "Proactive approach to problem-solving and efficiency, with a clear understanding of project impact on users.",
+        "Excellent communication and interpersonal skills, valuable for understanding and addressing user needs, as evidenced by the Campus Tour Guide role."
+      ],
+      "gaps": [
+        "Limited professional software development experience, as the candidate is seeking an internship.",
+        "No explicit mention of specific UI/UX design tools (e.g., Figma, Sketch) or formal UX methodologies (e.g., user research, wireframing, prototyping), although the outcomes are highly UX-focused.",
+        "No mention of backend development or database skills, which might be beneficial in some full-stack contexts, but not explicitly required by this job description."
+      ],
+      "summary": "Ophelia is an exceptionally promising intern candidate with a strong, demonstrated focus on creating delightful user experiences. Her resume effectively highlights how she leverages front-end technologies (HTML5, React, Bootstrap) to achieve quantifiable improvements in user satisfaction, accessibility, and engagement across diverse projects and roles. Her user-centric mindset and ability to translate technical work into tangible user benefits make her an excellent fit for this role, despite being early in her professional development career.",
+      "analysis_date": "2025-12-07T10:54:40.519040",
+      "application_id": 26
+    },
+    {
+      "candidate_name": "Ophelia Crane",
+      "overall_fit_score": 92,
+      "skill_matches": [
+        {
+          "skill_name": "HTML5",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Pro\ufb01cient in HTML5; Incorporated HTML5 form validation for the library's online registration system, lowering form submission errors by 42%."
+        },
+        {
+          "skill_name": "React",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Pro\ufb01cient in React.js; Developed a React-based noti\ufb01cation system for overdue books, decreasing overdue cases by 11%."
+        },
+        {
+          "skill_name": "Bootstrap",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Implemented Bootstrap alerts for real-time updates on pet care status, improving communication and boosting client satisfaction scores by 32%."
+        },
+        {
+          "skill_name": "Git/GitHub",
+          "present_in_resume": true,
+          "importance_level": 4,
+          "proficiency_level": 3,
+          "context": "Leveraged Git to manage version history; Devised and maintained a GitHub repository for tour guide schedules and availability."
+        },
+        {
+          "skill_name": "Jest",
+          "present_in_resume": true,
+          "importance_level": 3,
+          "proficiency_level": 3,
+          "context": "Built Jest test cases to verify the integration of multimedia elements in tour scripts, leading to a 21% surge in visitor engagement."
+        },
+        {
+          "skill_name": "Responsive Web Design",
+          "present_in_resume": true,
+          "importance_level": 5,
+          "proficiency_level": 4,
+          "context": "Revamped the site using responsive web design techniques to ensure the tour registration and information pages were accessible on all devices, growing mobile registrations by 28%."
+        }
+      ],
+      "experience_matches": [
+        {
+          "area": "User Experience Enhancement",
+          "years_required": null,
+          "years_present": null,
+          "relevance_score": 5,
+          "context": "Consistently demonstrated ability to improve user satisfaction and engagement: boosting client satisfaction scores by 32%, increasing information accessibility, slashing support queries by 28%, lowering form submission errors by 42%, 67% uplift in campus visit satisfaction scores, 21% surge in visitor engagement, growing mobile registrations by 28%."
+        },
+        {
+          "area": "Front-End Development for UX",
+          "years_required": null,
+          "years_present": null,
+          "relevance_score": 5,
+          "context": "Implemented Bootstrap alerts, created digital pet profiles, incorporated HTML5 form validation, developed a React-based notification system, and revamped sites using responsive web design techniques."
+        },
+        {
+          "area": "Problem Solving & Efficiency",
+          "years_required": null,
+          "years_present": null,
+          "relevance_score": 4,
+          "context": "Reduced incident reports by 34%, automated appointment reminders, shrunk reservation conflicts by 26%, and curtailed scheduling process time by 18 minutes, all contributing to a smoother user journey."
+        }
+      ],
+      "education_match": {
+        "requirement": "Relevant technical degree (e.g., Computer Science)",
+        "has_match": true,
+        "details": "Bachelor of Science in Computer Science from Georgia Institute of Technology (current student)"
+      },
+      "strengths": [
+        "Strong foundational front-end development skills (HTML5, React, Bootstrap) directly applicable to creating user interfaces.",
+        "Exceptional ability to demonstrate direct impact on user satisfaction, accessibility, and engagement through quantifiable results across various projects.",
+        "Proven experience in implementing responsive web design, crucial for modern and accessible user experiences.",
+        "Clear user-centric mindset, consistently focusing on improving the user journey and reducing friction.",
+        "Excellent problem-solving skills applied to real-world scenarios, often leveraging technology.",
+        "Experience working in a cross-functional team environment."
+      ],
+      "gaps": [
+        "Limited explicit mention of formal UX design methodologies (e.g., user research, wireframing, prototyping, specific UX tools), though her practical application of UX principles is strong for an intern."
+      ],
+      "summary": "Ophelia Crane is an outstanding candidate for a role focused on creating delightful user experiences. Her resume showcases robust front-end development skills and, more importantly, a consistent and quantifiable track record of applying these skills to directly improve user satisfaction, accessibility, and engagement. Her diverse experiences, from pet sitting software to campus tour revamp, all highlight a strong user-centric approach and a clear understanding of what makes an experience 'delightful.' While formal UX design process experience isn't explicitly detailed, her practical impact on user experience through development is highly relevant and impressive for an intern.",
+      "analysis_date": "2025-12-07T10:54:59.836073",
+      "application_id": 27
+    }
+  ]
+}
