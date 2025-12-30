@@ -7,6 +7,8 @@
 
 > **Team 11** | Software Engineering Project | IIT Madras | September 2025
 
+### The main goal of this application is to reduce the dependecy of HRMS tasks on different tools/applciation and give a centralized solution for everything realated to HR Management.
+
 PulseTrack HRMS is a **next-generation, AI-powered Human Resource Management System** designed to revolutionize workforce management by making HR processes smarter, faster, and more human-centric. Built with cutting-edge GenAI technologies, PulseTrack brings intelligence and automation to every aspect of HR operations.
 
 ---
