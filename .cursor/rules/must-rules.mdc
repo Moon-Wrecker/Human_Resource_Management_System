@@ -1,4 +1,0 @@
----
-description: Don't make new markdown files, if any update add in docs/HRMS_COMPLETE_DOCUMENTATION.md only, don't make final summary document, only make document in docs folder and add if any text in the HRMS_COMPLETE_DOCUMENTATION.md if needed
-alwaysApply: false
----
